@@ -10,7 +10,7 @@ import PageBuilder from "../components/PageBuilder";
 import Preview from "../components/Preview.vue";
 
 export default {
-  name: 'PageDesigner',
+  name: 'Editor',
   components: {
     PageBuilder,
     Preview
