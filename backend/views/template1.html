@@ -1,0 +1,13 @@
+<button onclick="
+fetch(window.location.href+'.json')
+.then(data => {
+    let reader = data.body.getReader();
+    reader.read().then(function processText({ done, value }) {
+    if (done) {
+      console.log('Stream complete');
+      return;
+    }
+    var string = new TextDecoder().decode(value);
+    console.log(string);
+    return reader.read().then(processText);
+  });});">tghrttrh</button>

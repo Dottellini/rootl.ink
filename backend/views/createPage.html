@@ -1,0 +1,21 @@
+createPage
+<input id="urlInput" value="URL">
+<button onclick="
+console.log(document.getElementById('urlInput').value);
+const data = { url:document.getElementById('urlInput').value , account_id: '123', links: [{url: 'youtube.com', title: 'Youtube'},
+                                                        {url: 'google.com', title: 'google'}]};
+
+fetch('http://localhost:3000/createPage', {
+  method: 'POST', // or 'PUT'
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify(data),
+})
+.then(data => {
+  console.log('Success:', data);
+})
+.catch((error) => {
+  console.error('Error:', error);
+});
+">ewfefe</button>
