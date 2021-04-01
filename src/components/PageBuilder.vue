@@ -7,6 +7,7 @@
         :animation="200"
         class="list-group"
         ghost-class="ghost"
+        drag-class="drag"
         :move="checkMove"
         @start="dragging = true"
         @end="endMove"
@@ -110,6 +111,14 @@ export default {
     padding: 10px;
     border-radius: 20px;
     box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.15);
+  }
+
+  .ghost {
+    opacity: 1;
+    background: #e0f3ff;
+  }
+  .drag {
+    opacity: 0;
   }
 
 </style>
