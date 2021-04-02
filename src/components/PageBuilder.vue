@@ -1,5 +1,8 @@
 <template>
-  <div id="pageBuilder">
+  <div id="pageBuilder" class="container">
+    <div class="test">
+      <p>TEXT</p>
+    </div>
     <h1>Design your Page</h1>
     <draggable
         :list="list"
@@ -83,6 +86,13 @@ export default {
 </script>
 
 <style scoped lang="scss">
+  .test {
+    background: var(--background-color);
+    color: var(--text-color);
+  }
+
+
+
   .submit-button {
     background: #536cc0;
     color: white;
