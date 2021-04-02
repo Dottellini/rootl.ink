@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const AccountObject = new Schema({
     account_id: {
         type: String,
-        required: true,
+        required: true
     },
     email: {
         type: String,
@@ -13,9 +13,17 @@ const AccountObject = new Schema({
     page_url:{
         type: String,
         require: false
+    },
+    email_confirmed:{
+        type: Boolean,
+        required: true
+    },
+    confirmation_code:{
+        type: String,
+        required:false
     }
 });
 
-const AccountSchema = mongoose.model('User', AccountObject);
+const AccountSchema = mongoose.model('Account', AccountObject);
 
 exports.AccountSchema = AccountSchema;

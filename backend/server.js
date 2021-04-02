@@ -2,7 +2,21 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const page = require('./db-models/page');
-const jwt = require("jsonwebtoken");
+const account = require('./db-models/account');
+const jwt = require('jsonwebtoken');
+const uuid = require('uuid');
+const nodemailer = require('nodemailer');
+const ejs = require('ejs');
+
+//Setup Email-Sender
+
+var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'rootlink.test123@gmail.com',
+      pass: '%pFJM,hwr_b,uyv#,F?+66Hb'
+    }
+  });
 
 // Start Server
 const server = express();
@@ -33,6 +47,70 @@ server.get('/register', (req, res)=>{
     res.sendFile('./views/register.html', {'root': __dirname});
 });
 
+server.post('/register', (req,res)=>{
+    const Data = req.body;
+    account.AccountSchema.find({$or:[{email:Data.email},{page_url:Data.page_url}]}, (err, accounts)=>{
+        if(!err) {
+            if(accounts.length==0) {
+                const code = uuid.v4();
+                const Account = new account.AccountSchema({
+                    account_id: uuid.v4(),
+                    email: Data.email,
+                    page_url: Data.page_url,
+                    email_confirmed: false,
+                    confirmation_code: code
+                });
+                ejs.renderFile(__dirname+'/email-templates/email-template1.ejs', {code: code, email:Account.email},(err, data)=>{
+                    console.log(data);
+                    var mailOptions = {
+                        from: 'rootlink.test123@gmail.com',
+                        to: Account.email,
+                        subject: 'Confirm Your Email Adress - Rootl.ink',
+                        text: data,
+                        html: data
+                    };
+
+                    transporter.sendMail(mailOptions, function(error, info){
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            console.log('Email sent: ' + info.response);
+                        }
+                    });
+                })
+
+                Account.save();
+                console.log('Account Created');
+            } else if(accounts[0].page_url==Data.page_url){
+                console.log('Account already exists');
+                res.send('URL already exists');
+            } else if(accounts[0].email==Data.email){
+                console.log('Account already exists');
+                res.send('Email already in use');
+            }
+        }
+    });
+});
+
+server.get('/confirmEmailCode*', (req,res)=>{
+    res.sendFile('./views/confirmEmail.html', {'root': __dirname});
+});
+
+server.post('/confirmEmail', (req, res)=>{
+    const data = req.body;
+    console.log(data);
+    account.AccountSchema.find({email:data.email})
+    .then(result=>{
+        console.log(result);
+        if(result[0].confirmation_code==data.code) {
+            result[0].email_confirmed=true;
+            result[0].confirmation_code=undefined;
+            console.log('Email Confirmed');
+            result[0].save();
+            res.send('Confirmed');
+        }
+    })
+})
 //Create Page
 server.get('/createPage', (req, res)=>{
      res.sendFile('./views/createPage.html', {'root': __dirname});
