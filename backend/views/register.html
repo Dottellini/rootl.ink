@@ -1,39 +1,21 @@
 Email<input id="email"><br/>
 page_url<input id="page_url">
-<button onclick="
-const data = {account_id: undefined, email: document.getElementById('email').value, page_url: document.getElementById('page_url').value}
-
-fetch('http://localhost:3000/register', {
-  method: 'POST', // or 'PUT'
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify(data),
-})
-.then(data => {
-  console.log('Success:', data);
-})
-.catch((error) => {
-  console.error('Error:', error);
-});
-">Register</button>
-<br>
-code<input id="code"><button onclick="
-
-const data = {account_id: undefined, email: document.getElementById('email').value, page_url: document.getElementById('page_url').value}
-
-fetch('http://localhost:3000/confirmEmailCode', {
-  method: 'POST', // or 'PUT'
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  body: JSON.stringify(data),
-})
-.then(data => {
-  console.log('Success:', data);
-})
-.catch((error) => {
-  console.error('Error:', error);
-});
-
-">Send</button>
+<button onclick="submit()">Register</button>
+<script>
+    function submit(){
+        const data = {account_id: undefined, email: document.getElementById('email').value, page_url: document.getElementById('page_url').value}
+        fetch('http://localhost:3000/register', {
+            method: 'POST', // or 'PUT'
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+</script>

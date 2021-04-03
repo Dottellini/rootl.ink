@@ -1,0 +1,30 @@
+<input id='email'>
+<button onclick="submit()">Submit</button>
+<script>
+    function submit(){
+        const email = document.getElementById('email').value;
+        const data = {email:email};
+        fetch('http://localhost:3000/login', {
+            method: 'POST', // or 'PUT'
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then(data => {
+            let reader = data.body.getReader();
+            reader.read().then(function processText({ done, value }) {
+            if (done) {
+                console.log('Stream complete');
+                return;
+            }
+            var string = new TextDecoder().decode(value);
+            console.log(string);
+            return reader.read().then(processText);
+            });
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+</script>
