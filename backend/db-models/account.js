@@ -6,6 +6,10 @@ const AccountObject = new Schema({
         type: String,
         required: true
     },
+    password_hash: {
+        type:String,
+        require: true
+    },
     email: {
         type: String,
         required: false

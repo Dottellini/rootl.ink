@@ -1,17 +1,17 @@
 //Imports
 require('dotenv').config();
-import express, { json } from 'express';
-import { connect } from 'mongoose';
-import { PageSchema } from './db-models/page';
-import { AccountSchema } from './db-models/account';
-import { sign } from 'jsonwebtoken';
-import { v4 } from 'uuid';
-import { createTransport } from 'nodemailer';
-import { renderFile } from 'ejs';
+const bcrypt = require('bcrypt');
+const express = require('express');
+const mongoose = require('mongoose');
+const page = require('./db-models/page');
+const account = require('./db-models/account');
+const jwt = require('jsonwebtoken');
+const uuid = require('uuid');
+const nodemailer = require('nodemailer');
+const ejs = require('ejs');
 
 //Setup Email-Sender
-
-var transporter = createTransport({
+var transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
       user: 'rootlink.test123@gmail.com',
@@ -21,13 +21,13 @@ var transporter = createTransport({
 
 // Start Server
 const server = express();
-server.use(json());
+server.use(express.json());
 server.set('view engine', 'ejs');
 server.use(require("body-parser").json())
 
 //Connect to Database
 const dbUri = 'mongodb+srv://Admin:test123@mongodbcluster1.fosb0.mongodb.net/TestDB?retryWrites=true&w=majority'
-connect(dbUri, {useNewUrlParser: true, useUnifiedTopology: true})
+mongoose.connect(dbUri, {useNewUrlParser: true, useUnifiedTopology: true})
 .then((result) => {
     console.log('Connected to Database')
     server.listen(3000, ()=>{
@@ -47,45 +47,50 @@ server.get('/register', (req, res)=>{
 
 server.post('/register', (req,res)=>{
     const Body = req.body;
-    AccountSchema.find({$or:[{email:Body.email},{page_url:Body.page_url}]}, (err, accounts)=>{
-        if(!err) {
-            if(accounts.length==0) {
-                const code = v4();
-                const Account = new AccountSchema({
-                    account_id: v4(),
-                    email: Body.email,
-                    page_url: Body.page_url,
-                    email_confirmed: false,
-                    confirmation_code: code
+    account.AccountSchema.find({$or:[{email:Body.email},{page_url:Body.page_url}]}, (err, accounts)=>{
+        if(err || accounts.length!=0) return
+        let Account;
+        const code = uuid.v4();
+        let password_hash;
+        bcrypt.hash(Body.password, 10, function(err, hash) {
+            password_hash = hash;
+            Account = new account.AccountSchema({
+                account_id: uuid.v4(),
+                password_hash: password_hash,
+                email: Body.email,
+                page_url: Body.page_url,
+                email_confirmed: false,
+                confirmation_code: code
+            });
+
+            ejs.renderFile(__dirname+'/email-templates/email-template1.ejs', {code: code, email:Account.email},(err, data)=>{
+                console.log(Body);
+                var mailOptions = {
+                    from: 'rootlink.test123@gmail.com',
+                    to: Account.email,
+                    subject: 'Confirm Your Email Adress - Rootl.ink',
+                    text: data,
+                    html: data
+                };
+                transporter.sendMail(mailOptions, function(error, info){
+                    if (error) {
+                        console.log("MAIL ERROR");
+                        console.log(error);
+                    } else {
+                        console.log('Email sent: ' + info.response);
+                    }
                 });
-                renderFile(__dirname+'/email-templates/email-template1.ejs', {code: code, email:Account.email},(err, data)=>{
-                    console.log(Body);
-                    var mailOptions = {
-                        from: 'rootlink.test123@gmail.com',
-                        to: Account.email,
-                        subject: 'Confirm Your Email Adress - Rootl.ink',
-                        text: Body,
-                        html: Body
-                    };
-
-                    transporter.sendMail(mailOptions, function(error, info){
-                        if (error) {
-                            console.log(error);
-                        } else {
-                            console.log('Email sent: ' + info.response);
-                        }
-                    });
-                })
-
-                Account.save();
-                console.log('Account Created');
-            } else if(accounts[0].page_url==Body.page_url){
-                console.log('Account already exists');
-                res.send('URL already exists');
-            } else if(accounts[0].email==Body.email){
-                console.log('Account already exists');
-                res.send('Email already in use');
-            }
+            });
+            Account.save();
+            console.log('Account Created');
+        })
+        
+        if(accounts[0].page_url==Body.page_url){
+        console.log('Account already exists');
+        res.send('URL already exists');
+        } else if(accounts[0].email==Body.email){
+            console.log('Account already exists');
+            res.send('Email already in use');
         }
     });
 });
@@ -97,7 +102,7 @@ server.get('/confirmEmailCode*', (req,res)=>{
 server.post('/confirmEmail', (req, res)=>{
     const Body = req.body;
     console.log(Body);
-    AccountSchema.find({email:Body.email})
+    account.AccountSchema.find({email:Body.email})
     .then(result=>{
         console.log(result);
         if(result[0].confirmation_code==Body.code) {
@@ -121,6 +126,7 @@ server.post('/login', (req,res)=>{
         if(result.length){
             const payload = {email: result[0].email};
             const accessToken = sign(payload, process.env.ACCESS_TOKEN_SECRET);
+            console.log("test");
             res.json({accessToken: accessToken});
         }
     })

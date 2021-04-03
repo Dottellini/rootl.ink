@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-//hallo
 const PageObject = new Schema({
     url: {
         type: String,

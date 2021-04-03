@@ -7,6 +7,7 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "core-js": "^3.6.5",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.12.3",
