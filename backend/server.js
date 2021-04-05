@@ -10,7 +10,7 @@ const server = express();
 server.use(express.json());
 server.set('view engine', 'ejs');
 server.use(require("body-parser").json())
-server.use('/', routes);
+server.use('/', routes.router);
 const dbUri = 'mongodb+srv://Admin:test123@mongodbcluster1.fosb0.mongodb.net/TestDB?retryWrites=true&w=majority'
 
 mongoose.connect(dbUri, {useNewUrlParser: true, useUnifiedTopology: true})
@@ -20,4 +20,4 @@ mongoose.connect(dbUri, {useNewUrlParser: true, useUnifiedTopology: true})
         console.log('HTTP Server Started');
     })
 })
-.catch((err)=>console.log(err));
+.catch((err)=>console.log(err)); 

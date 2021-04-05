@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const middleware = require('middleware');
+const middleware = require('./middleware');
 const account = require('./db-models/account');
 
 
@@ -24,16 +24,16 @@ router.get('/login', (req,res)=>{
     res.sendFile('/views/login.html', {'root':__dirname});
 });
 
+router.post('/login', (req,res)=>{
+    middleware.login(req.body.email, req.body.password, (result)=>{
+        res.send(result);
+    })
+});
+
 router.post('/confirmEmail', (req, res)=>{
     middleware.confirmEmail(req.body.email, req.body.code, (result)=>{
         res.send(result);
     });
-});
-
-router.post('/login', (req,res)=>{
-    middleware.login(req,body.email, (result)=>{
-        res.send(result);
-    })
 });
 
 router.post('/register', (req,res)=>{
@@ -50,6 +50,10 @@ router.post('/createPage', (req, res)=>{
         links: Body.links
     });
     UserPage.save();
+});
+
+router.get('/checkLogin', (req,res)=>{
+    res.sendFile('/views/checkLogin.html', {'root':__dirname});
 });
 
 router.get('/p/*.json', (req,res)=>{

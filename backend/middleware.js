@@ -1,4 +1,6 @@
 const account = require('./db-models/account');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 function authenticateToken(req,res,next){
     const authHeader = req.headers['authentication'];
@@ -26,20 +28,20 @@ function confirmEmail(emailAddress, confirmationCode, callback){
     })
 };
 
-function login(emailAddress, callback) {
+function login(emailAddress, password, callback) {
     account.AccountSchema.find({email:emailAddress}).then(result=>{
         if(!result.length){
             callback('Account not Found');
             return;
         }
-        bcrypt.compare(req.body.password, result[0].password_hash, function(err, PasswordResult) {
+        bcrypt.compare(password, result[0].password_hash, function(err, PasswordResult) {
             if(!PasswordResult) {
                 callback('Password Wrong');
                 return;
             }
-            const payload = {email: result[0].email};
+            const payload = {email: emailAddress};
             const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET);
-            res.json({accessToken: accessToken});
+            callback(JSON.stringify({accessToken: accessToken}));
             return;
         });
     })
@@ -57,10 +59,9 @@ function register(emailAddress, pageUrl, password, callback) {
         }
         const confirmationCode = uuid.v4();
         bcrypt.hash(password, 10, function(error, hash) {
-            let password_hash = hash;
             let Account = new account.AccountSchema({
                 account_id: uuid.v4(),
-                password_hash: password_hash,
+                password_hash: hash,
                 email: emailAddress,
                 page_url: pageUrl,
                 email_confirmed: false,
