@@ -3,6 +3,29 @@ const router = express.Router();
 const middleware = require('./middleware');
 const account = require('./db-models/account');
 
+router.get('/testLogin', (req, res, next)=>{
+    res.sendFile('./views/testLogin.html', {'root': __dirname});
+
+});
+
+router.post('/testLogin', (req,res)=>{
+    console.log("testLogin");
+    console.log(req);
+    console.log(req.headers);
+    console.log(req.body);
+    middleware.authenticateToken(req.headers, (result)=>{
+        switch(result) {
+            case 'Status 401':
+                res.status(401).send('blub1');
+                break;
+            case 'Status 403':
+                res.status(403).send('blub2');
+            default:
+                res.sendFile('/views/testLogin.html', {'root':__dirname});
+            }
+    })
+
+})
 
 router.get('/', (req, res)=>{
     res.sendFile('./views/index.html', {'root': __dirname});
@@ -50,10 +73,6 @@ router.post('/createPage', (req, res)=>{
         links: Body.links
     });
     UserPage.save();
-});
-
-router.get('/checkLogin', (req,res)=>{
-    res.sendFile('/views/checkLogin.html', {'root':__dirname});
 });
 
 router.get('/p/*.json', (req,res)=>{

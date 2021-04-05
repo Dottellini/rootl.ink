@@ -1,0 +1,41 @@
+<body onload="check();">
+    <h id="status">Fetching Login Status...</h>
+</body>
+<script>
+    function check(){
+        let accessToken = localStorage.getItem('accessToken');
+
+        fetch('http://localhost:3000/testLogin', {
+            method: 'POST',
+            mode: "cors",
+
+            withCredentials: true,
+            credentials: 'include',
+            headers: {
+                'Authorization': 'Bearer ' + accessToken,
+                'Content-Type': 'text/plain',
+                'X-Test':'test'
+            },
+            body: {
+                'Authorization': 'Bearer ' + accessToken
+            }
+        })
+        .then(result => {
+            let reader = result.body.getReader();
+            reader.read().then(function processText({ done, value }) {
+            if (done) {
+                console.log('Stream complete');
+                return;
+            }
+            var string = new TextDecoder().decode(value);
+            console.log(string);
+            return reader.read().then(processText);
+            });
+
+
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+</script>

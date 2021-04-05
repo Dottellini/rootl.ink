@@ -1,15 +1,22 @@
+require('dotenv').config();
 const account = require('./db-models/account');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-function authenticateToken(req,res,next){
-    const authHeader = req.headers['authentication'];
+function authenticateToken(headers, callback){
+    const authHeader = headers['X-Authorization'];
     const token = authHeader && authHeader.split(' ')[1]
-    if(token == null) return res.sendStatus(401)
-    jwt.verify (token, process.env.ACCESS_TOKEN_SECRET, (err, user)=>{
-        if(err) return res.sendStatus(403)
-        req.user = user;
-        next();
+    if(token == null) {
+        callback('Status 401');
+        return;
+    }
+    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user)=>{
+        if(err) {
+            callback('Status 403');
+            return;
+        }
+        callback('User: '+user);
+        return;
     })
 };
 
