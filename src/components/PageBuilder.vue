@@ -1,8 +1,5 @@
 <template>
   <div id="pageBuilder" class="container">
-    <div class="test">
-      <p>TEXT</p>
-    </div>
     <h1>Design your Page</h1>
     <draggable
         :list="list"
@@ -33,19 +30,6 @@
         <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
       </svg>
     </button>
-    <!--
-    <div v-if="editModeActive" :animation="200">
-      <h3>Add a new Link</h3>
-      <div class="">
-        <input type="text" class="form-control" v-model="newElement.name" placeholder="Name"/>
-      </div>
-      <div>
-        <input type="text" class="form-control" v-model="newElement.link" placeholder="URL"/>
-      </div>
-      <div>
-        <button @click="add" class="submit-button">Submit</button>
-      </div>
-    </div>-->
   </div>
 </template>
 
@@ -86,12 +70,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  .test {
-    background: var(--background-color);
+  .container {
     color: var(--text-color);
   }
-
-
 
   .submit-button {
     background: #536cc0;
@@ -125,7 +106,7 @@ export default {
 
   .ghost {
     opacity: 1;
-    background: #e0f3ff;
+    background: var(--ghost-color);
   }
   .drag {
     opacity: 0;
