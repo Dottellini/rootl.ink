@@ -11,6 +11,7 @@
             }
             var string = new TextDecoder().decode(value);
             console.log(string);
+            document.body.innerHTML = string;
             return reader.read().then(processText);
             });
         });

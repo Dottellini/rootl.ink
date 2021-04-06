@@ -1,6 +1,5 @@
 Email<input id="email"><br/>
 Passwort<input id='password'><br/>
-page_url<input id="page_url">
 <button onclick="submit()">Register</button>
 <script>
     function submit(){
@@ -11,7 +10,6 @@ page_url<input id="page_url">
             },
             body: JSON.stringify({
                 email: document.getElementById('email').value,
-                page_url: document.getElementById('page_url').value,
                 password: document.getElementById('password').value
             }),
         })

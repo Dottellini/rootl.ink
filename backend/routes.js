@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const middleware = require('./middleware');
 const account = require('./db-models/account');
+const fs = require('fs');
 
 //Get
 
@@ -13,14 +14,14 @@ router.get('/testLogin', (req, res)=>{
     middleware.authenticateToken(token, (result)=>{
         switch(result) {
             case 'Status 401':
-                res.status(401).send('No Cookie');
+                res.status(401).send('Not Logged in');
                 break;
             case 'Status 403':
                 res.cookie('login', result, {
                     httpOnly: true,
                     expires: new Date(0)
                 });
-                res.status(403).send('Wrong Cookie');
+                res.status(403).send('Wrong Login');
                 break;
             default:
                 res.sendFile('/views/testLogin.html', {'root':__dirname});
@@ -49,23 +50,11 @@ router.get('/login', (req,res)=>{
 });
 
 router.get('/p/*.json', (req,res)=>{
-    PageSchema.find({url: req.originalUrl.replace('/p/','').replace('.json','')})
-    .then(result=>{
-        console.log(result[0]);
-        res.send(result[0]);
-    })
+    res.sendFile(req.url.replace('/p/','/userpages/').replace('.json','.txt'), {'root':__dirname});
 });
 
 router.get('/p/*', (req, res)=>{
-    PageSchema.find({url: req.originalUrl.replace('/p/','')})
-    .then(result=>{
-        console.log(result);
-        if(result.toString()==[]){
-            res.sendStatus(404);
-        } else{
-            res.sendFile('./views/template1.html', {'root': __dirname});
-        }
-    });
+    res.sendFile('/views/template1.html', {'root':__dirname});
 });
 
 //Post
@@ -86,19 +75,15 @@ router.post('/confirmEmail', (req, res)=>{
 });
 
 router.post('/register', (req,res)=>{
-    middleware.register(req.body.email, req.body.page_url, req.body.password, (result)=>{
+    middleware.register(req.body.email, req.body.password, (result)=>{
         res.send(result);
     })
 });
 
 router.post('/createPage', (req, res)=>{
-    const Body = req.body;
-    const UserPage = new PageSchema({
-        url: Body.url,
-        account_id: Body.account_id,
-        links: Body.links
-    });
-    UserPage.save();
+    fs.writeFile('./userpages/'+req.body.url+'.txt', req.body.siteData, function (err) {
+        if (err) throw err;
+      });
 });
 
 exports.router = router;

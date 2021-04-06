@@ -55,8 +55,8 @@ function login(emailAddress, password, callback) {
     })
 };
 
-function register(emailAddress, pageUrl, password, callback) {
-    account.AccountSchema.find({$or:[{email:emailAddress},{page_url:pageUrl}]}, (error, accounts)=>{
+function register(emailAddress, password, callback) {
+    account.AccountSchema.find({email:emailAddress}, (error, accounts)=>{
         if(error){
             callback('Error fetching Accounts');
             return;
@@ -70,7 +70,6 @@ function register(emailAddress, pageUrl, password, callback) {
             let Account = new account.AccountSchema({
                 password_hash: hash,
                 email: emailAddress,
-                page_url: pageUrl,
                 email_confirmed: false,
                 confirmation_code: confirmationCode
             });
