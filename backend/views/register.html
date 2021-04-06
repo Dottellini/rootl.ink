@@ -4,17 +4,16 @@ page_url<input id="page_url">
 <button onclick="submit()">Register</button>
 <script>
     function submit(){
-        const data = {
-            account_id: undefined,
-            email: document.getElementById('email').value,
-            page_url: document.getElementById('page_url').value,
-            password: document.getElementById('password').value};
         fetch('http://localhost:3000/register', {
-            method: 'POST', // or 'PUT'
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(data),
+            body: JSON.stringify({
+                email: document.getElementById('email').value,
+                page_url: document.getElementById('page_url').value,
+                password: document.getElementById('password').value
+            }),
         })
         .then(data => {
             console.log('Success:', data);

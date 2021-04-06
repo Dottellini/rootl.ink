@@ -3,24 +3,22 @@ Passwort<input id='password'>
 <button onclick="submit()">Submit</button>
 <script>
     function submit(){
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        const data = {email:email, password: password};
         fetch('http://localhost:3000/login', {
-            method: 'POST', // or 'PUT'
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(data),
+            body:JSON.stringify({
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
+            }),
+            mode: "cors"
         })
         .then(result => {
             let reader = result.body.getReader();
             reader.read().then(function processText({ done, value }) {
-            if (done) {
-                console.log('Stream complete');
-                return;
-            }
-            var string = new TextDecoder().decode(value);
+            if (done) return
+            let string = new TextDecoder().decode(value);
             console.log(string);
             localStorage.setItem('accessToken', JSON.parse(string).accessToken);
             console.log(localStorage.getItem('accessToken'));

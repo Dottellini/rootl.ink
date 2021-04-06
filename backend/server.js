@@ -2,31 +2,27 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const routes = require('./routes');
+const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 
 // Start Server + Connect to Database
-const server = express();
-server.use(express.json());
-server.set('view engine', 'ejs');
 const dbUri = 'mongodb+srv://Admin:test123@mongodbcluster1.fosb0.mongodb.net/TestDB?retryWrites=true&w=majority'
-
-
-
-
-
 mongoose.connect(dbUri, {useNewUrlParser: true, useUnifiedTopology: true})
 .then(() => {
     console.log('Connected to Database')
+    const server = express();
     server.listen(3000, ()=>{
         console.log('HTTP Server Started');
-        server.options(cors({
-            methods: ['GET'],
-            exposedHeaders: ['X-Test'],
-            origin: '*',
-            optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+        server.use(cors({
+            origin: 'http://localhost:3000',
+            credentials: true,
+            optionsSuccessStatus: 200
           }));
+        server.use(bodyParser.json());
         server.use('/', routes.router);
-        
+        server.set('view engine', 'ejs');
+        server.use(cookieParser());
     })
 })
-.catch((err)=>console.log(err)); 
+.catch((err)=>console.log(err));

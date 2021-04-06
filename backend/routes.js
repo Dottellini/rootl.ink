@@ -3,29 +3,30 @@ const router = express.Router();
 const middleware = require('./middleware');
 const account = require('./db-models/account');
 
-router.get('/testLogin', (req, res, next)=>{
-    res.sendFile('./views/testLogin.html', {'root': __dirname});
+//Get
 
-});
-
-router.post('/testLogin', (req,res)=>{
-    console.log("testLogin");
-    console.log(req);
-    console.log(req.headers);
-    console.log(req.body);
-    middleware.authenticateToken(req.headers, (result)=>{
+router.get('/testLogin', (req, res)=>{
+    let token = null
+    try{
+        token = req.headers.cookie.replace('login=','')
+    }catch{}
+    middleware.authenticateToken(token, (result)=>{
         switch(result) {
             case 'Status 401':
-                res.status(401).send('blub1');
+                res.status(401).send('No Cookie');
                 break;
             case 'Status 403':
-                res.status(403).send('blub2');
+                res.cookie('login', result, {
+                    httpOnly: true,
+                    expires: new Date(0)
+                });
+                res.status(403).send('Wrong Cookie');
+                break;
             default:
                 res.sendFile('/views/testLogin.html', {'root':__dirname});
-            }
+        }
     })
-
-})
+});
 
 router.get('/', (req, res)=>{
     res.sendFile('./views/index.html', {'root': __dirname});
@@ -47,8 +48,33 @@ router.get('/login', (req,res)=>{
     res.sendFile('/views/login.html', {'root':__dirname});
 });
 
+router.get('/p/*.json', (req,res)=>{
+    PageSchema.find({url: req.originalUrl.replace('/p/','').replace('.json','')})
+    .then(result=>{
+        console.log(result[0]);
+        res.send(result[0]);
+    })
+});
+
+router.get('/p/*', (req, res)=>{
+    PageSchema.find({url: req.originalUrl.replace('/p/','')})
+    .then(result=>{
+        console.log(result);
+        if(result.toString()==[]){
+            res.sendStatus(404);
+        } else{
+            res.sendFile('./views/template1.html', {'root': __dirname});
+        }
+    });
+});
+
+//Post
+
 router.post('/login', (req,res)=>{
     middleware.login(req.body.email, req.body.password, (result)=>{
+        res.cookie('login', result, {
+            httpOnly: true,
+        });
         res.send(result);
     })
 });
@@ -73,26 +99,6 @@ router.post('/createPage', (req, res)=>{
         links: Body.links
     });
     UserPage.save();
-});
-
-router.get('/p/*.json', (req,res)=>{
-    PageSchema.find({url: req.originalUrl.replace('/p/','').replace('.json','')})
-    .then(result=>{
-        console.log(result[0]);
-        res.send(result[0]);
-    })
-});
-
-router.get('/p/*', (req, res)=>{
-    PageSchema.find({url: req.originalUrl.replace('/p/','')})
-    .then(result=>{
-        console.log(result);
-        if(result.toString()==[]){
-            res.sendStatus(404);
-        } else{
-            res.sendFile('./views/template1.html', {'root': __dirname});
-        }
-    });
 });
 
 exports.router = router;

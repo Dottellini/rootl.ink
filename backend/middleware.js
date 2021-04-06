@@ -2,10 +2,11 @@ require('dotenv').config();
 const account = require('./db-models/account');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const uuid = require('uuid');
+const ejs = require('ejs');
+const nodemailer = require('nodemailer');
 
-function authenticateToken(headers, callback){
-    const authHeader = headers['X-Authorization'];
-    const token = authHeader && authHeader.split(' ')[1]
+function authenticateToken(token, callback){
     if(token == null) {
         callback('Status 401');
         return;
@@ -47,8 +48,8 @@ function login(emailAddress, password, callback) {
                 return;
             }
             const payload = {email: emailAddress};
-            const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET);
-            callback(JSON.stringify({accessToken: accessToken}));
+            const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15s' });
+            callback(accessToken.toString());
             return;
         });
     })
@@ -67,7 +68,6 @@ function register(emailAddress, pageUrl, password, callback) {
         const confirmationCode = uuid.v4();
         bcrypt.hash(password, 10, function(error, hash) {
             let Account = new account.AccountSchema({
-                account_id: uuid.v4(),
                 password_hash: hash,
                 email: emailAddress,
                 page_url: pageUrl,

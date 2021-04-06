@@ -2,10 +2,6 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const AccountObject = new Schema({
-    account_id: {
-        type: String,
-        required: true
-    },
     password_hash: {
         type:String,
         require: true
