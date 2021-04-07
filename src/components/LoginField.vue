@@ -2,7 +2,6 @@
   <div class="container">
     <h1>Login</h1>
     <form class="form">
-      <input type="text" v-model="username" maxlength="30" placeholder="Username" required>
       <input type="email" v-model="email" placeholder="E-Mail" required>
       <input type="password" v-model="password" placeholder="Password" required>
       <button type="submit" @click="submit">Log in</button>

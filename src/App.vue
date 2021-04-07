@@ -7,9 +7,12 @@
         </div>
         <div id="routes" class="child">
           <Slide right>
-            <div v-if="loggedIn">
-
-            </div>
+            <button class="login-button account-button">
+              <router-link class="router" to="/login">Log In</router-link>
+            </button>
+            <button class="register-button account-button">
+              <router-link class="router" to="/register">Sign Up</router-link>
+            </button>
             <label class="switch">
               <input type="checkbox" @click="toggleTheme" v-model="isDark">
               <span class="slider round"></span>
@@ -126,6 +129,37 @@ export default {
     text-align: center;
   }
 
+  .account-button {
+    margin: 1em;
+    border: none;
+    outline: none;
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 600;
+    font-size: 0.8em;
+  }
+
+  .login-button {
+    background-color: var(--background-color);
+    border: 1px solid var(--text-color);
+    border-radius: 50px;
+
+    .router {
+      color: var(--text-color);
+      text-decoration: none;
+    }
+  }
+
+  .register-button {
+    background-color: var(--text-color);
+    border-radius: 50px;
+
+    .router {
+      color: var(--background-color);
+      text-decoration: none;
+    }
+  }
+
   .content {
     padding-bottom: 3.5em;
   }
@@ -197,6 +231,8 @@ export default {
     width: 2em;
   }
   .bm-menu {
+    display: flex;
+    justify-content: center;
     height: 100%; /* 100% Full-height */
     width: 0; /* 0 width - change this with JavaScript */
     position: fixed; /* Stay in place */
