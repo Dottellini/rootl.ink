@@ -1,9 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from "../views/home"
-import Editor from '../views/editor'
-import Register from '../views/register'
-import Login from '../views/login'
+import Editor from '../views/editor.vue'
 
 Vue.use(VueRouter)
 
@@ -17,16 +15,6 @@ const routes = [
     path: '/editor',
     name: 'Editor',
     component: Editor
-  },
-  {
-    path: '/register',
-    name: 'Register',
-    component: Register
-  },
-  {
-    path: '/login',
-    name: 'Login',
-    component: Login
   },
 ]
 

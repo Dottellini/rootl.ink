@@ -64,15 +64,11 @@ export default {
   }
 
   .url-container {
+    white-space: nowrap;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1em;
-
-    h2{
-      margin-left: -0.3em;
-    }
   }
 
   .linkBox {
@@ -100,6 +96,15 @@ export default {
       color: white;
       text-decoration: none;
     }
+  }
+
+  h1{
+    font-size: 2em;
+  }
+
+  h2{
+    font-size: 2em;
+    margin-left: -0.3em;
   }
 
   img{

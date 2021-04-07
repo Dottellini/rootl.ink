@@ -8,18 +8,13 @@
       <div class="line"></div>
       <div class="input">
         <p class="text">rootl.ink/</p>
-        <input type="text" class="input"
-               maxlength="30"
-               @input="updateText"
-               v-model="username"
-               v-on:keydown.delete.once="clearInput"
-               @input.once="scrollBottom">
+        <input type="text" class="input" @input="updateText" v-model="username" v-on:keydown.delete.once="clearInput">
       </div>
       <transition name="bounce">
-        <div v-show="username.length > 0 && showButton" class="line"></div>
+        <div v-if="username.length > 0 && showButton" class="line"></div>
       </transition>
       <transition name="bounce">
-        <router-link to="/register" v-show="username.length > 0 && showButton" class="register">Start Creating!</router-link>
+        <button v-if="username.length > 0 && showButton" class="register">Start Creating!</button>
       </transition>
     </div>
   </div>
@@ -37,12 +32,7 @@ export default {
       showButton: false
     }
   },
-
   methods: {
-    scrollBottom: function () {
-      window.scroll(0, document.body.scrollHeight)
-    },
-
     scroll: function() {
       window.scroll(0, 620)
     },
@@ -112,8 +102,6 @@ export default {
   }
 
   .register {
-    cursor: pointer;
-    text-decoration: none;
     outline: none;
     border: none;
     font-family: 'Montserrat', sans-serif;
@@ -123,12 +111,6 @@ export default {
     background-color: var(--text-color);
     border-radius: 50px;
     padding: 0.3em 1.5em;
-
-    &:hover {
-      color: var(--text-color);
-      background-color: var(--background-color);
-      border: 1px solid var(--text-color);
-    }
   }
 
   .bounce-enter-active {
@@ -157,8 +139,7 @@ export default {
     justify-content: center;
     align-items: center;
     font-size: 30px;
-    padding: 0 0.4em;
-    margin-left: 0.1em;
+    padding: 0 0.5em;
     .text {
       font-weight: 700;
     }
