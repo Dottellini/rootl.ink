@@ -2,7 +2,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const routes = require('./routes');
-const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
@@ -22,7 +21,6 @@ mongoose.connect(dbUri, {useNewUrlParser: true, useUnifiedTopology: true})
         server.use(bodyParser.json());
         server.use('/', routes.router);
         server.set('view engine', 'ejs');
-        server.use(cookieParser());
     })
 })
 .catch((err)=>console.log(err));

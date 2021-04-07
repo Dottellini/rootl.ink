@@ -7,24 +7,26 @@ const fs = require('fs');
 //Get
 
 router.get('/testLogin', (req, res)=>{
-    let token = null
-    try{
-        token = req.headers.cookie.replace('login=','')
-    }catch{}
-    middleware.authenticateToken(token, (result)=>{
-        switch(result) {
-            case 'Status 401':
-                res.status(401).send('Not Logged in');
+
+    let cookies = middleware.parseCookies(req.headers.cookie);
+    console.log(cookies)
+
+    middleware.authenticateToken(cookies.accessToken, (resultCode, message)=>{
+        switch(resultCode) {
+            case 'err':
+                res.cookie('accessToken', '');
+                res.cookie('refreshToken', '');
+                res.send(message);
                 break;
-            case 'Status 403':
-                res.cookie('login', result, {
-                    httpOnly: true,
-                    expires: new Date(0)
-                });
-                res.status(403).send('Wrong Login');
-                break;
-            default:
+            case 'new token':
+                res.cookie('accessToken', message, {
+                    httpOnly: true
+                })
                 res.sendFile('/views/testLogin.html', {'root':__dirname});
+                break;
+            case 'ok':
+                res.sendFile('/views/testLogin.html', {'root':__dirname});
+                break;
         }
     })
 });
@@ -60,11 +62,23 @@ router.get('/p/*', (req, res)=>{
 //Post
 
 router.post('/login', (req,res)=>{
-    middleware.login(req.body.email, req.body.password, (result)=>{
-        res.cookie('login', result, {
-            httpOnly: true,
-        });
-        res.send(result);
+    middleware.login(req.body.email, req.body.password, (returnCode, message, refreshToken)=>{
+        switch(returnCode){
+            case 1:
+                res.cookie('accessToken', '', {
+                    httpOnly: true,
+                });
+                res.send(message);
+                break;
+            case 2:
+                res.cookie('accessToken', message, {
+                    httpOnly: true,
+                });
+                res.cookie('refreshToken', refreshToken, {
+                    httpOnly: true,
+                });
+                res.send(returnCode.toString());
+        }
     })
 });
 

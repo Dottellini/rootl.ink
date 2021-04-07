@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 
-const AccountObject = new Schema({
+const AccountObject = new mongoose.Schema({
     password_hash: {
         type:String,
         require: true
@@ -21,9 +20,11 @@ const AccountObject = new Schema({
     confirmation_code:{
         type: String,
         required:false
+    },
+    refresh_token: {
+        type: String,
+        required: false
     }
 });
 
-const AccountSchema = mongoose.model('Account', AccountObject);
-
-exports.AccountSchema = AccountSchema;
+exports.AccountSchema = mongoose.model('Account', AccountObject);
