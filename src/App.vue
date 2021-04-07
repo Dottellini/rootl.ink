@@ -5,14 +5,21 @@
         <div id="logo">
           <router-link id="homeroute" to="/"><h1>rootl.ink</h1></router-link>
         </div>
-        <div id="routes" class="child">
+        <div class="child">
+          <div v-if="!isMobile" class="desktop-navbar">
+            <router-link class="desktop-nav-item" to="/about">About us</router-link>
+            <router-link class="desktop-nav-item" to="/service">Service</router-link>
+            <router-link class="desktop-nav-item" to="/help">Help</router-link>
+          </div>
           <Slide right>
-            <button class="login-button account-button">
-              <router-link class="router" to="/login">Log In</router-link>
-            </button>
-            <button class="register-button account-button">
-              <router-link class="router" to="/register">Sign Up</router-link>
-            </button>
+            <div class="button-container">
+              <button class="login-button account-button">
+                <router-link class="router" to="/login">Log In</router-link>
+              </button>
+              <button class="register-button account-button">
+                <router-link class="router" to="/register">Sign Up</router-link>
+              </button>
+            </div>
             <label class="switch">
               <input type="checkbox" @click="toggleTheme" v-model="isDark">
               <span class="slider round"></span>
@@ -24,14 +31,14 @@
       <router-view/>
     </div>
 
-    <div id="nav" class="navbar">
-      <router-link class="route nav-child" to="/">
+    <div class="mobile-navbar" v-if="isMobile">
+      <router-link class="route" to="/">
         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-house" viewBox="0 0 16 16">
           <path fill-rule="evenodd" d="M2 13.5V7h1v6.5a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5V7h1v6.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5zm11-11V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z"/>
           <path fill-rule="evenodd" d="M7.293 1.5a1 1 0 0 1 1.414 0l6.647 6.646a.5.5 0 0 1-.708.708L8 2.207 1.354 8.854a.5.5 0 1 1-.708-.708L7.293 1.5z"/>
         </svg>
       </router-link>
-      <router-link class="route nav-child" to="/editor">
+      <router-link class="route" to="/editor">
         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
           <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
           <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
@@ -53,8 +60,18 @@ export default {
     return{
       loggedIn: true,
       isDark: false,
-      theme: ""
+      theme: "",
     };
+  },
+
+  computed: {
+    isMobile: function() {
+      return this.$store.state.isMobile
+    }
+  },
+
+  created() {
+    this.$store.commit("checkMobile", window.screen.width)
   },
 
   mounted() {
@@ -129,8 +146,26 @@ export default {
     text-align: center;
   }
 
+  .desktop-navbar {
+    margin: 0 7em 0 0;
+  }
+
+  .desktop-nav-item {
+    font-size: 20px;
+    margin: 0 1em;
+    font-weight: 600;
+    color: var(--text-color);
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  .button-container {
+    display: flex;
+  }
+
   .account-button {
     margin: 1em;
+    padding: 0.5em;
     border: none;
     outline: none;
     text-decoration: none;
@@ -164,7 +199,7 @@ export default {
     padding-bottom: 3.5em;
   }
 
-  .navbar {
+  .mobile-navbar {
     display: flex;
     justify-content: space-around;
     align-items: center;

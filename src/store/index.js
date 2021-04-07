@@ -6,7 +6,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     list: [],
-    username: "USERNAME"
+    username: "USERNAME",
+    isMobile: false
   },
   mutations: {
     emptyEntry(state) {
@@ -15,6 +16,16 @@ export default new Vuex.Store({
       const id = parseInt(`${dt}${num}`)
 
       state.list.push({name: "", link: "", img: "", id: id})
+    },
+
+    checkMobile(state, payload) {
+      state.isMobile = payload <= 768;
+    },
+
+    removeEntry(state, payload) {
+      let removeIndex = state.list.map(item => item.id).indexOf(payload);
+      state.list.splice(removeIndex, 1);
+      console.log(state.list)
     },
 
     addExample(state) {

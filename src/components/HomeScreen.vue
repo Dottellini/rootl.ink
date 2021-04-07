@@ -1,6 +1,6 @@
 <template>
   <div class="test">
-    <div class="content">
+    <div class="content" :class="{'content-background': !isMobile}" >
       <h1>The root of<br>all your links</h1>
       <h2>The simplest way to redirect your audience</h2>
       <button @click="scroll" class="learnButton">Learn More</button>
@@ -34,7 +34,8 @@ export default {
   data() {
     return {
       username: "USERNAME",
-      showButton: false
+      showButton: false,
+      isMobile: this.$store.state.isMobile
     }
   },
 
@@ -84,6 +85,14 @@ export default {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+  }
+
+  .content-background {
+    background-image: url("../assets/arrow_background.png");
+    background-size: 1400px;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: 19em;
   }
 
   .preview {

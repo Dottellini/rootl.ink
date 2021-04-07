@@ -27,6 +27,11 @@ export default {
     flex-wrap: wrap;
     display: flex;
     align-items: flex-start;
+
+    @media screen and (max-width: 768px){
+      flex-direction: column;
+      align-items: center;
+    }
   }
 
   .flex-child {
@@ -36,6 +41,10 @@ export default {
   }
 
   .flex-child:first-child {
-    margin-right: 20px;
+    margin-right: 1em;
+
+    @media screen and (max-width: 768px){
+      margin: 1em 0;
+    }
   }
 </style>
