@@ -27,11 +27,26 @@ export default {
   methods: {
     submit: function () {
       this.error = "";
-      if(this.password !== this.rep_password) {
-        this.error = "Passwords do not match!";
+      if(this.password !== this.rep_password) { this.error = "Passwords do not match!" }
+      else {
+        fetch('/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: this.username,
+            email: this.email,
+            password: this.password
+          }),
+        })
+          .then(data => {
+            console.log('Success:', data);
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
       }
-      //CHECK IF USERNAME AVAILABLE
-
     }
   },
 
