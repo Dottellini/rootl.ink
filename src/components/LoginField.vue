@@ -24,7 +24,31 @@ export default {
   methods: {
     submit: function () {
       this.error = "";
-      //CHECK IF LOGIN SUCCESSFUL
+      fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body:JSON.stringify({
+          email: this.email,
+          password: this.password
+        }),
+        mode: "cors"
+      })
+          .then(result => {
+            let reader = result.body.getReader();
+            reader.read().then(function processText({ done, value }) {
+              if (done) return
+              let string = new TextDecoder().decode(value);
+              console.log(string);
+              localStorage.setItem('accessToken', JSON.parse(string).accessToken);
+              console.log(localStorage.getItem('accessToken'));
+              return reader.read().then(processText);
+            });
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
     }
   },
 
