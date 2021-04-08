@@ -64,6 +64,28 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    savePage(state) {
+      const data = {
+        url_list: state.list,
+        background_hex: state.background_hex,
+        text_hex: state.text_hex,
+        linkBox_hex: state.linkBox_hex,
+        rootLink_hex: state.rootLink_hex,
+      }
+      fetch('/createPage', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      })
+          .then(data => {
+            console.log('Success:', data);
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+    }
   },
   modules: {
   }

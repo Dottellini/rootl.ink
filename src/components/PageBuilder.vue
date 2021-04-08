@@ -59,11 +59,15 @@
         </div>
       </tab>
     </tabs>
+    <hr>
+    <button @click="submit">
+      Save
+    </button>
   </div>
 </template>
 
 <script>
-import draggable from "vuedraggable"
+import draggable from "vuedraggable";
 import Tab from "./tab-system/Tab";
 import Tabs from "./tab-system/Tabs";
 
@@ -87,6 +91,10 @@ export default {
   },
 
   methods: {
+    submit: function () {
+      this.$store.dispatch("savePage")
+    },
+
     updateBGColor: function(value) {
       this.$store.commit("updateBackgroundColor", value)
     },
