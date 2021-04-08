@@ -1,5 +1,5 @@
 <template>
-  <div class="test">
+  <div>
     <div class="content" :class="{'content-background': !isMobile}" >
       <h1>The root of<br>all your links</h1>
       <h2>The simplest way to redirect your audience</h2>

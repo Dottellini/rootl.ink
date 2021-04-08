@@ -241,16 +241,20 @@ export default {
   //Burger
   //////////////////////////////////////////////////////////////////////
   .bm-burger-button {
+    position: relative;
     width: 1.9em;
     height: 1.2em;
     cursor: pointer;
-    top: 30%;
+    top: 0;
+    margin: 0;
+    padding: 0;
 
     @media screen and (max-width: 768px) {
       width: 2em;
       height: 1.4em;
     }
   }
+
   .bm-burger-bars {
     background-color: var(--text-color);
   }
