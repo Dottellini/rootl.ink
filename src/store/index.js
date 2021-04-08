@@ -64,7 +64,7 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    savePage(state) {
+    savePage({commit}, state) {
       const data = {
         url_list: state.list,
         background_hex: state.background_hex,
