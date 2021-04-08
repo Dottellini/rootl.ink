@@ -20,8 +20,25 @@ mongoose.connect(dbUri, {useNewUrlParser: true, useUnifiedTopology: true})
             optionsSuccessStatus: 200
           }));
         server.use(bodyParser.json());
+
+
+        server.use(express.static('../dist'));
+
+        server.all("*", (_req, res) => {
+            try {
+                res.sendFile('../dist/index.html', {'root': __dirname});
+            } catch (error) {
+              res.json({ success: false, message: "Something went wrong" });
+            }
+          });
+          
+
+
         server.use('/', routes.router);
         server.set('view engine', 'ejs');
+
+
+
     })
 })
 .catch((err)=>console.log(err));
