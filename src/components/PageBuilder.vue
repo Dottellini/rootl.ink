@@ -92,6 +92,7 @@ export default {
 
   methods: {
     submit: function () {
+      //gay
       this.$store.dispatch("savePage")
     },
 
