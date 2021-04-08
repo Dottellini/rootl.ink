@@ -72,6 +72,7 @@ export default new Vuex.Store({
         linkBox_hex: state.linkBox_hex,
         rootLink_hex: state.rootLink_hex,
       }
+
       fetch('/createPage', {
         method: 'POST',
         headers: {

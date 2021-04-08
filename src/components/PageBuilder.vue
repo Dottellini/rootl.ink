@@ -92,8 +92,7 @@ export default {
 
   methods: {
     submit: function () {
-      //gay
-      this.$store.dispatch("savePage")
+      this.$store.dispatch("savePage", this.$store.state)
     },
 
     updateBGColor: function(value) {
@@ -126,7 +125,7 @@ export default {
 <style scoped lang="scss">
   Input[type="color"] {
     border:none;
-    background-color: white;
+    background-color: var(--surface-color);
     outline: none;
   }
 
