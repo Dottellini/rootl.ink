@@ -1,4 +1,5 @@
 //Imports
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const routes = require('./routes');
@@ -14,7 +15,7 @@ mongoose.connect(dbUri, {useNewUrlParser: true, useUnifiedTopology: true})
     server.listen(3000, ()=>{
         console.log('HTTP Server Started');
         server.use(cors({
-            origin: 'http://localhost:3000',
+            origin: 'http://'+process.env.IP+':3000',
             credentials: true,
             optionsSuccessStatus: 200
           }));
