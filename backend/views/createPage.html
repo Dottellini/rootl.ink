@@ -8,7 +8,7 @@ Data<input id="siteData">
             url: document.getElementById('urlInput').value,
             siteData: document.getElementById('siteData').value
         }
-        fetch('http://localhost:3000/createPage', {
+        fetch('/createPage', {
             method: 'POST', // or 'PUT'
             headers: {
                 'Content-Type': 'application/json',

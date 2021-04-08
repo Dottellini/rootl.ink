@@ -12,7 +12,7 @@ mongoose.connect(dbUri, {useNewUrlParser: true, useUnifiedTopology: true})
 .then(() => {
     console.log('Connected to Database')
     const server = express();
-    server.listen(3000, ()=>{
+    server.listen(80,'0.0.0.0', ()=>{
         console.log('HTTP Server Started');
         server.use(cors({
             origin: 'http://'+process.env.IP+':3000',

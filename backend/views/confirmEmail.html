@@ -6,7 +6,7 @@
         const email = urlParams.get('email');
         console.log(code);
         console.log(email);
-        fetch('http://localhost:3000/confirmEmail', {
+        fetch('/confirmEmail', {
             method: 'POST', // or 'PUT'
             headers: {
             'Content-Type': 'application/json',

@@ -3,7 +3,7 @@ Passwort<input id='password'><br/>
 <button onclick="submit()">Register</button>
 <script>
     function submit(){
-        fetch('http://localhost:3000/register', {
+        fetch('/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
