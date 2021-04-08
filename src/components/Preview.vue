@@ -1,16 +1,16 @@
 <template>
-  <div id="preview" class="container" @click="log">
+  <div id="preview" class="container" :style="bg_hex" @click="log">
     <div class="bar"></div>
-    <div class="url-container">
+    <div class="url-container" :style="rootl_hex">
       <h1>rootl.ink/</h1><h2>{{username}}</h2>
     </div>
     <img src="https://de.meming.world/images/de/thumb/b/bc/Mike_Wazowski-Sulley_Face_Swap.jpg/300px-Mike_Wazowski-Sulley_Face_Swap.jpg" width="100" height="100">
     <div id="links">
       <div v-for="link in links">
-        <div class="linkBox" v-if="link.name !== ''">
+        <div class="linkBox" :style="box_hex" v-if="link.name !== ''">
           <img :src='link.img' height="40px" width="40px">
           <div class="link-box-text">
-            <a target="_blank" :href="link.link">{{link.name}}</a>
+            <a target="_blank" :style="text_hex" :href="link.link">{{link.name}}</a>
           </div>
         </div>
       </div>
@@ -30,7 +30,23 @@ export default {
   computed: {
     username: function () {
       return this.$store.state.username
-    }
+    },
+
+    bg_hex: function () {
+      return {backgroundColor: this.$store.state.background_hex}
+    },
+
+    text_hex: function () {
+      return {color: this.$store.state.text_hex}
+    },
+
+    box_hex: function () {
+      return {backgroundColor: this.$store.state.linkBox_hex}
+    },
+
+    rootl_hex: function () {
+      return {color: this.$store.state.rootLink_hex}
+    },
   },
 
   methods: {

@@ -10,16 +10,18 @@
             <router-link class="desktop-nav-item" to="/about">About us</router-link>
             <router-link class="desktop-nav-item" to="/service">Service</router-link>
             <router-link class="desktop-nav-item" to="/help">Help</router-link>
+            <button class="register-button account-button">
+              <router-link class="router" to="/register">Sign Up</router-link>
+            </button>
           </div>
           <Slide right>
             <div class="button-container">
               <button class="login-button account-button">
                 <router-link class="router" to="/login">Log In</router-link>
               </button>
-              <button class="register-button account-button">
-                <router-link class="router" to="/register">Sign Up</router-link>
-              </button>
+
             </div>
+            <router-link to="/editor">Editor</router-link>
             <label class="switch">
               <input type="checkbox" @click="toggleTheme" v-model="isDark">
               <span class="slider round"></span>
@@ -95,18 +97,22 @@ export default {
 <style lang="scss">
   :root {
     --background-color: white;
+    --surface-color: white;
     --text-color: #0f0f0f;
     --burger-page-color: rgba(0, 0, 0, 0.1);
     --ghost-color: #e0f3ff;
     --device-border-color: #222;
+    --editor-items-border: none;
   }
 
   [data-theme="darkMode"] {
-    --background-color: #0f0f0f;
+    --background-color: #121212;
+    --surface-color: #1d1d1d;
     --text-color: white;
     --burger-page-color: rgba(0, 0, 0, 0.9);
     --ghost-color: #3d3d60;
     --device-border-color: #323232;
+    --editor-items-border: 1px solid #272727;
   }
 
   @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap');
@@ -125,7 +131,7 @@ export default {
 
   h1{
     font-weight: 900;
-    font-size: 2em;
+    font-size: 1.7em;
     margin: .3em ;
     font-family: 'Montserrat', sans-serif;
   }
@@ -147,6 +153,8 @@ export default {
   }
 
   .desktop-navbar {
+    display: flex;
+    align-items: center;
     margin: 0 7em 0 0;
   }
 
@@ -164,14 +172,14 @@ export default {
   }
 
   .account-button {
-    margin: 1em;
+    margin: 0 1em;
     padding: 0.5em;
     border: none;
     outline: none;
     text-decoration: none;
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
-    font-size: 0.8em;
+    font-size: 0.9em;
   }
 
   .login-button {
@@ -233,8 +241,8 @@ export default {
   //Burger
   //////////////////////////////////////////////////////////////////////
   .bm-burger-button {
-    width: 2.5em;
-    height: 2em;
+    width: 1.9em;
+    height: 1.2em;
     top: 30%;
     cursor: pointer;
     @media screen and (max-width: 768px) {
@@ -248,7 +256,7 @@ export default {
   }
   .line-style {
     position: absolute;
-    height: 0.3em;
+    height: 2px;
     left: 0;
     right: 0;
   }

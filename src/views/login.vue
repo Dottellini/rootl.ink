@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <LoginField></LoginField>
+  <div class="container">
+    <LoginField class="login"></LoginField>
     <p>don't have an account? <router-link to="/register">Register!</router-link></p>
   </div>
 </template>
@@ -16,6 +16,17 @@ export default {
 </script>
 
 <style scoped lang="scss">
+  .login {
+    max-width: 500px;
+  }
+
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
   p {
     color: var(--text-color);
     a {

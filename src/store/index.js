@@ -7,7 +7,11 @@ export default new Vuex.Store({
   state: {
     list: [],
     username: "USERNAME",
-    isMobile: false
+    background_hex: "#FFFFFF",
+    text_hex: "#FFFFFF",
+    linkBox_hex: "#000000",
+    rootLink_hex: "#000000",
+    isMobile: false,
   },
   mutations: {
     emptyEntry(state) {
@@ -32,11 +36,31 @@ export default new Vuex.Store({
       state.list = [{name: "Youtube", link: "https://youtube.com", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/YouTube_social_white_squircle_%282017%29.svg/1200px-YouTube_social_white_squircle_%282017%29.svg.png", id: 1},
                     {name: "Instagram", link: "https://instagram.com", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/1200px-Instagram_logo_2016.svg.png", id: 2},
                     {name: "Twitter", link: "https://twitter.com", img: "https://image.flaticon.com/icons/png/512/124/124021.png", id: 3},
-                    {name: "TikTok", link: "https://tiktok.com", img: "https://cdn.worldvectorlogo.com/logos/tiktok-logo-2--1.svg", id: 4}]
+                    {name: "TikTok", link: "https://tiktok.com", img: "https://cdn.worldvectorlogo.com/logos/tiktok-logo-2--1.svg", id: 4}];
+      state.text_hex = "";
+      state.linkBox_hex = "";
+      state.rootLink_hex = "";
+      state.background_hex = "";
     },
 
     updateText(state, payload) {
       state.username = payload;
+    },
+
+    updateBackgroundColor(state, payload) {
+      state.background_hex = payload
+    },
+
+    updateTextColor(state, payload) {
+      state.text_hex = payload
+    },
+
+    updateBoxColor(state, payload) {
+      state.linkBox_hex = payload
+    },
+
+    updateRootLinkColor(state, payload) {
+      state.rootLink_hex = payload
     }
   },
   actions: {

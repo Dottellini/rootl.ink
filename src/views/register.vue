@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <RegisterField></RegisterField>
+  <div class="container">
+    <RegisterField class="register"></RegisterField>
     <p>already have an account? <router-link to="/login">Log in!</router-link></p>
   </div>
 </template>
@@ -16,6 +16,17 @@ export default {
 </script>
 
 <style scoped lang="scss">
+  .register {
+    max-width: 500px;
+  }
+
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
   p {
     color: var(--text-color);
     a {
