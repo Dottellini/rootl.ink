@@ -31,7 +31,7 @@ router.get('/testLogin', (req, res)=>{
     })
 });
 
-router.get('/', (req, res)=>{
+/*router.get('/', (req, res)=>{
     res.sendFile('./views/index.html', {'root': __dirname});
 });
 
@@ -57,7 +57,7 @@ router.get('/p/*.json', (req,res)=>{
 
 router.get('/p/*', (req, res)=>{
     res.sendFile('/views/template1.html', {'root':__dirname});
-});
+});*/
 
 //Post
 
