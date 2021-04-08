@@ -24,13 +24,13 @@ mongoose.connect(dbUri, {useNewUrlParser: true, useUnifiedTopology: true})
 
         server.use(express.static('../dist'));
 
-        server.all("*", (_req, res) => {
+        /*server.all("*", (_req, res) => {
             try {
                 res.sendFile('../dist/index.html', {'root': __dirname});
             } catch (error) {
               res.json({ success: false, message: "Something went wrong" });
             }
-          });
+          });*/
           
 
 
