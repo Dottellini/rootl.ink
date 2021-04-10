@@ -149,7 +149,6 @@ function parseCookies(cookieString){
         
     }, {});
     return cookieString;
-
 }
 exports.login = login;
 exports.authenticateToken = authenticateToken;

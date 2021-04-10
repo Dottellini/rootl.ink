@@ -14,7 +14,7 @@
               <router-link class="router" to="/register">Sign Up</router-link>
             </button>
           </div>
-          <Slide right>
+          <Slide right style="top: 0">
             <div class="button-container">
               <button class="login-button account-button">
                 <router-link class="router" to="/login">Log In</router-link>

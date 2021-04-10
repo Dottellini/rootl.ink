@@ -4,6 +4,7 @@ const middleware = require('./middleware');
 const account = require('./db-models/account');
 const fs = require('fs');
 
+
 {
     /*router.get('/', (req, res)=>{
     res.sendFile('./views/index.html', {'root': __dirname});
@@ -107,10 +108,27 @@ router.post('/register', (req,res)=>{
 });
 
 router.post('/createPage', (req, res)=>{
-    console.log(req.body)
-    fs.writeFile('./userpages/'+req.body.url+'.txt', req.body.siteData, function (err) {
-        if (err) throw err;
-      });
+    // call S3 to retrieve upload file to specified bucket
+    var uploadParams = {Bucket: 'rootlinkdata', Key: '', Body: ''};
+    var file = 'test.png';
+
+    // Configure the file stream and obtain the upload parameters
+    var fileStream = fs.createReadStream(file);
+    fileStream.on('error', function(err) {
+        console.log('File Error', err);
+    });
+    uploadParams.Body = fileStream;
+    var path = require('path');
+    uploadParams.Key = path.basename(file);
+
+    // call S3 to retrieve upload file to specified bucket
+    s3.upload (uploadParams, function (err, data) {
+    if (err) {
+        console.log("Error", err);
+    } if (data) {
+        console.log("Upload Success", data.Location);
+    }
+    });
 });
 
 exports.router = router;
