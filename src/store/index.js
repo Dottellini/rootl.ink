@@ -15,8 +15,8 @@ export default new Vuex.Store({
   },
   mutations: {
     setData(state, payload) {
-      state.username = payload.username;
-      console.log(state.username)
+      //Set the data of the page after fetching it
+      state.username = payload.user.username;
     },
 
     emptyEntry(state) {
@@ -69,10 +69,24 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    fetchUserData({commit}, name) {
-      const data = {
-        username: name
-      }
+    fetchUserData({commit}, username) {
+      //username is the person the site belongs to
+
+      //incoming data
+      let data = {
+        user: {
+          username: "Ich_Bin_ein_Username",
+          indexArrayForSpaces: [3, 7, 11]
+        }
+      };
+
+      let usernameArray = data.user.username.split("");
+      data.user.indexArrayForSpaces.forEach(entry => {
+        usernameArray[entry] = " ";
+      })
+
+      data.user.username = usernameArray.join("")
+
       commit("setData", data)
     },
 

@@ -17,6 +17,7 @@ export default {
   name: "RegisterField",
   data() {
     return {
+      username: this.$store.state.username,
       email: "",
       password: "",
       rep_password: "",
@@ -25,6 +26,23 @@ export default {
   },
 
   methods: {
+    convertUsername: function (username) {
+      let userArray = username.split("");
+      let resultArray = [];
+
+      for(let i = 0; i < userArray.length; i++) {
+        if(userArray[i] === " ") {
+          resultArray.push(i);
+          userArray[i] = "_";
+        }
+      }
+
+      return {
+        username: userArray.join(""),
+        indexArrayForSpaces: resultArray
+      }
+    },
+
     submit: function () {
       this.error = "";
       if(this.password !== this.rep_password) { this.error = "Passwords do not match!" }
@@ -35,7 +53,7 @@ export default {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            username: this.username.replace(/ /g,"_"),
+            username: this.convertUsername(this.username),
             email: this.email,
             password: this.password
           }),
@@ -49,12 +67,6 @@ export default {
       }
     }
   },
-
-  computed: {
-    username: function () {
-      return this.$store.state.username
-    }
-  }
 }
 </script>
 
