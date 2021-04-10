@@ -68,10 +68,6 @@ router.get('/logout', (req,res)=>{
     res.sendFile('./views/logout.html', {'root': __dirname});
 });
 
-router.get('/p/*.json', (req,res)=>{
-    res.sendFile(req.url.replace('/p/','/userpages/').replace('.json','.txt'), {'root':__dirname});
-});
-
 router.get('/p/*', (req, res)=>{
     res.sendFile('/views/template1.html', {'root':__dirname});
 });
