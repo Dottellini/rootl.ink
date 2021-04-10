@@ -39,10 +39,6 @@ router.get('/register', (req, res)=>{
     res.sendFile('./views/register.html', {'root': __dirname});
 });
 
-router.get('/confirmEmailCode*', (req,res)=>{
-    res.sendFile('./views/confirmEmail.html', {'root': __dirname});
-});
-
 router.get('/createPage', (req, res)=>{
     res.sendFile('./views/createPage.html', {'root': __dirname});
 });
@@ -58,6 +54,10 @@ router.get('/p/*.json', (req,res)=>{
 router.get('/p/*', (req, res)=>{
     res.sendFile('/views/template1.html', {'root':__dirname});
 });*/
+
+router.get('/confirmEmailCode*', (req,res)=>{
+    res.sendFile('./views/confirmEmail.html', {'root': __dirname});
+});
 
 //Post
 
@@ -95,6 +95,7 @@ router.post('/register', (req,res)=>{
 });
 
 router.post('/createPage', (req, res)=>{
+    console.log(req.body)
     fs.writeFile('./userpages/'+req.body.url+'.txt', req.body.siteData, function (err) {
         if (err) throw err;
       });
