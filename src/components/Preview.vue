@@ -85,7 +85,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1em;
+    font-size: 11px;
 
     h2{
       margin-left: -0.3em;

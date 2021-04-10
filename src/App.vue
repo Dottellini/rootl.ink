@@ -99,7 +99,7 @@ export default {
     --background-color: white;
     --surface-color: white;
     --text-color: #0f0f0f;
-    --burger-page-color: rgba(0, 0, 0, 0.1);
+    --burger-page-color: rgba(0, 0, 0, 0.05);
     --ghost-color: #e0f3ff;
     --device-border-color: #222;
     --editor-items-border: none;
