@@ -4,6 +4,32 @@ const middleware = require('./middleware');
 const account = require('./db-models/account');
 const fs = require('fs');
 
+{
+    /*router.get('/', (req, res)=>{
+    res.sendFile('./views/index.html', {'root': __dirname});
+});
+
+router.get('/register', (req, res)=>{
+    res.sendFile('./views/register.html', {'root': __dirname});
+});
+
+router.get('/createPage', (req, res)=>{
+    res.sendFile('./views/createPage.html', {'root': __dirname});
+});
+
+router.get('/login', (req,res)=>{
+    res.sendFile('/views/login.html', {'root':__dirname});
+});
+
+router.get('/p/*.json', (req,res)=>{
+    res.sendFile(req.url.replace('/p/','/userpages/').replace('.json','.txt'), {'root':__dirname});
+});
+
+router.get('/p/*', (req, res)=>{
+    res.sendFile('/views/template1.html', {'root':__dirname});
+});*/
+}
+
 //Get
 
 router.get('/testLogin', (req, res)=>{
@@ -31,32 +57,18 @@ router.get('/testLogin', (req, res)=>{
     })
 });
 
-/*router.get('/', (req, res)=>{
-    res.sendFile('./views/index.html', {'root': __dirname});
-});
-
-router.get('/register', (req, res)=>{
-    res.sendFile('./views/register.html', {'root': __dirname});
-});
-
-router.get('/createPage', (req, res)=>{
-    res.sendFile('./views/createPage.html', {'root': __dirname});
-});
-
-router.get('/login', (req,res)=>{
-    res.sendFile('/views/login.html', {'root':__dirname});
-});
-
-router.get('/p/*.json', (req,res)=>{
-    res.sendFile(req.url.replace('/p/','/userpages/').replace('.json','.txt'), {'root':__dirname});
-});
-
-router.get('/p/*', (req, res)=>{
-    res.sendFile('/views/template1.html', {'root':__dirname});
-});*/
-
 router.get('/confirmEmailCode*', (req,res)=>{
     res.sendFile('./views/confirmEmail.html', {'root': __dirname});
+});
+
+router.get('/logout', (req,res)=>{
+    res.cookie('accessToken', '', {
+        httpOnly: true,
+    });
+    res.cookie('refreshToken', '', {
+        httpOnly: true,
+    });
+    res.sendFile('./views/logout.html', {'root': __dirname});
 });
 
 //Post
