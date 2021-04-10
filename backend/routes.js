@@ -3,6 +3,8 @@ const router = express.Router();
 const middleware = require('./middleware');
 const account = require('./db-models/account');
 const fs = require('fs');
+const { Readable } = require("stream")
+
 
 
 {
@@ -22,13 +24,7 @@ router.get('/login', (req,res)=>{
     res.sendFile('/views/login.html', {'root':__dirname});
 });
 
-router.get('/p/*.json', (req,res)=>{
-    res.sendFile(req.url.replace('/p/','/userpages/').replace('.json','.txt'), {'root':__dirname});
-});
-
-router.get('/p/*', (req, res)=>{
-    res.sendFile('/views/template1.html', {'root':__dirname});
-});*/
+*/
 }
 
 //Get
@@ -72,6 +68,14 @@ router.get('/logout', (req,res)=>{
     res.sendFile('./views/logout.html', {'root': __dirname});
 });
 
+router.get('/p/*.json', (req,res)=>{
+    res.sendFile(req.url.replace('/p/','/userpages/').replace('.json','.txt'), {'root':__dirname});
+});
+
+router.get('/p/*', (req, res)=>{
+    res.sendFile('/views/template1.html', {'root':__dirname});
+});
+
 //Post
 
 router.post('/login', (req,res)=>{
@@ -108,26 +112,23 @@ router.post('/register', (req,res)=>{
 });
 
 router.post('/createPage', (req, res)=>{
-    // call S3 to retrieve upload file to specified bucket
-    var uploadParams = {Bucket: 'rootlinkdata', Key: '', Body: ''};
-    var file = 'test.png';
 
-    // Configure the file stream and obtain the upload parameters
-    var fileStream = fs.createReadStream(file);
-    fileStream.on('error', function(err) {
+    console.log(req.body)
+    console.log(JSON.stringify(req.body))
+    let path = require('path');
+
+    let readable = Readable.from([JSON.stringify(req.body)])
+    readable.on('error', function(err) {
         console.log('File Error', err);
     });
-    uploadParams.Body = fileStream;
-    var path = require('path');
-    uploadParams.Key = path.basename(file);
 
-    // call S3 to retrieve upload file to specified bucket
+    let uploadParams = {Bucket: 'rootlinkdata', Key: req.body.background_hex+".json", Body: readable};
     s3.upload (uploadParams, function (err, data) {
-    if (err) {
-        console.log("Error", err);
-    } if (data) {
-        console.log("Upload Success", data.Location);
-    }
+        if (err) {
+            console.log("Error", err);
+        } if (data) {
+            console.log("Upload Success", data.Location);
+        }
     });
 });
 
