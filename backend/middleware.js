@@ -6,34 +6,29 @@ const uuid = require('uuid');
 const ejs = require('ejs');
 const nodemailer = require('nodemailer');
 
-function authenticateToken(token, callback){
-    if(token == undefined) {
-        callback('err', 401);
+function authenticateToken(req, res, next){
+    if(parseCookies(req.headers.cookie).accessToken == undefined) {
+        res.status(401).send('Not Logged In');
         return;
     }
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user)=>{
         if(err == 'TokenExpiredError: jwt expired') {
             const payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, {ignoreExpiration: true} );
-            console.log(payload)
-            refreshAccessToken(payload.email, (resultCode, accessToken)=>{
-                switch(resultCode) {
-                    case 'err':
-                        callback('err', 401)
-                        break;
-                    case 'new token':
-                        callback('new token', accessToken);
-                        break;
-                }
+            const refresh = refreshAccessToken(payload.email);
+            if(refresh instanceof Error){
+                res.status(403).send('Invalid Token');
+                return;
+            }
+            res.cookie('accessToken', refresh, {
+                httpOnly: true,
             });
-            return;
+            next();
         }
         if(err){
             console.log(err)
-            callback('err', 403);
+            res.status(403).send('Error Validating Token');
             return;
         }
-        callback('ok', '');
-        return;
     })
 };
 
@@ -121,23 +116,23 @@ function register(emailAddress, password, callback) {
 
 }
 
-function refreshAccessToken(emailAddress, callback){
+function refreshAccessToken(emailAddress){
     account.AccountSchema.find({email:emailAddress}).then(results=>{
         if(!results.length){
-            callback('err', 'Account not Found');
-            return;
+            let err = new Error('Account does not exist');
+            err.status = 500;
+            return err;
+
         }
-        jwt.verify(results[0].refresh_token, process.env.ACCESS_TOKEN_SECRET, (err, user)=>{
+        jwt.verify(results[0].refresh_token, process.env.ACCESS_TOKEN_SECRET, (err)=>{
             if(err) {
-                callback('err', 'Login Expired');
-                console.log('HÄH')
-                return;
+                let err = new Error('RefreshToken expired');
+                err.status = 403;
+                return err;
             }
             let payload = {email: emailAddress}
-            let new_token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15s' });
-            console.log('NEW TOKEN');
-            callback('new token', new_token);
-            return;
+            let accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+            return accessToken;
         })
     })
 };
