@@ -6,20 +6,29 @@
         <draggable :list="list"
             :disabled="!enabled"
             :animation="200"
+            handle=".handle"
             class="list-group"
             ghost-class="ghost"
             drag-class="drag"
-            chosen-class="chosen-class"
+            chosen-class="chosen"
+            fallbackClass="sortable-fallback"
             @start="dragging = true">
           <div class="list-group-item"
               v-for="element in list"
               :key="element.id">
-            <div>
-              <div>
-                <input type="text" class="form-control" v-model="element.name" placeholder="Name" maxlength="30">
+            <div class="horizontal-container">
+              <div class="handle">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grip-vertical" viewBox="0 0 16 16">
+                  <path d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                </svg>
               </div>
               <div>
-                <input type="text" class="form-control" v-model="element.link" placeholder="URL"/>
+                <div>
+                  <input type="text" class="form-control" v-model="element.name" placeholder="Name" maxlength="30">
+                </div>
+                <div>
+                  <input type="text" class="form-control" v-model="element.link" placeholder="URL"/>
+                </div>
               </div>
             </div>
             <button class="delete-button" @click="removeEntry(element.id)">
@@ -157,6 +166,18 @@ export default {
     border-radius: 20px;
     box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
     border: var(--editor-items-border);
+
+    .horizontal-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .handle {
+        margin: 0;
+        padding: 15% 0;
+      }
+    }
+
   }
 
   .delete-button {
@@ -196,16 +217,16 @@ export default {
     border-bottom: 2px solid #536cc0;
   }
 
-  .ghost {
+
+  .chosen {
     opacity: 1;
+  }
+  .ghost {
+    opacity: 0;
     background: var(--ghost-color);
   }
   .drag {
     opacity: 1;
-  }
-
-  .chosen-class {
-    opacity: 0;
   }
 
 </style>

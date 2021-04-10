@@ -14,7 +14,7 @@
               <router-link class="router" to="/register">Sign Up</router-link>
             </button>
           </div>
-          <Slide right class="bm-container">
+          <Slide right :closeOnNavigation="true" style="top: 0">
             <div class="button-container">
               <button class="login-button account-button">
                 <router-link class="router" to="/login">Log In</router-link>
@@ -240,12 +240,6 @@ export default {
   }
   //Burger
   //////////////////////////////////////////////////////////////////////
-  .bm-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
   .bm-burger-button {
     display: flex;
     justify-content: center;
@@ -253,7 +247,6 @@ export default {
     position: relative;
     width: 1.9em;
     height: 1.2em;
-    cursor: pointer;
     top: 0;
     margin: 0;
     padding: 0;
@@ -274,7 +267,7 @@ export default {
     right: 0;
   }
   .cross-style {
-    position: absolute;
+    position: relative;
     top: 2em;
     right: 2px;
     cursor: pointer;
