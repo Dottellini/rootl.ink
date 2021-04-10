@@ -4,7 +4,7 @@
       <h1>The root of<br>all your links</h1>
       <h2>The simplest way to redirect your audience</h2>
       <button @click="scroll" class="learnButton">Learn More</button>
-      <Preview class="preview"></Preview>
+      <Preview class="preview" :use-phone="true"></Preview>
       <div class="line"></div>
       <div class="input">
         <p class="text">rootl.ink/</p>

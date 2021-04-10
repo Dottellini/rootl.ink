@@ -14,6 +14,11 @@ export default new Vuex.Store({
     isMobile: false,
   },
   mutations: {
+    setData(state, payload) {
+      state.username = payload.username;
+      console.log(state.username)
+    },
+
     emptyEntry(state) {
       const dt = Date.now();
       const num = Math.floor(Math.random() * 999999);
@@ -64,6 +69,13 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    fetchUserData({commit}, name) {
+      const data = {
+        username: name
+      }
+      commit("setData", data)
+    },
+
     savePage({commit}, state) {
       const data = {
         url_list: state.list,

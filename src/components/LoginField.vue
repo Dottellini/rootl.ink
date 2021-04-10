@@ -40,9 +40,7 @@ export default {
             reader.read().then(function processText({ done, value }) {
               if (done) return
               let string = new TextDecoder().decode(value);
-              console.log(string);
               localStorage.setItem('accessToken', JSON.parse(string).accessToken);
-              console.log(localStorage.getItem('accessToken'));
               return reader.read().then(processText);
             });
           })

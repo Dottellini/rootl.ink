@@ -4,6 +4,7 @@ import Home from "../views/home"
 import Editor from '../views/editor'
 import Register from '../views/register'
 import Login from '../views/login'
+import Userpage from "../views/Userpage";
 
 Vue.use(VueRouter)
 
@@ -27,6 +28,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login
+  },
+  {
+    path: '/:username',
+    name: 'Userpage',
+    component: Userpage
   },
 ]
 

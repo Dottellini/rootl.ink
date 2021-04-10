@@ -35,7 +35,7 @@ export default {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            username: this.username,
+            username: this.username.replace(/ /g,"_"),
             email: this.email,
             password: this.password
           }),

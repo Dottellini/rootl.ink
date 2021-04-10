@@ -1,6 +1,6 @@
 <template>
-  <div id="preview" class="container" :style="bg_hex" @click="log">
-    <div class="bar"></div>
+  <div id="preview" :class="{container: usePhone}" :style="bg_hex" @click="log">
+    <div :class="{bar: usePhone}"></div>
     <div class="url-container" :style="rootl_hex">
       <h1>rootl.ink/</h1><h2>{{username}}</h2>
     </div>
@@ -21,6 +21,7 @@
 <script>
 export default {
   name: "Preview",
+  props: ["usePhone"],
   data() {
     return{
       links: this.$store.state.list,

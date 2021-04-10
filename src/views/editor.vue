@@ -1,7 +1,7 @@
 <template>
   <div class="flex-container">
     <PageBuilder class="flex-child" />
-    <Preview/>
+    <Preview :use-phone="true"/>
   </div>
 </template>
 
