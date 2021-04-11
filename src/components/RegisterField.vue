@@ -53,7 +53,8 @@ export default {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            username: this.convertUsername(this.username),
+            username: this.convertUsername(this.username).username,
+            indexArrayForSpaces: this.convertUsername(this.username).indexArrayForSpaces,
             email: this.email,
             password: this.password
           }),
