@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const routes = require('./routes');
+const middleware = require('./middleware');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const aws = require('aws-sdk');
@@ -26,6 +27,7 @@ mongoose.connect(dbUri, {useNewUrlParser: true, useUnifiedTopology: true})
         }));
         server.use(bodyParser.json());
         server.use(express.static('../dist'));
+        server.use('/', middleware.router)
         server.use('/', routes.router);
         server.set('view engine', 'ejs');
 

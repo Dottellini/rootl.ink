@@ -35,7 +35,7 @@ router.get('/login', (req,res)=>{
 
 //Get
 
-router.get('/testLogin',middleware.authenticateToken, (req, res)=>{
+router.get('/testLogin', (req, res)=>{
     res.sendFile('./views/testLogin.html', {'root': __dirname});
 });
 
@@ -56,18 +56,18 @@ router.get('/p/*', (req, res)=>{
 router.post('/login', (req,res)=>{
     account.AccountSchema.find({email:req.body.email}).then(results=>{
         if(!results.length){
-            res.status(401).send('Account not found')
             res.cookie('accessToken', '', {
                 httpOnly: true,
             });
+            res.status(401).send('Account not found')
             return;
         }
         bcrypt.compare(req.body.password, results[0].password_hash, function(err, PasswordResult) {
             if(!PasswordResult) {
-                res.status(403).send('Wrong Password');
                 res.cookie('accessToken', '', {
                     httpOnly: true,
                 });
+                res.status(403).send('Wrong Password');
                 return;
             }
             const payload = {email: req.body.email};
@@ -81,6 +81,7 @@ router.post('/login', (req,res)=>{
             res.cookie('refreshToken', refreshToken, {
                 httpOnly: true,
             });
+            res.status(200).send('Logged in')
             return;
         });
     })
@@ -106,6 +107,7 @@ router.post('/confirmEmail', (req, res)=>{
 });
 
 router.post('/register', (req,res)=>{
+    console.log(req.body)
     account.AccountSchema.find({email:req.body.email}, (error, accounts)=>{
         if(error){
             res.status(500).send('Error fetching accounts');
@@ -117,9 +119,14 @@ router.post('/register', (req,res)=>{
         }
         const confirmationCode = uuid.v4();
         bcrypt.hash(req.body.password, 10, function(error, hash) {
+            console.log(req.body.username.indexArrayForSpaces.length)
+            if(req.body.username.indexArrayForSpaces.length == 0){
+                req.body.username = req.body.username.username
+            }
             let Account = new account.AccountSchema({
                 password_hash: hash,
                 email: req.body.email,
+                username: req.body.username,
                 email_confirmed: false,
                 confirmation_code: confirmationCode
             });

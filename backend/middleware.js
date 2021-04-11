@@ -3,12 +3,16 @@ const account = require('./db-models/account');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-function authenticateToken(req, res, next){
+router.get(['/testLogin', '/createPage'], (req, res, next)=>{
+    if(req.headers.cookie == undefined){
+        res.status(401).send('Not Logged In');
+        return;
+    }
     if(parseCookies(req.headers.cookie).accessToken == undefined) {
         res.status(401).send('Not Logged In');
         return;
     }
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user)=>{
+    jwt.verify(parseCookies(req.headers.cookie).accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user)=>{
         if(err == 'TokenExpiredError: jwt expired') {
             const payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, {ignoreExpiration: true} );
             const refresh = refreshAccessToken(payload.email);
@@ -27,7 +31,7 @@ function authenticateToken(req, res, next){
             return;
         }
     })
-};
+});
 
 function logout(req, res, next){
     console.log('HÄH')
@@ -97,3 +101,4 @@ exports.authenticateToken = authenticateToken;
 exports.refreshAccessToken = refreshAccessToken;
 exports.parseCookies = parseCookies;
 exports.logout = logout;
+exports.router = router;
