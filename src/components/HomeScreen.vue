@@ -118,6 +118,7 @@ export default {
     border-radius: 50px;
     padding: 0.3em 1.5em;
     margin: 2em 0;
+    cursor: pointer;
   }
 
   .register {

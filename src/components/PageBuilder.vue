@@ -23,6 +23,15 @@
                 </svg>
               </div>
               <div>
+                <input type="file" id="upload" accept="image/*" hidden>
+                <label for="upload" class="upload-image">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">
+                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                    <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+                  </svg>
+                </label>
+              </div>
+              <div>
                 <div>
                   <input type="text" class="form-control" v-model="element.name" placeholder="Name" maxlength="30">
                 </div>
@@ -69,7 +78,7 @@
       </tab>
     </tabs>
     <hr>
-    <button @click="submit">
+    <button @click="submit" class="save-button">
       Save
     </button>
   </div>
@@ -138,6 +147,14 @@ export default {
     outline: none;
   }
 
+  .upload-image {
+    background: var(--upload-background-color);
+    color: var(--upload-color);
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
   .color-container {
     display: flex;
     flex-direction: column;
@@ -172,16 +189,41 @@ export default {
       justify-content: center;
       align-items: center;
 
+      div {
+        margin: 0 0.3em;
+      }
+
       .handle {
         margin: 0;
         padding: 15% 0;
+        cursor: grab;
       }
     }
 
   }
 
+  .save-button {
+    outline: none;
+    border: 1px solid #536cc0;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--background-color);
+    background-color: #536cc0;
+    border-radius: 50px;
+    padding: 0.2em 1.2em;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--background-color);
+      color: #536cc0;
+      border: 1px solid #536cc0;
+    }
+  }
+
   .delete-button {
-    padding: 0.3em 1em;
+    padding: 0.3em 0.7em;
+    cursor: pointer;
     border: none;
     outline: none;
     border-radius: 10px;

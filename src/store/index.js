@@ -14,6 +14,22 @@ export default new Vuex.Store({
     isMobile: false,
   },
   mutations: {
+    changeThemeOnPreview(state, isDark) {
+      if(isDark) {
+        if(state.background_hex === "#FFFFFF" && state.text_hex === "#FFFFFF" && state.linkBox_hex === "#000000" && state.rootLink_hex === "#000000") {
+          state.background_hex = "#181818";
+          state.linkBox_hex = "#1d1d1d";
+          state.rootLink_hex = "#FFFFFF"
+        }
+      } else if(!isDark){
+        if(state.background_hex === "#121212" && state.text_hex === "#FFFFFF" && state.linkBox_hex === "#1d1d1d" && state.rootLink_hex === "#FFFFFF") {
+          state.background_hex = "";
+          state.linkBox_hex = "";
+          state.rootLink_hex = ""
+        }
+      }
+    },
+
     setData(state, payload) {
       //Set the data of the page after fetching it
       state.username = payload.user.username;

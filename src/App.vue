@@ -14,7 +14,7 @@
               <router-link class="router" to="/register">Sign Up</router-link>
             </button>
           </div>
-          <Slide right :closeOnNavigation="true" style="top: 0">
+          <Slide right :closeOnNavigation="true" :crossIcon="false" style="top: 0">
             <div class="button-container">
               <button class="login-button account-button">
                 <router-link class="router" to="/login">Log In</router-link>
@@ -22,10 +22,15 @@
 
             </div>
             <router-link to="/editor">Editor</router-link>
-            <label class="switch">
-              <input type="checkbox" @click="toggleTheme" v-model="isDark">
-              <span class="slider round"></span>
-            </label>
+            <div class="DarkMode-Container">
+              <div class="DarkMode-Label">DarkMode</div>
+              <span>
+                <label class="switch">
+                  <input type="checkbox" @click="toggleTheme" v-model="isDark">
+                  <span class="slider round"></span>
+                </label>
+              </span>
+            </div>
           </Slide right>
         </div>
       </div>
@@ -74,6 +79,8 @@ export default {
 
   created() {
     this.$store.commit("checkMobile", window.screen.width)
+    this.$store.commit("changeThemeOnPreview", this.isDark)
+
   },
 
   mounted() {
@@ -89,6 +96,8 @@ export default {
       this.isDark = this.isDark !== true;
       document.documentElement.setAttribute("data-theme", this.theme);
       localStorage.setItem("theme", this.theme)
+
+      this.$store.commit("changeThemeOnPreview", this.isDark)
     }
   }
 };
@@ -103,16 +112,20 @@ export default {
     --ghost-color: #e0f3ff;
     --device-border-color: #222;
     --editor-items-border: none;
+    --upload-background-color: #ebeffa;
+    --upload-color: #3d4ebb;
   }
 
   [data-theme="darkMode"] {
-    --background-color: #121212;
+    --background-color: #181818;
     --surface-color: #1d1d1d;
     --text-color: white;
     --burger-page-color: rgba(0, 0, 0, 0.9);
     --ghost-color: #3d3d60;
     --device-border-color: #323232;
     --editor-items-border: 1px solid #272727;
+    --upload-background-color: #454545;
+    --upload-color: white;
   }
 
   @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap');
@@ -266,19 +279,7 @@ export default {
     left: 0;
     right: 0;
   }
-  .cross-style {
-    position: relative;
-    top: 2em;
-    right: 2px;
-    cursor: pointer;
-  }
-  .bm-cross {
-    background: #bdc3c7;
-  }
-  .bm-cross-button {
-    height: 2em;
-    width: 2em;
-  }
+
   .bm-menu {
     display: flex;
     justify-content: center;
@@ -299,27 +300,40 @@ export default {
   }
   .bm-item-list {
     color: #b8b7ad;
-    margin-left: 10%;
+    margin: 0;
     font-size: 20px;
   }
   .bm-item-list > * {
     display: flex;
+    justify-content: center;
     text-decoration: none;
     padding: 0.7em;
   }
   .bm-item-list > * > span {
-    margin-left: 10px;
     font-weight: 700;
     color: white;
   }
 
   //DarkMode Switch
   /////////////////////////////////////////////////////////////////////
+  .DarkMode-Container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+
+    .DarkMode-Label{
+      font-family: 'Montserrat', sans-serif;
+      color: var(--text-color);
+      font-weight: 400;
+    }
+  }
+
   .switch {
+    display: flex;
     position: relative;
-    display: inline-block;
-    width: 2em;
-    height: 0.3em;
+    width: 40px;
+    height: 24px;
   }
 
   /* Hide default HTML checkbox */
@@ -344,10 +358,10 @@ export default {
   .slider:before {
     position: absolute;
     content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
+    height: 20px;
+    width: 20px;
+    left: 2px;
+    bottom: 2px;
     background-color: #ffffff;
     -webkit-transition: .4s;
     transition: .4s;
@@ -363,18 +377,18 @@ export default {
 
   input:checked + .slider:before {
     background-color: #000000;
-    -webkit-transform: translateX(1.3em);
-    -ms-transform: translateX(1.3em);
-    transform: translateX(1.3em);
+    -webkit-transform: translateX(16px);
+    -ms-transform: translateX(16px);
+    transform: translateX(16px);
   }
 
   /* Rounded sliders */
   .slider.round {
-    border-radius: 12px;
+    border-radius: 34px;
   }
 
   .slider.round:before {
-    border-radius: 10px;
+    border-radius: 50%;
   }
   /////////////////////////////////////////////////////////////////////
 </style>
