@@ -5,6 +5,11 @@ const account = require('./db-models/account');
 const fs = require('fs');
 const { Readable } = require("stream")
 const path = require('path');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const uuid = require('uuid');
+const ejs = require('ejs');
+const nodemailer = require('nodemailer');
 
 
 
@@ -38,7 +43,7 @@ router.get('/confirmEmailCode*', (req,res)=>{
     res.sendFile('./views/confirmEmail.html', {'root': __dirname});
 });
 
-router.get('/logout', middleware.logout(), (req,res)=>{
+router.get('/logout', middleware.logout, (req,res)=>{
     res.sendFile('./views/logout.html', {'root': __dirname});
 });
 
@@ -80,45 +85,22 @@ router.post('/login', (req,res)=>{
         });
     })
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 });
 
 router.post('/confirmEmail', (req, res)=>{
     account.AccountSchema.find({email:req.body.email}).then(result=>{
         if(result.length==0){
-            res.send(401).send('Account not found');
+            res.status(401).send('Account not found');
             return;
         }
-        if(result[0].confirmation_code!=confirmationCode){
-            res.send(400).send('Invalid Confirmation Code');
+        if(result[0].confirmation_code!=req.body.code){
+            res.status(400).send('Invalid Confirmation Code');
             return;
         }
         result[0].email_confirmed=true;
         result[0].confirmation_code=undefined;
         result[0].save();
-        res.send(200).send('Email Adress Confirmed');
+        res.status(200).send('Email Adress Confirmed');
         return;
     })
 });
@@ -137,7 +119,7 @@ router.post('/register', (req,res)=>{
         bcrypt.hash(req.body.password, 10, function(error, hash) {
             let Account = new account.AccountSchema({
                 password_hash: hash,
-                email: emailAddress,
+                email: req.body.email,
                 email_confirmed: false,
                 confirmation_code: confirmationCode
             });
@@ -145,7 +127,7 @@ router.post('/register', (req,res)=>{
             ejs.renderFile(__dirname+'/email-templates/email-template1.ejs', {code: confirmationCode, email:req.body.email},(error, data)=>{
                 var mailOptions = {
                     from: 'rootlink.test123@gmail.com',
-                    to: emailAddress,
+                    to: req.body.email,
                     subject: 'Confirm Your Email Adress - Rootl.ink',
                     text: data,
                     html: data
@@ -176,7 +158,9 @@ router.post('/createPage', (req, res)=>{
         return;
     });
 
-    let uploadParams = {Bucket: 'rootlinkdata', Key: req.body.background_hex+".json", Body: readable};
+    let filename = req.body.url;
+    filename = uuid.v4()+'.json';
+    let uploadParams = {Bucket: 'rootlinkdata', Key: filename, Body: readable};
     s3.upload (uploadParams, function (err, data) {
         if(err){
             res.status(500).send('Error Uploading Data')

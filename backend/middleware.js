@@ -2,9 +2,6 @@ require('dotenv').config();
 const account = require('./db-models/account');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const uuid = require('uuid');
-const ejs = require('ejs');
-const nodemailer = require('nodemailer');
 
 function authenticateToken(req, res, next){
     if(parseCookies(req.headers.cookie).accessToken == undefined) {
@@ -32,7 +29,8 @@ function authenticateToken(req, res, next){
     })
 };
 
-function logout(req, req, next){
+function logout(req, res, next){
+    console.log('HÄH')
     res.cookie('accessToken', '', {
         httpOnly: true,
     });
