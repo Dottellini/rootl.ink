@@ -25,7 +25,7 @@ export default {
     }
   },
 
-  methods: {
+  /*methods: {
     convertUsername: function (username) {
       let userArray = username.split("");
       let resultArray = [];
@@ -41,7 +41,7 @@ export default {
         username: userArray.join(""),
         indexArrayForSpaces: resultArray
       }
-    },
+    },*/
 
     submit: function () {
       this.error = "";
@@ -53,8 +53,7 @@ export default {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            username: this.convertUsername(this.username).username,
-            indexArrayForSpaces: this.convertUsername(this.username).indexArrayForSpaces,
+            username: this.username,
             email: this.email,
             password: this.password
           }),
