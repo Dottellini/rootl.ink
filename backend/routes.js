@@ -4,6 +4,7 @@ const middleware = require('./middleware');
 const account = require('./db-models/account');
 const fs = require('fs');
 const { Readable } = require("stream")
+const path = require('path');
 
 
 
@@ -29,42 +30,15 @@ router.get('/login', (req,res)=>{
 
 //Get
 
-router.get('/testLogin', (req, res)=>{
-
-    let cookies = middleware.parseCookies(req.headers.cookie);
-    console.log(cookies)
-
-    middleware.authenticateToken(cookies.accessToken, (resultCode, message)=>{
-        switch(resultCode) {
-            case 'err':
-                res.cookie('accessToken', '');
-                res.cookie('refreshToken', '');
-                res.send(message);
-                break;
-            case 'new token':
-                res.cookie('accessToken', message, {
-                    httpOnly: true
-                })
-                res.sendFile('/views/testLogin.html', {'root':__dirname});
-                break;
-            case 'ok':
-                res.sendFile('/views/testLogin.html', {'root':__dirname});
-                break;
-        }
-    })
+router.get('/testLogin',middleware.authenticateToken, (req, res)=>{
+    res.sendFile('./views/testLogin.html', {'root': __dirname});
 });
 
 router.get('/confirmEmailCode*', (req,res)=>{
     res.sendFile('./views/confirmEmail.html', {'root': __dirname});
 });
 
-router.get('/logout', (req,res)=>{
-    res.cookie('accessToken', '', {
-        httpOnly: true,
-    });
-    res.cookie('refreshToken', '', {
-        httpOnly: true,
-    });
+router.get('/logout', middleware.logout(), (req,res)=>{
     res.sendFile('./views/logout.html', {'root': __dirname});
 });
 
@@ -75,55 +49,141 @@ router.get('/p/*', (req, res)=>{
 //Post
 
 router.post('/login', (req,res)=>{
-    middleware.login(req.body.email, req.body.password, (returnCode, message, refreshToken)=>{
-        switch(returnCode){
-            case 1:
+    account.AccountSchema.find({email:req.body.email}).then(results=>{
+        if(!results.length){
+            res.status(401).send('Account not found')
+            res.cookie('accessToken', '', {
+                httpOnly: true,
+            });
+            return;
+        }
+        bcrypt.compare(req.body.password, results[0].password_hash, function(err, PasswordResult) {
+            if(!PasswordResult) {
+                res.status(403).send('Wrong Password');
                 res.cookie('accessToken', '', {
                     httpOnly: true,
                 });
-                res.send(message);
-                break;
-            case 2:
-                res.cookie('accessToken', message, {
-                    httpOnly: true,
-                });
-                res.cookie('refreshToken', refreshToken, {
-                    httpOnly: true,
-                });
-                res.send(returnCode.toString());
-        }
+                return;
+            }
+            const payload = {email: req.body.email};
+            const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+            const refreshToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '60m' });
+            results[0].refresh_token = refreshToken;
+            results[0].save();
+            res.cookie('accessToken', accessToken, {
+                httpOnly: true,
+            });
+            res.cookie('refreshToken', refreshToken, {
+                httpOnly: true,
+            });
+            return;
+        });
     })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 });
 
 router.post('/confirmEmail', (req, res)=>{
-    middleware.confirmEmail(req.body.email, req.body.code, (result)=>{
-        res.send(result);
-    });
-});
-
-router.post('/register', (req,res)=>{
-    middleware.register(req.body.email, req.body.password, (result)=>{
-        res.send(result);
+    account.AccountSchema.find({email:req.body.email}).then(result=>{
+        if(result.length==0){
+            res.send(401).send('Account not found');
+            return;
+        }
+        if(result[0].confirmation_code!=confirmationCode){
+            res.send(400).send('Invalid Confirmation Code');
+            return;
+        }
+        result[0].email_confirmed=true;
+        result[0].confirmation_code=undefined;
+        result[0].save();
+        res.send(200).send('Email Adress Confirmed');
+        return;
     })
 });
 
+router.post('/register', (req,res)=>{
+    account.AccountSchema.find({email:req.body.email}, (error, accounts)=>{
+        if(error){
+            res.status(500).send('Error fetching accounts');
+            return;
+        }
+        if(accounts.length!=0){
+            res.status(403).send('Account already exists');
+            return;
+        }
+        const confirmationCode = uuid.v4();
+        bcrypt.hash(req.body.password, 10, function(error, hash) {
+            let Account = new account.AccountSchema({
+                password_hash: hash,
+                email: emailAddress,
+                email_confirmed: false,
+                confirmation_code: confirmationCode
+            });
+
+            ejs.renderFile(__dirname+'/email-templates/email-template1.ejs', {code: confirmationCode, email:req.body.email},(error, data)=>{
+                var mailOptions = {
+                    from: 'rootlink.test123@gmail.com',
+                    to: emailAddress,
+                    subject: 'Confirm Your Email Adress - Rootl.ink',
+                    text: data,
+                    html: data
+                };
+                var emailSender = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                      user: 'rootlink.test123@gmail.com',
+                      pass: '%pFJM,hwr_b,uyv#,F?+66Hb'
+                    }
+                  });                
+                emailSender.sendMail(mailOptions, function(error, info){
+                    if (error) {
+                        res.status(500).send('Error Sending Confirmation Email')
+                    }
+                });
+            });
+            Account.save();
+            res.status(200).send('Account created')
+        })
+    });
+});
+
 router.post('/createPage', (req, res)=>{
-
-    console.log(req.body)
-    console.log(JSON.stringify(req.body))
-    let path = require('path');
-
     let readable = Readable.from([JSON.stringify(req.body)])
     readable.on('error', function(err) {
-        console.log('File Error', err);
+        res.status(500).send('Error Reading Data')
+        return;
     });
 
     let uploadParams = {Bucket: 'rootlinkdata', Key: req.body.background_hex+".json", Body: readable};
     s3.upload (uploadParams, function (err, data) {
-        if (err) {
-            console.log("Error", err);
-        } if (data) {
-            console.log("Upload Success", data.Location);
+        if(err){
+            res.status(500).send('Error Uploading Data')
+            return;
+        }if(data){
+            res.status(200).send('Uploaded Succefully')
+            return;
         }
     });
 });

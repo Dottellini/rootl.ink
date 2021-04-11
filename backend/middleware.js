@@ -32,19 +32,14 @@ function authenticateToken(req, res, next){
     })
 };
 
-function confirmEmail(emailAddress, confirmationCode, callback){
-    account.AccountSchema.find({email:emailAddress}).then(result=>{
-        if(result.length==0){
-            callback('No Account found');
-        }
-        if(result[0].confirmation_code!=confirmationCode){
-            callback('Invalid Code');
-        }
-        result[0].email_confirmed=true;
-        result[0].confirmation_code=undefined;
-        result[0].save();
-        callback('Email Confirmed');
-    })
+function logout(req, req, next){
+    res.cookie('accessToken', '', {
+        httpOnly: true,
+    });
+    res.cookie('refreshToken', '', {
+        httpOnly: true,
+    });
+    next()
 };
 
 function login(emailAddress, password, callback) {
@@ -68,53 +63,6 @@ function login(emailAddress, password, callback) {
         });
     })
 };
-
-function register(emailAddress, password, callback) {
-    account.AccountSchema.find({email:emailAddress}, (error, accounts)=>{
-        if(error){
-            callback('Error fetching Accounts');
-            return;
-        }
-        if(accounts.length!=0){
-            callback('Account already exists');
-            return;
-        }
-        const confirmationCode = uuid.v4();
-        bcrypt.hash(password, 10, function(error, hash) {
-            let Account = new account.AccountSchema({
-                password_hash: hash,
-                email: emailAddress,
-                email_confirmed: false,
-                confirmation_code: confirmationCode
-            });
-
-            ejs.renderFile(__dirname+'/email-templates/email-template1.ejs', {code: confirmationCode, email:emailAddress},(error, data)=>{
-                var mailOptions = {
-                    from: 'rootlink.test123@gmail.com',
-                    to: emailAddress,
-                    subject: 'Confirm Your Email Adress - Rootl.ink',
-                    text: data,
-                    html: data
-                };
-                var emailSender = nodemailer.createTransport({
-                    service: 'gmail',
-                    auth: {
-                      user: 'rootlink.test123@gmail.com',
-                      pass: '%pFJM,hwr_b,uyv#,F?+66Hb'
-                    }
-                  });                
-                emailSender.sendMail(mailOptions, function(error, info){
-                    if (error) {
-                        callback('Error sending Confirmation Email');
-                    }
-                });
-            });
-            Account.save();
-            callback('Account Created');
-        })
-    });
-
-}
 
 function refreshAccessToken(emailAddress){
     account.AccountSchema.find({email:emailAddress}).then(results=>{
@@ -144,10 +92,10 @@ function parseCookies(cookieString){
         
     }, {});
     return cookieString;
-}
+};
+
 exports.login = login;
 exports.authenticateToken = authenticateToken;
-exports.confirmEmail = confirmEmail;
-exports.register = register;
 exports.refreshAccessToken = refreshAccessToken;
 exports.parseCookies = parseCookies;
+exports.logout = logout;
