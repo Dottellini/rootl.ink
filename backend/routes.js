@@ -43,7 +43,7 @@ router.get('/confirmEmailCode*', (req,res)=>{
     res.sendFile('./views/confirmEmail.html', {'root': __dirname});
 });
 
-router.get('/logout', middleware.logout, (req,res)=>{
+router.get('/logout', (req,res)=>{
     res.sendFile('./views/logout.html', {'root': __dirname});
 });
 
@@ -107,8 +107,8 @@ router.post('/confirmEmail', (req, res)=>{
 });
 
 router.post('/register', (req,res)=>{
-    console.log(req.body)
-    account.AccountSchema.find({email:req.body.email}, (error, accounts)=>{
+    // account.AccountSchema.find({$or:[{email: req.body.email},{username: req.body.username}]}, (error, accounts)=>{
+    account.AccountSchema.find({email: req.body.email}, (error, accounts)=>{
         if(error){
             res.status(500).send('Error fetching accounts');
             return;
@@ -159,13 +159,18 @@ router.post('/register', (req,res)=>{
 });
 
 router.post('/createPage', (req, res)=>{
+    let filename;
+    console.log(res.locals.user)
+    /*account.AccountSchema.find({email:res.locals.user}).then(results=>{
+        filename = results[0].username;
+    });*/
     let readable = Readable.from([JSON.stringify(req.body)])
     readable.on('error', function(err) {
         res.status(500).send('Error Reading Data')
         return;
     });
 
-    let filename = req.body.url;
+    filename = req.body.url;
     filename = uuid.v4()+'.json';
     let uploadParams = {Bucket: 'rootlinkdata', Key: filename, Body: readable};
     s3.upload (uploadParams, function (err, data) {

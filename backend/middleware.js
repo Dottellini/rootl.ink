@@ -1,9 +1,12 @@
 require('dotenv').config();
+const express = require('express');
+const router = express.Router();
 const account = require('./db-models/account');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-router.get(['/testLogin', '/createPage'], (req, res, next)=>{
+//authenticateToken
+router.use(['/testLogin', '/createPage'], (req, res, next)=>{
     if(req.headers.cookie == undefined){
         res.status(401).send('Not Logged In');
         return;
@@ -23,6 +26,7 @@ router.get(['/testLogin', '/createPage'], (req, res, next)=>{
             res.cookie('accessToken', refresh, {
                 httpOnly: true,
             });
+            res.locals.user = user;
             next();
         }
         if(err){
@@ -30,10 +34,13 @@ router.get(['/testLogin', '/createPage'], (req, res, next)=>{
             res.status(403).send('Error Validating Token');
             return;
         }
+        res.locals.user = user;
+        next();
     })
 });
 
-function logout(req, res, next){
+//Logout
+router.use('/logout', (req,res,next)=>{
     console.log('HÄH')
     res.cookie('accessToken', '', {
         httpOnly: true,
@@ -42,29 +49,7 @@ function logout(req, res, next){
         httpOnly: true,
     });
     next()
-};
-
-function login(emailAddress, password, callback) {
-    account.AccountSchema.find({email:emailAddress}).then(results=>{
-        console.log(results)
-        if(!results.length){
-            callback(1, 'Account not Found');
-            return;
-        }
-        bcrypt.compare(password, results[0].password_hash, function(err, PasswordResult) {
-            if(!PasswordResult) {
-                callback(1, 'Password Wrong');
-                return;
-            }
-            const payload = {email: emailAddress};
-            const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15s' });
-            results[0].refresh_token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '60s' });
-            results[0].save();
-            callback(2, accessToken, results[0].refresh_token.toString());
-            return;
-        });
-    })
-};
+});
 
 function refreshAccessToken(emailAddress){
     account.AccountSchema.find({email:emailAddress}).then(results=>{
@@ -96,9 +81,6 @@ function parseCookies(cookieString){
     return cookieString;
 };
 
-exports.login = login;
-exports.authenticateToken = authenticateToken;
 exports.refreshAccessToken = refreshAccessToken;
 exports.parseCookies = parseCookies;
-exports.logout = logout;
 exports.router = router;

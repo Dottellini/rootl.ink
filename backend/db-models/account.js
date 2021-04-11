@@ -10,7 +10,7 @@ const AccountObject = new mongoose.Schema({
         required: true
     },
     username: {
-        type: Object,
+        type: String,
         required: true
     },
     email_confirmed:{
