@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="content">
-      <div id="header" class="header">
+      <div id="header" class="header" v-if="!isUserPage">
         <div id="logo">
           <router-link id="homeroute" to="/"><h1>rootl.ink</h1></router-link>
         </div>
@@ -34,7 +34,6 @@
           </Slide right>
         </div>
       </div>
-      <hr>
       <router-view/>
     </div>
 
@@ -74,13 +73,16 @@ export default {
   computed: {
     isMobile: function() {
       return this.$store.state.isMobile
+    },
+
+    isUserPage: function () {
+      return this.$route.name === "Userpage";
     }
   },
 
   created() {
     this.$store.commit("checkMobile", window.screen.width)
     this.$store.commit("changeThemeOnPreview", this.isDark)
-
   },
 
   mounted() {
@@ -136,6 +138,7 @@ export default {
 
   body {
     background: var(--background-color);
+    margin: 0;
   }
 
   p{
@@ -244,6 +247,8 @@ export default {
     justify-content: space-between;
     align-items: center;
     position: relative;
+    border-bottom: 2px solid black;
+    background-color: var(--background-color);
   }
 
   .child {

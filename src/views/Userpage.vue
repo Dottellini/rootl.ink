@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" >
     <preview :use-phone="false"></preview>
   </div>
 </template>
@@ -13,7 +13,11 @@ export default {
   computed: {
     user() {
       return this.$route.params.username
-    }
+    },
+
+    bg_hex: function () {
+      return {backgroundColor: this.$store.state.background_hex}
+    },
   },
 
   watch: {
@@ -24,12 +28,17 @@ export default {
 
   created() {
     this.$store.dispatch("fetchUserData", this.$route.params.username);
+
+    document.getElementsByTagName("body")[0].style.backgroundColor = this.bg_hex.backgroundColor;
+  },
+
+  destroyed() {
+    document.getElementsByTagName("body")[0].style.backgroundColor = null;
   }
 }
 
 </script>
 
-<style scoped lang="scss">
-  .container {
-  }
+<style lang="scss">
+
 </style>

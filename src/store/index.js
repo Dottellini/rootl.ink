@@ -6,7 +6,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     list: [],
-    username: "USERNAME",
+    username: "USERNAME", //Used for the "User-pages" and other stuff. This username if not to be used for the logged in account as it may change
+    account_username: null,
     background_hex: "#FFFFFF",
     text_hex: "#FFFFFF",
     linkBox_hex: "#000000",
@@ -32,7 +33,7 @@ export default new Vuex.Store({
 
     setData(state, payload) {
       //Set the data of the page after fetching it
-      state.username = payload.user.username;
+      state.account_username = payload.user.username;
     },
 
     emptyEntry(state) {

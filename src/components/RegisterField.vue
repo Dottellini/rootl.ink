@@ -25,8 +25,8 @@ export default {
     }
   },
 
-  /*methods: {
-    convertUsername: function (username) {
+  methods: {
+    /*convertUsername: function (username) {
       let userArray = username.split("");
       let resultArray = [];
 
@@ -46,6 +46,7 @@ export default {
     submit: function () {
       this.error = "";
       if(this.password !== this.rep_password) { this.error = "Passwords do not match!" }
+      else if(this.password.length < 8) { this.error = "Password must be at least 8 characters" }
       else {
         fetch('/register', {
           method: 'POST',
