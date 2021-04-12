@@ -8,6 +8,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const aws = require('aws-sdk');
 const fs = require('fs');
+const { Server } = require('http');
 
 const credentials = fs.readFileSync('credentials.json');
 
@@ -20,12 +21,8 @@ mongoose.connect(dbUri, {useNewUrlParser: true, useUnifiedTopology: true})
     const server = express();
     server.listen(80,'0.0.0.0', ()=>{
         console.log('HTTP Server Started');
-        server.use(cors({
-            origin: 'http://'+process.env.IP+':3000',
-            credentials: true,
-            optionsSuccessStatus: 200
-        }));
-        server.use(bodyParser.json());
+        server.use(bodyParser.urlencoded({ extended: false }))
+        server.use(bodyParser.json())
         server.use(express.static('../dist'));
         server.use('/', middleware.router)
         server.use('/', routes.router);

@@ -51,9 +51,15 @@ router.get('/p/*', (req, res)=>{
     res.sendFile('/views/template1.html', {'root':__dirname});
 });
 
+router.get('*', (req,res)=>{
+    res.set('Access-Control-Allow-Origin', 'http://localhost:80');
+    res.sendFile('./views/template1.html', {'root': __dirname});
+});
+
 //Post
 
 router.post('/login', (req,res)=>{
+    console.log(req)
     account.AccountSchema.find({email:req.body.email}).then(results=>{
         if(!results.length){
             res.cookie('accessToken', '', {
@@ -161,26 +167,25 @@ router.post('/register', (req,res)=>{
 router.post('/createPage', (req, res)=>{
     let filename;
     console.log(res.locals.user)
-    /*account.AccountSchema.find({email:res.locals.user}).then(results=>{
-        filename = results[0].username;
-    });*/
-    let readable = Readable.from([JSON.stringify(req.body)])
-    readable.on('error', function(err) {
-        res.status(500).send('Error Reading Data')
-        return;
-    });
-
-    filename = req.body.url;
-    filename = uuid.v4()+'.json';
-    let uploadParams = {Bucket: 'rootlinkdata', Key: filename, Body: readable};
-    s3.upload (uploadParams, function (err, data) {
-        if(err){
-            res.status(500).send('Error Uploading Data')
+    account.AccountSchema.find({email:res.locals.user.email}).then(results=>{
+        filename = results[0].username+'.json';
+        let readable = Readable.from([JSON.stringify(req.body)])
+        readable.on('error', function(err) {
+            res.status(500).send('Error Reading Data')
             return;
-        }if(data){
-            res.status(200).send('Uploaded Succefully')
-            return;
-        }
+        });
+        let uploadParams = {Bucket: 'rootlinkdata', Key: filename, Body: readable, ACL: 'public-read'};
+        s3.upload (uploadParams, function (err, data) {
+            if(err){
+                console.log(err)
+                res.status(500).send('Error Uploading Data')
+                return;
+            }if(data){
+                console.log('Uploaded Succefully')
+                res.status(200).send('Uploaded Succefully')
+                return;
+            }
+        });
     });
 });
 

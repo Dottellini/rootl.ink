@@ -7,17 +7,21 @@ const jwt = require('jsonwebtoken');
 
 //authenticateToken
 router.use(['/testLogin', '/createPage'], (req, res, next)=>{
+    console.log(req.headers.cookie)
     if(req.headers.cookie == undefined){
+        console.log('1')
         res.status(401).send('Not Logged In');
         return;
     }
-    if(parseCookies(req.headers.cookie).accessToken == undefined) {
+    let cookies = parseCookies(req.headers.cookie);
+    if(cookies.accessToken == undefined) {
+        console.log('2')
         res.status(401).send('Not Logged In');
         return;
     }
-    jwt.verify(parseCookies(req.headers.cookie).accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user)=>{
+    jwt.verify(cookies.accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user)=>{
         if(err == 'TokenExpiredError: jwt expired') {
-            const payload = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, {ignoreExpiration: true} );
+            const payload = jwt.verify(cookies.accessToken, process.env.ACCESS_TOKEN_SECRET, {ignoreExpiration: true} );
             const refresh = refreshAccessToken(payload.email);
             if(refresh instanceof Error){
                 res.status(403).send('Invalid Token');
@@ -41,7 +45,6 @@ router.use(['/testLogin', '/createPage'], (req, res, next)=>{
 
 //Logout
 router.use('/logout', (req,res,next)=>{
-    console.log('HÄH')
     res.cookie('accessToken', '', {
         httpOnly: true,
     });
