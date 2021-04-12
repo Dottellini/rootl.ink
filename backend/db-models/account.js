@@ -7,11 +7,11 @@ const AccountObject = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: false
+        required: true
     },
-    page_url:{
+    username: {
         type: String,
-        require: false
+        required: true
     },
     email_confirmed:{
         type: Boolean,

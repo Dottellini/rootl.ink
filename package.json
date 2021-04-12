@@ -7,6 +7,7 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "aws-sdk": "^2.884.0",
     "bcrypt": "^5.0.1",
     "cookie-parser": "^1.4.5",
     "core-js": "^3.6.5",

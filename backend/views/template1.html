@@ -1,8 +1,13 @@
 <button onclick="getData()">Get</button>
 <script>
     function getData(){
-        fetch(window.location.href+'.json')
+        fetch('http://d26k63xuikc78y.cloudfront.net'+window.location.pathname+'.json', {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST',
+            'mode': "cors"
+            })
         .then(data => {
+            console.log(data)
             let reader = data.body.getReader();
             reader.read().then(function processText({ done, value }) {
             if (done) {
