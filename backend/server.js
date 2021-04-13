@@ -31,8 +31,6 @@ mongoose.connect(dbUri, {useNewUrlParser: true, useUnifiedTopology: true})
         console.log(JSON.parse(credentials).aws.accessKeyId)
         aws.config.update({ "accessKeyId": JSON.parse(credentials).aws.accessKeyId, "secretAccessKey": JSON.parse(credentials).aws.secretAccessKey, "region": "eu-central-1" });
         s3 = new aws.S3({apiVersion: '2006-03-01'});
-
-        // Call S3 to list the buckets
         s3.listBuckets(function(err, data) {
             if (err) {
                 console.log("Error", err);

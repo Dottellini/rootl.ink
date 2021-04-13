@@ -10,6 +10,8 @@ const jwt = require('jsonwebtoken');
 const uuid = require('uuid');
 const ejs = require('ejs');
 const nodemailer = require('nodemailer');
+const aws = require('aws-sdk');
+
 
 
 
@@ -52,8 +54,17 @@ router.get('/p/*', (req, res)=>{
 });
 
 router.get('*', (req,res)=>{
-    res.set('Access-Control-Allow-Origin', 'http://localhost:80');
-    res.sendFile('./views/template1.html', {'root': __dirname});
+    let params = {
+        Bucket: "rootlinkdata", 
+        Key: req.url.replace('/', '')+'.json'
+       }
+    new aws.S3({apiVersion: '2006-03-01'}).headObject(params, function (err, metadata) {  
+        if (err && err.code === 'NotFound') {  
+          res.status(404).send('404');
+          return;
+        }
+        res.sendFile('./views/template1.html', {'root': __dirname});
+    })
 });
 
 //Post
