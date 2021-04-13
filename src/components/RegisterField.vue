@@ -6,7 +6,7 @@
       <input type="email" v-model="email" placeholder="E-Mail" required>
       <input type="password" v-model="password" placeholder="Password" required>
       <input type="password" v-model="rep_password" placeholder="Repeat Password" required>
-      <button type="submit" @click="submit">Register</button>
+      <button type="button" @click="submit">Register</button>
     </form>
     <p class="error">{{error}}</p>
   </div>
@@ -45,6 +45,13 @@ export default {
 
     submit: function () {
       this.error = "";
+      let inputs = document.getElementsByTagName("input");
+      for (let item of inputs) {
+        if(item.value === "") {
+          this.error="Please fill all Fields"
+          return;
+        }
+      }
       if(this.password.length < 8) { this.error = "Password must be at least 8 characters" }
       else if(this.password !== this.rep_password) { this.error = "Passwords do not match!" }
       else {
@@ -61,6 +68,9 @@ export default {
         })
           .then(data => {
             console.log(data);
+            if(data.status === 403) {this.error = "Account already exists"; return}
+            if(data.status === 500) {this.error = "Internal Server Error: 500"; return}
+            this.$router.push({name: "SignUpComplete"})
           })
           .catch((error) => {
             this.error = "There was an error"

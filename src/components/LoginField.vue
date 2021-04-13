@@ -4,7 +4,7 @@
     <form class="form">
       <input type="email" v-model="email" placeholder="E-Mail" required>
       <input type="password" v-model="password" placeholder="Password" required>
-      <button type="submit" @click="submit">Log in</button>
+      <button type="button" @click="submit">Log in</button>
     </form>
     <p class="error">{{error}}</p>
   </div>
@@ -24,6 +24,13 @@ export default {
   methods: {
     submit: function () {
       this.error = "";
+      let inputs = document.getElementsByTagName("input");
+      for (let item of inputs) {
+        if(item.value === "") {
+          this.error="Please fill all Fields"
+          return;
+        }
+      }
       fetch('/login', {
         method: 'POST',
         headers: {
@@ -34,15 +41,18 @@ export default {
           password: this.password
         }),
         mode: "cors"
-      })
-          .then(result => {
+      }).then(result => {
+            if(result.status === 401 || result.status === 403) {this.error = "Wrong Credentials"; return;}
             let reader = result.body.getReader();
             reader.read().then(function processText({ done, value }) {
-              if (done) return
+              if (done) return;
               let string = new TextDecoder().decode(value);
               localStorage.setItem('accessToken', JSON.parse(string).accessToken);
+              console.log(this.$store.state.isLoggedIn)
               return reader.read().then(processText);
             });
+            this.$store.commit("login");
+            this.$router.push({name: "Home"});
           })
           .catch((error) => {
             console.error('Error:', error);

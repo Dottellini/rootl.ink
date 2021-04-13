@@ -70,7 +70,7 @@ router.get('*', (req,res)=>{
 //Post
 
 router.post('/login', (req,res)=>{
-    console.log(req)
+
     account.AccountSchema.find({email:req.body.email}).then(results=>{
         if(!results.length){
             res.cookie('accessToken', '', {

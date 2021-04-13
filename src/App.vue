@@ -10,19 +10,19 @@
             <router-link class="desktop-nav-item" to="/about">About us</router-link>
             <router-link class="desktop-nav-item" to="/service">Service</router-link>
             <router-link class="desktop-nav-item" to="/help">Help</router-link>
-            <button class="register-button account-button">
+            <button v-if="!isLoggedIn" class="register-button account-button">
               <router-link class="router" to="/register">Sign Up</router-link>
             </button>
           </div>
 
           <Slide right :closeOnNavigation="true" :crossIcon="false" style="top: 0">
             <div class="button-container">
-              <button class="login-button account-button">
+              <button v-if="!isLoggedIn" class="login-button account-button">
                 <router-link class="router" to="/login">Log In</router-link>
               </button>
 
             </div>
-            <router-link to="/editor">Editor</router-link>
+            <router-link v-if="isLoggedIn" to="/editor">Editor</router-link>
             <div class="DarkMode-Container">
               <div class="DarkMode-Label">DarkMode</div>
               <span>
@@ -75,6 +75,10 @@ export default {
   computed: {
     isMobile: function() {
       return this.$store.state.isMobile
+    },
+
+    isLoggedIn: function () {
+      return this.$store.state.isLoggedIn
     },
 
     isUserPage: function () {
@@ -261,6 +265,7 @@ export default {
   //Burger
   //////////////////////////////////////////////////////////////////////
   .bm-burger-button {
+    cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -314,6 +319,8 @@ export default {
     display: flex;
     justify-content: center;
     text-decoration: none;
+    color: var(--text-color);
+    font-family: 'Montserrat', sans-serif;
     padding: 0.7em;
   }
   .bm-item-list > * > span {
@@ -331,6 +338,7 @@ export default {
 
     .DarkMode-Label{
       font-family: 'Montserrat', sans-serif;
+      margin-right: 10px;
       color: var(--text-color);
       font-weight: 400;
     }

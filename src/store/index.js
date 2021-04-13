@@ -12,9 +12,14 @@ export default new Vuex.Store({
     text_hex: "#FFFFFF",
     linkBox_hex: "#000000",
     rootLink_hex: "#000000",
+    isLoggedIn: false,
     isMobile: false,
   },
   mutations: {
+    login(state) {
+      state.isLoggedIn = true;
+    },
+
     changeThemeOnPreview(state, isDark) {
       if(isDark) {
         if(state.background_hex === "#FFFFFF" && state.text_hex === "#FFFFFF" && state.linkBox_hex === "#000000" && state.rootLink_hex === "#000000") {
