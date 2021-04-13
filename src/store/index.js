@@ -97,7 +97,15 @@ export default new Vuex.Store({
   },
   actions: {
     fetchUserData({commit}, username) {
-      fetch(`http://d26k63xuikc78y.cloudfront.net${username}.json`, {
+      fetch(`/checkUserPage?id=${username}`, {
+        method: "GET",
+      }).then(data => {
+        console.log(data)
+      }).catch(err => {
+        console.log(err)
+      })
+
+      /*fetch(`http://d26k63xuikc78y.cloudfront.net${username}.json`, {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST',
         'mode': "cors"
@@ -114,7 +122,7 @@ export default new Vuex.Store({
               //document.body.innerHTML = string;
               return reader.read().then(processText);
             });
-          });
+          });*/
       let data = {
         user: {
           username: "Ich_Bin_ein_Username",
