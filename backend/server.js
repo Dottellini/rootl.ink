@@ -27,17 +27,7 @@ mongoose.connect(dbUri, {useNewUrlParser: true, useUnifiedTopology: true})
         server.use('/', middleware.router)
         server.use('/', routes.router);
         server.set('view engine', 'ejs');
-
-        console.log(JSON.parse(credentials).aws.accessKeyId)
         aws.config.update({ "accessKeyId": JSON.parse(credentials).aws.accessKeyId, "secretAccessKey": JSON.parse(credentials).aws.secretAccessKey, "region": "eu-central-1" });
-        s3 = new aws.S3({apiVersion: '2006-03-01'});
-        s3.listBuckets(function(err, data) {
-            if (err) {
-                console.log("Error", err);
-            } else {
-                console.log("Success", data.Buckets);
-            }
-        });
     })
 })
 .catch((err)=>console.log(err));

@@ -2,15 +2,15 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import VueAnalytics from 'vue-analytics'
+import VueGtag from "vue-gtag";
 
 Vue.config.productionTip = false
 
 //Google Analytics
-Vue.use(VueAnalytics, {
-  id: 'G-2ND6RJ4KKP',
-  router
+Vue.use(VueGtag, {
+  config: { id: "G-2ND6RJ4KKP" }
 });
+
 
 
 new Vue({
