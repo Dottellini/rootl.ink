@@ -106,8 +106,13 @@ router.post('/login', (req,res)=>{
             res.cookie('refreshToken', refreshToken, {
                 httpOnly: true,
             });
-            res.set('X-Result', 'OK')
-            res.status(200).json({})
+            if(results[0].email_confirmed){
+                res.set('X-Result', 'OK')
+            }
+            else{
+                res.set('X-Result', 'WARNING')
+            }
+            res.status(200).json({'warning': 'Email not confirmed yet'})
             return;
         });
     })
