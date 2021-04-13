@@ -144,7 +144,7 @@ router.post('/confirmEmail', (req, res)=>{
 });
 
 router.post('/register', (req,res)=>{
-    account.AccountSchema.find({$or:[{email: req.body.email},{username: req.body.username}]}, (error, accounts)=>{
+    account.AccountSchema.find({$or:[{email: req.body.email},{username: /^req.body.username.toLowerCase()$/i}]}, (error, accounts)=>{
         if(error){
             res.set('X-Result', 'ERROR')
             res.status(500).json({'error':'Cant fetch accounts'});
