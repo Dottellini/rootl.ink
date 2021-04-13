@@ -7,39 +7,50 @@ const jwt = require('jsonwebtoken');
 
 //authenticateToken
 router.use(['/testLogin', '/createPage'], (req, res, next)=>{
-    console.log(req.headers.cookie)
     if(req.headers.cookie == undefined){
-        console.log('1')
         res.status(401).send('Not Logged In');
         return;
     }
     let cookies = parseCookies(req.headers.cookie);
     if(cookies.accessToken == undefined) {
-        console.log('2')
         res.status(401).send('Not Logged In');
         return;
     }
     jwt.verify(cookies.accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user)=>{
-        if(err == 'TokenExpiredError: jwt expired') {
-            const payload = jwt.verify(cookies.accessToken, process.env.ACCESS_TOKEN_SECRET, {ignoreExpiration: true} );
-            const refresh = refreshAccessToken(payload.email);
-            if(refresh instanceof Error){
-                res.status(403).send('Invalid Token');
-                return;
-            }
-            res.cookie('accessToken', refresh, {
-                httpOnly: true,
-            });
-            res.locals.user = user;
-            next();
-        }
         if(err){
-            console.log(err)
-            res.status(403).send('Error Validating Token');
-            return;
+            console.log(err.message)
+            switch(err.message) {
+                case 'jwt expired':
+                    const payload = jwt.verify(cookies.accessToken, process.env.ACCESS_TOKEN_SECRET, {ignoreExpiration: true} );
+                    const refresh = refreshAccessToken(payload.email);
+                    if(refresh instanceof Error){
+                        res.status(403).send('Invalid Token');
+                        return;
+                    }
+                    res.cookie('accessToken', refresh, {
+                        httpOnly: true,
+                    });
+                    res.locals.user = user;
+                    next();
+                    return;
+                case 'jwt malformed':
+                    res.cookie('accessToken', '', {
+                        httpOnly: true,
+                    });
+                    res.cookie('refreshToken', '', {
+                        httpOnly: true,
+                    });
+                    res.send('Session Expired')
+                    return;
+                default:
+                    console.log(err);
+                    res.status(403).send('Error Validating Token');
+                    return;
+            }
         }
         res.locals.user = user;
         next();
+        return;
     })
 });
 
