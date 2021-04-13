@@ -57,6 +57,22 @@ router.get('/p/*', (req, res)=>{
     res.sendFile('/views/template1.html', {'root':__dirname});
 });
 
+router.get('/checkUserPage?id=*', (req, res)=>{
+    let params = {
+        Bucket: "rootlinkdata", 
+        Key: req.url.replace('/checkUserPage?id=', '')+'.json'
+       }
+        new aws.S3({apiVersion: '2006-03-01'}).headObject(params, function (err, metadata) {  
+        if (err && err.code === 'NotFound') {
+            res.set('X-Result', 'ERROR')    
+            res.status(404).json({'error': 'Page not found'})
+            return;
+        }
+        res.set('X-Result', 'OK')    
+        res.json({})
+})
+
+
 router.get('*', (req,res)=>{
     let params = {
         Bucket: "rootlinkdata", 
