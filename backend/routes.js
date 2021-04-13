@@ -38,18 +38,22 @@ router.get('/login', (req,res)=>{
 //Get
 
 router.get('/testLogin', (req, res)=>{
+    res.set('X-Result', 'OK')
     res.sendFile('./views/testLogin.html', {'root': __dirname});
 });
 
 router.get('/confirmEmailCode*', (req,res)=>{
+    res.set('X-Result', 'OK')
     res.sendFile('./views/confirmEmail.html', {'root': __dirname});
 });
 
 router.get('/logout', (req,res)=>{
+    res.set('X-Result', 'OK')
     res.sendFile('./views/logout.html', {'root': __dirname});
 });
 
 router.get('/p/*', (req, res)=>{
+    res.set('X-Result', 'OK')
     res.sendFile('/views/template1.html', {'root':__dirname});
 });
 
@@ -59,10 +63,12 @@ router.get('*', (req,res)=>{
         Key: req.url.replace('/', '')+'.json'
        }
     new aws.S3({apiVersion: '2006-03-01'}).headObject(params, function (err, metadata) {  
-        if (err && err.code === 'NotFound') {  
-          res.status(404).send('404');
-          return;
+        if (err && err.code === 'NotFound') {
+            res.set('X-Result', 'ERROR')    
+            res.status(404).json({'error': 'Page not found'})
+            return;
         }
+        res.set('X-Result', 'OK')    
         res.sendFile('./views/template1.html', {'root': __dirname});
     })
 });
@@ -76,7 +82,8 @@ router.post('/login', (req,res)=>{
             res.cookie('accessToken', '', {
                 httpOnly: true,
             });
-            res.status(401).send('Account not found')
+            res.set('X-Result', 'ERROR');
+            res.status(401).json({'error': 'Account not found'})
             return;
         }
         bcrypt.compare(req.body.password, results[0].password_hash, function(err, PasswordResult) {
@@ -84,7 +91,8 @@ router.post('/login', (req,res)=>{
                 res.cookie('accessToken', '', {
                     httpOnly: true,
                 });
-                res.status(403).send('Wrong Password');
+                res.set('X-Result', 'ERROR');
+                res.status(403).json({'error': 'Wrong password'});
                 return;
             }
             const payload = {email: req.body.email};
@@ -98,7 +106,8 @@ router.post('/login', (req,res)=>{
             res.cookie('refreshToken', refreshToken, {
                 httpOnly: true,
             });
-            res.status(200).send('Logged in')
+            res.set('X-Result', 'OK')
+            res.status(200).json({})
             return;
         });
     })
@@ -108,30 +117,35 @@ router.post('/login', (req,res)=>{
 router.post('/confirmEmail', (req, res)=>{
     account.AccountSchema.find({email:req.body.email}).then(result=>{
         if(result.length==0){
-            res.status(401).send('Account not found');
+            res.set('X-Result', 'ERROR')
+            res.status(401).json({'error': 'Account not found'});
             return;
         }
         if(result[0].confirmation_code!=req.body.code){
-            res.status(400).send('Invalid Confirmation Code');
+            res.set('X-Result', 'ERROR')
+            res.status(400).json({'error': 'Invalid confirmation code'});
             return;
         }
         result[0].email_confirmed=true;
         result[0].confirmation_code=undefined;
         result[0].save();
-        res.status(200).send('Email Adress Confirmed');
+
+        res.set('X-Result', 'OK')
+        res.status(200).json({});
         return;
     })
 });
 
 router.post('/register', (req,res)=>{
-    // account.AccountSchema.find({$or:[{email: req.body.email},{username: req.body.username}]}, (error, accounts)=>{
-    account.AccountSchema.find({email: req.body.email}, (error, accounts)=>{
+    account.AccountSchema.find({$or:[{email: req.body.email},{username: req.body.username}]}, (error, accounts)=>{
         if(error){
-            res.status(500).send('Error fetching accounts');
+            res.set('X-Result', 'ERROR')
+            res.status(500).json({'error':'Cant fetch accounts'});
             return;
         }
         if(accounts.length!=0){
-            res.status(403).send('Account already exists');
+            res.set('X-Result', 'ERROR')
+            res.status(403).json({'error':'Account already exists'});
             return;
         }
         const confirmationCode = uuid.v4();
@@ -161,35 +175,37 @@ router.post('/register', (req,res)=>{
                   });                
                 emailSender.sendMail(mailOptions, function(error, info){
                     if (error) {
-                        res.status(500).send('Error Sending Confirmation Email')
+                        res.set('X-Result', 'ERROR')
+                        res.status(500).json({'error':'Cant send confirmation Email'})
                     }
                 });
             });
             Account.save();
-            res.status(200).send('Account created')
+            res.set('X-Result', 'OK')
+            res.status(200).json({})
         })
     });
 });
 
 router.post('/createPage', (req, res)=>{
     let filename;
-    console.log(res.locals.user)
     account.AccountSchema.find({email:res.locals.user.email}).then(results=>{
         filename = results[0].username+'.json';
         let readable = Readable.from([JSON.stringify(req.body)])
         readable.on('error', function(err) {
-            res.status(500).send('Error Reading Data')
+            res.set('X-Result', 'ERROR')
+            res.status(500).json({'error':'Cant read data'})
             return;
         });
         let uploadParams = {Bucket: 'rootlinkdata', Key: filename, Body: readable, ACL: 'public-read'};
         s3.upload (uploadParams, function (err, data) {
             if(err){
-                console.log(err)
-                res.status(500).send('Error Uploading Data')
+                res.set('X-Result', 'ERROR')
+                res.status(500).json({'error':'Cant upload data'})
                 return;
             }if(data){
-                console.log('Uploaded Succefully')
-                res.status(200).send('Uploaded Succefully')
+                res.set('X-Result', 'OK')
+                res.status(200).json({})
                 return;
             }
         });
