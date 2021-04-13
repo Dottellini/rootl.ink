@@ -1,5 +1,5 @@
 <template>
-  <div id="preview" :class="{container: usePhone}" :style="bg_hex" @click="log">
+  <div id="preview" :class="{container: usePhone}" :style="bg_hex">
     <div :class="{bar: usePhone}"></div>
     <div class="url-container" :style="rootl_hex">
       <h1>rootl.ink/</h1><h2>{{username}}</h2>
@@ -8,7 +8,7 @@
     <div id="links">
       <div v-for="link in links">
         <div class="linkBox" :style="box_hex" v-if="link.name !== ''">
-          <img :src='link.img' height="40px" width="40px" v-if="link.img.length > 0">
+          <img :src='link.img' height="40px" width="40px" v-if="link.img !== ''">
           <div class="link-box-text">
             <a target="_blank" :style="text_hex" :href="link.link">{{link.name}}</a>
           </div>
@@ -26,6 +26,10 @@ export default {
     return{
       links: this.$store.state.list,
     }
+  },
+
+  mounted() {
+    this.$store.commit("changeThemeOnPreview", this.isDark)
   },
 
   computed: {
@@ -49,12 +53,6 @@ export default {
       return {color: this.$store.state.rootLink_hex}
     },
   },
-
-  methods: {
-    log: function () {
-      console.log(this.username)
-    }
-  }
 }
 </script>
 

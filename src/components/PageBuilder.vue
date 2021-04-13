@@ -13,9 +13,7 @@
             chosen-class="chosen"
             fallbackClass="sortable-fallback"
             @start="dragging = true">
-          <div class="list-group-item"
-              v-for="element in list"
-              :key="element.id">
+          <div class="list-group-item" v-for="element in list" :key="element.id">
             <div class="horizontal-container">
               <div class="handle">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grip-vertical" viewBox="0 0 16 16">
@@ -23,7 +21,7 @@
                 </svg>
               </div>
               <div>
-                <input type="file" id="upload" accept="image/*" hidden>
+                <input type="file" id="upload" accept="image/*" @change="changeImage(element.id, 'image/jpeg', $event)" hidden>
                 <label for="upload" class="upload-image">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">
                     <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
@@ -46,8 +44,6 @@
                 <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
               </svg>
             </button>
-          </div>
-          <div>
           </div>
         </draggable>
         <button @click="addField" class="plus-button">
@@ -81,6 +77,7 @@
     <button @click="submit" class="save-button">
       Save
     </button>
+    <canvas id="imageCanvas" hidden></canvas>
   </div>
 </template>
 
@@ -92,6 +89,7 @@ import Tabs from "./tab-system/Tabs";
 export default {
   name: "simple",
   display: "Simple",
+  file: "",
   order: 0,
   components: {
     draggable,
@@ -104,13 +102,55 @@ export default {
       editModeActive: false,
       enabled: true,
       dragging: true,
-      list: this.$store.state.list,
+      //list: this.$store.state.list,
     };
+  },
+
+  computed: {
+    list() {
+      return this.$store.state.list
+    }
+  },
+
+  mounted() {
+    document.getElementById("backgroundPicker").value = this.$store.state.background_hex;
+    document.getElementById("textPicker").value = this.$store.state.text_hex;
+    document.getElementById("boxPicker").value = this.$store.state.linkBox_hex;
+    document.getElementById("rootlPicker").value = this.$store.state.rootLink_hex;
   },
 
   methods: {
     submit: function () {
       this.$store.dispatch("savePage", this.$store.state)
+    },
+
+    changeImage: function(id, outputMimeType, evt) {
+      console.log(id)
+      new Promise(res => {
+        const file = evt.target.files[0];
+        const reader = new FileReader();
+        reader.addEventListener('load', (content) => {
+          const img = new Image();
+          img.src = content.target.result.toString();
+          const canvas = document.getElementById('imageCanvas');
+          img.addEventListener('load', (e) => {
+            const ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const max_size = img.height > img.width ? img.width : img.height;
+            canvas.height = img.naturalHeight;
+            canvas.width = img.naturalWidth;
+            ctx.drawImage(img, Math.max((img.naturalWidth - max_size) / 2), Math.max((img.naturalHeight - max_size) / 2), max_size, max_size, 0, 0, img.width, img.height);
+            this.file = canvas.toDataURL(outputMimeType, 0.7)
+
+            let imgData = {
+              id: id,
+              img: this.file
+            }
+            this.$store.commit("addImageToEntry", imgData);
+          });
+        });
+        reader.readAsDataURL(file)
+      })
     },
 
     updateBGColor: function(value) {

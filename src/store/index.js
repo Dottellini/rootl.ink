@@ -48,6 +48,11 @@ export default new Vuex.Store({
       state.isMobile = payload <= 768;
     },
 
+    addImageToEntry(state, payload) {
+      let index = state.list.map(item => item.id).indexOf(payload.id);
+      state.list[index].img = payload.img;
+    },
+
     removeEntry(state, payload) {
       let removeIndex = state.list.map(item => item.id).indexOf(payload);
       state.list.splice(removeIndex, 1);
@@ -115,6 +120,8 @@ export default new Vuex.Store({
         linkBox_hex: state.linkBox_hex,
         rootLink_hex: state.rootLink_hex,
       }
+
+      console.log(data);
 
       fetch('/createPage', {
         method: 'POST',

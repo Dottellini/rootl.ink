@@ -82,7 +82,6 @@ export default {
 
   created() {
     this.$store.commit("checkMobile", window.screen.width)
-    this.$store.commit("changeThemeOnPreview", this.isDark)
   },
 
   mounted() {
@@ -90,6 +89,7 @@ export default {
     document.documentElement.setAttribute("data-theme", localTheme);
     this.theme = localTheme;
     this.isDark = this.theme !== "";
+    this.$store.commit("changeThemeOnPreview", this.isDark)
   },
 
   methods: {
