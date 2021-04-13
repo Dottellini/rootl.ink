@@ -7,6 +7,7 @@ import Login from '../views/login'
 import Userpage from "../views/Userpage";
 import NotFound from "../views/NotFound";
 import SignUpComplete from "../views/SignUpComplete";
+import EmailConfirmation from "../views/EmailConfirmation";
 
 Vue.use(VueRouter)
 
@@ -20,6 +21,11 @@ const routes = [
     path: '/signupcomplete',
     name: 'SignUpComplete',
     component: SignUpComplete
+  },
+  {
+    path: '/emailconfirmation',
+    name: 'EmailConfirmation',
+    component: EmailConfirmation
   },
   {
     path: '/editor',
@@ -58,7 +64,7 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  //mode: "history",
+  mode: "history",
   routes
 })
 
