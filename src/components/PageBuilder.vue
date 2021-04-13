@@ -21,8 +21,8 @@
                 </svg>
               </div>
               <div>
-                <input type="file" id="upload" accept="image/*" @change="changeImage(element.id, 'image/jpeg', $event)" hidden>
-                <label for="upload" class="upload-image">
+                <input type="file" :id="element.id" accept="image/*" @change="changeImage(element.id, 'image/jpeg', $event)" hidden>
+                <label :for="element.id" class="upload-image">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">
                     <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
                     <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
@@ -136,10 +136,10 @@ export default {
           img.addEventListener('load', (e) => {
             const ctx = canvas.getContext("2d");
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const max_size = img.height > img.width ? img.width : img.height;
+            const max_size = img.height < img.width ? img.height : img.width;
             canvas.height = img.naturalHeight;
             canvas.width = img.naturalWidth;
-            ctx.drawImage(img, Math.max((img.naturalWidth - max_size) / 2), Math.max((img.naturalHeight - max_size) / 2), max_size, max_size, 0, 0, img.width, img.height);
+            ctx.drawImage(img, Math.max((img.naturalWidth - max_size) / 2), Math.max((img.naturalHeight - max_size) / 2), max_size, max_size, 0, 0, img.naturalWidth, img.naturalHeight);
             this.file = canvas.toDataURL(outputMimeType, 0.7)
 
             let imgData = {

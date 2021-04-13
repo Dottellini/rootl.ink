@@ -8,7 +8,7 @@
     <div id="links">
       <div v-for="link in links">
         <div class="linkBox" :style="box_hex" v-if="link.name !== ''">
-          <img :src='link.img' height="40px" width="40px" v-if="link.img !== ''">
+          <img :src='link.img' class="link-image" height="40px" width="40px" v-if="link.img !== ''">
           <div class="link-box-text">
             <a target="_blank" :style="text_hex" :href="link.link">{{link.name}}</a>
           </div>
@@ -92,6 +92,11 @@ export default {
     h2{
       margin-left: -0.3em;
     }
+  }
+
+  .link-image {
+    min-width: 40px;
+    min-height: 40px;
   }
 
   .linkBox {
