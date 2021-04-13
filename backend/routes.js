@@ -136,10 +136,6 @@ router.post('/register', (req,res)=>{
         }
         const confirmationCode = uuid.v4();
         bcrypt.hash(req.body.password, 10, function(error, hash) {
-            console.log(req.body.username.indexArrayForSpaces.length)
-            if(req.body.username.indexArrayForSpaces.length == 0){
-                req.body.username = req.body.username.username
-            }
             let Account = new account.AccountSchema({
                 password_hash: hash,
                 email: req.body.email,
