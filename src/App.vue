@@ -14,6 +14,7 @@
               <router-link class="router" to="/register">Sign Up</router-link>
             </button>
           </div>
+
           <Slide right :closeOnNavigation="true" :crossIcon="false" style="top: 0">
             <div class="button-container">
               <button class="login-button account-button">
@@ -25,13 +26,14 @@
             <div class="DarkMode-Container">
               <div class="DarkMode-Label">DarkMode</div>
               <span>
-                <label class="switch">
-                  <input type="checkbox" @click="toggleTheme" v-model="isDark">
-                  <span class="slider round"></span>
-                </label>
-              </span>
+              <label class="switch">
+                <input type="checkbox" @click="toggleTheme" v-model="isDark">
+                <span class="slider round"></span>
+              </label>
+            </span>
             </div>
           </Slide right>
+
         </div>
       </div>
       <router-view/>

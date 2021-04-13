@@ -45,8 +45,8 @@ export default {
 
     submit: function () {
       this.error = "";
-      if(this.password !== this.rep_password) { this.error = "Passwords do not match!" }
-      else if(this.password.length < 8) { this.error = "Password must be at least 8 characters" }
+      if(this.password.length < 8) { this.error = "Password must be at least 8 characters" }
+      else if(this.password !== this.rep_password) { this.error = "Passwords do not match!" }
       else {
         fetch('/register', {
           method: 'POST',
@@ -60,10 +60,11 @@ export default {
           }),
         })
           .then(data => {
-            console.log('Success:', data);
+            console.log(data);
           })
           .catch((error) => {
-            console.error('Error:', error);
+            this.error = "There was an error"
+            console.log(error)
           });
       }
     }
