@@ -26,7 +26,7 @@ export default {
     }
   },
 
-  created() {
+  mounted() {
     this.$store.dispatch("fetchUserData", this.$route.params.username);
 
     document.getElementsByTagName("body")[0].style.backgroundColor = this.bg_hex.backgroundColor;

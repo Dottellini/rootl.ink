@@ -50,11 +50,11 @@ const routes = [
     name: 'Userpage',
     component: Userpage
   },
-  {
+  /*{
     path: '*',
     name: 'Not Found',
     component: NotFound
-  },
+  },*/
 ]
 
 const router = new VueRouter({

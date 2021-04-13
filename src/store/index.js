@@ -97,9 +97,24 @@ export default new Vuex.Store({
   },
   actions: {
     fetchUserData({commit}, username) {
-      //username is the person the site belongs to
-
-      //incoming data
+      fetch(`http://d26k63xuikc78y.cloudfront.net${username}.json`, {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST',
+        'mode': "cors"
+      })
+          .then(data => {
+            let reader = data.body.getReader();
+            reader.read().then(function processText({ done, value }) {
+              if (done) {
+                console.log('Stream complete');
+                return;
+              }
+              let string = new TextDecoder().decode(value);
+              console.log(string);
+              //document.body.innerHTML = string;
+              return reader.read().then(processText);
+            });
+          });
       let data = {
         user: {
           username: "Ich_Bin_ein_Username",
