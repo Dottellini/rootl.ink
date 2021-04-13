@@ -8,12 +8,14 @@ const jwt = require('jsonwebtoken');
 //authenticateToken
 router.use(['/testLogin', '/createPage'], (req, res, next)=>{
     if(req.headers.cookie == undefined){
-        res.status(401).send('Not Logged In');
+        res.set('X-Result','ERROR')
+        res.status(401).json({'error':'Not logged in'});
         return;
     }
     let cookies = parseCookies(req.headers.cookie);
     if(cookies.accessToken == undefined) {
-        res.status(401).send('Not Logged In');
+        res.set('X-Result','ERROR')
+        res.status(401).json({'error':'Not logged in'});
         return;
     }
     jwt.verify(cookies.accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user)=>{
@@ -24,7 +26,8 @@ router.use(['/testLogin', '/createPage'], (req, res, next)=>{
                     const payload = jwt.verify(cookies.accessToken, process.env.ACCESS_TOKEN_SECRET, {ignoreExpiration: true} );
                     const refresh = refreshAccessToken(payload.email);
                     if(refresh instanceof Error){
-                        res.status(403).send('Invalid Token');
+                        res.set('X-Result','ERROR')
+                        res.status(401).json({'error':'Invalid token'});
                         return;
                     }
                     res.cookie('accessToken', refresh, {
@@ -40,11 +43,12 @@ router.use(['/testLogin', '/createPage'], (req, res, next)=>{
                     res.cookie('refreshToken', '', {
                         httpOnly: true,
                     });
-                    res.send('Session Expired')
+                    res.set('X-Result','ERROR')
+                    res.status(401).json({'error':'Session Expired'});
                     return;
                 default:
-                    console.log(err);
-                    res.status(403).send('Error Validating Token');
+                    res.set('X-Result','ERROR')
+                    res.status(403).json({'error':'Cant validate token'});
                     return;
             }
         }

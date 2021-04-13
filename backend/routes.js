@@ -39,7 +39,7 @@ router.get('/login', (req,res)=>{
 
 router.get('/testLogin', (req, res)=>{
     res.set('X-Result', 'OK')
-    res.sendFile('./views/testLogin.html', {'root': __dirname});
+    res.json({'username': res.locals.user});
 });
 
 router.get('/confirmEmailCode*', (req,res)=>{
@@ -111,10 +111,10 @@ router.post('/login', (req,res)=>{
             }
             else{
                 res.set('X-Result', 'WARNING')
-                res.status(200).json({'warning': 'Email not confirmed yet','username':'', 'profilepicture': ''})
+                res.status(200).json({'warning': 'Email not confirmed yet','username':results[0].username, 'profilepicture': 'Not Implemented'})
                 return;
             }
-            res.status(200).json({'username':results[0].username, 'profilepicture': ''})
+            res.status(200).json({'username':results[0].username, 'profilepicture': 'Not Implemented'})
             return;
         });
     })
