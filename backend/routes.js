@@ -111,8 +111,10 @@ router.post('/login', (req,res)=>{
             }
             else{
                 res.set('X-Result', 'WARNING')
+                res.status(200).json({'warning': 'Email not confirmed yet'})
+                return;
             }
-            res.status(200).json({'warning': 'Email not confirmed yet'})
+            res.status(200).json({})
             return;
         });
     })
