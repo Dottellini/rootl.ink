@@ -222,6 +222,10 @@ router.post('/createPage', (req, res)=>{
             return;
         });
         let uploadParams = {Bucket: 'rootlinkdata', Key: filename, Body: readable, ACL: 'public-read'};
+        var s3 = new AWS.S3({
+            apiVersion: '2006-03-01',
+            params: {Bucket: 'rootlinkdata'}
+        });
         s3.upload (uploadParams, function (err, data) {
             if(err){
                 res.set('X-Result', 'ERROR')
