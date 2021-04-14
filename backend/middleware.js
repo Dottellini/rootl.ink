@@ -8,14 +8,12 @@ const jwt = require('jsonwebtoken');
 //authenticateToken
 router.use(['/testLogin', '/createPage'], (req, res, next)=>{
     if(req.headers.cookie == undefined){
-        res.set('X-Result','ERROR')
-        res.status(401).json({'error':'Not logged in'});
+        res.status(401).json({'result': 'ERROR', 'message': 'Not logged in'})
         return;
     }
     let cookies = parseCookies(req.headers.cookie);
     if(cookies.accessToken == undefined) {
-        res.set('X-Result','ERROR')
-        res.status(401).json({'error':'Not logged in'});
+        res.status(401).json({'result': 'ERROR', 'message': 'Not logged in'})
         return;
     }
     jwt.verify(cookies.accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user)=>{
@@ -26,8 +24,7 @@ router.use(['/testLogin', '/createPage'], (req, res, next)=>{
                     const payload = jwt.verify(cookies.accessToken, process.env.ACCESS_TOKEN_SECRET, {ignoreExpiration: true} );
                     const refresh = refreshAccessToken(payload.email);
                     if(refresh instanceof Error){
-                        res.set('X-Result','ERROR')
-                        res.status(401).json({'error':'Invalid token'});
+                        res.status(401).json({'result': 'ERROR', 'message': 'Invalid token'})
                         return;
                     }
                     res.cookie('accessToken', refresh, {
@@ -44,12 +41,10 @@ router.use(['/testLogin', '/createPage'], (req, res, next)=>{
                     res.cookie('refreshToken', '', {
                         httpOnly: true,
                     });
-                    res.set('X-Result','ERROR')
-                    res.status(401).json({'error':'Session Expired'});
+                    res.status(401).json({'result': 'ERROR', 'message': 'Session expired'})
                     return;
                 default:
-                    res.set('X-Result','ERROR')
-                    res.status(403).json({'error':'Cant validate token'});
+                    res.status(403).json({'result': 'ERROR', 'message': 'Cant validate token'})
                     return;
             }
         }
