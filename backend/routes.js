@@ -89,7 +89,7 @@ router.post('/login', (req,res)=>{
             res.cookie('accessToken', '', {
                 httpOnly: true,
             });
-            res.status(401).json({result:'ERROR','message': 'Account not found'})
+            res.status(401).json({'result':'ERROR','message': 'Account not found'})
             return;
         }
         bcrypt.compare(req.body.password, results[0].password_hash, function(err, PasswordResult) {
@@ -97,7 +97,7 @@ router.post('/login', (req,res)=>{
                 res.cookie('accessToken', '', {
                     httpOnly: true,
                 });
-                res.status(401).json({result:'ERROR','message': 'Wrong password'})
+                res.status(401).json({'result':'ERROR','message': 'Wrong password'})
                 return;
             }
             const payload = {email: req.body.email, username:req.body.username};
@@ -127,21 +127,17 @@ router.post('/login', (req,res)=>{
 router.post('/confirmEmail', (req, res)=>{
     account.AccountSchema.find({email:req.body.email}).then(result=>{
         if(result.length==0){
-            res.headers['X-Result'] = 'ERROR'
-            res.status(401).json({'error': 'Account not found'});
+            res.status(401).json({'result':'ERROR', 'message': 'Account not found'});
             return;
         }
         if(result[0].confirmation_code!=req.body.code){
-            res.headers['X-Result'] = 'ERROR'
-            res.status(400).json({'error': 'Invalid confirmation code'});
+            res.status(401).json({'result':'ERROR', 'message': 'Invalid confirmation code'});
             return;
         }
         result[0].email_confirmed=true;
         result[0].confirmation_code=undefined;
         result[0].save();
-
-        res.headers['X-Result'] = 'OK'
-        res.status(200).json({});
+        res.status(200).json({'result':'OK'});
         return;
     })
 });
@@ -150,12 +146,11 @@ router.post('/register', (req,res)=>{
     account.AccountSchema.find({$or:[{email: req.body.email},{username: /^req.body.username.toLowerCase()$/i}]}, (error, accounts)=>{
         if(error){
             res.set('X-Result', 'ERROR')
-            res.status(500).json({'error':'Cant fetch accounts'});
+            res.status(500).json({'result':'ERROR', 'message': 'Cant fetch accounts'});
             return;
         }
         if(accounts.length!=0){
-            res.set('X-Result', 'ERROR')
-            res.status(403).json({'error':'Account already exists'});
+            res.status(403).json({'result':'ERROR', 'message': 'Account already exists'});
             return;
         }
         const confirmationCode = uuid.v4();
@@ -185,14 +180,13 @@ router.post('/register', (req,res)=>{
                   });                
                 emailSender.sendMail(mailOptions, function(error, info){
                     if (error) {
-                        res.set('X-Result', 'ERROR')
-                        res.status(500).json({'error':'Cant send confirmation Email'})
+                        res.status(500).json({'result':'ERROR', 'message': 'Cant send confirmation email'});
+                        return;
                     }
                 });
             });
             Account.save();
-            res.set('X-Result', 'OK')
-            res.status(200).json({})
+            res.status(200).json({'result':'OK'});
         })
     });
 });
@@ -203,8 +197,7 @@ router.post('/createPage', (req, res)=>{
         filename = results[0].username.toLowerCase()+'.json';
         let readable = Readable.from([JSON.stringify(req.body)])
         readable.on('error', function(err) {
-            res.set('X-Result', 'ERROR')
-            res.status(500).json({'error':'Cant read data'})
+            res.status(500).json({'result':'ERROR', 'message': 'Cant read data'});
             return;
         });
         let uploadParams = {Bucket: 'rootlinkdata', Key: filename, Body: readable, ACL: 'public-read'};
@@ -214,12 +207,12 @@ router.post('/createPage', (req, res)=>{
         });
         s3.upload (uploadParams, function (err, data) {
             if(err){
-                res.set('X-Result', 'ERROR')
-                res.status(500).json({'error':'Cant upload data'})
+                res.status(500).json({'result':'ERROR', 'message': 'Cant upload data'});
+
                 return;
             }if(data){
                 res.set('X-Result', 'OK')
-                res.status(200).json({})
+                res.status(200).json({'result':'OK'});
                 return;
             }
         });
