@@ -92,7 +92,6 @@ export default {
 
   created() {
     this.$store.commit("checkMobile", window.screen.width);
-    this.$store.dispatch("loginValid");
   },
 
   mounted() {
@@ -101,6 +100,7 @@ export default {
     this.theme = localTheme;
     this.isDark = this.theme !== "";
     this.$store.commit("changeThemeOnPreview", this.isDark)
+    this.$store.dispatch("loginValid");
   },
 
   methods: {
