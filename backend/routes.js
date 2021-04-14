@@ -112,7 +112,7 @@ router.post('/login', (req,res)=>{
                 res.status(403).json({'error': 'Wrong password'});
                 return;
             }
-            const payload = {email: req.body.email};
+            const payload = {email: req.body.email, username:req.body.username};
             const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
             const refreshToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '60m' });
             results[0].refresh_token = refreshToken;
@@ -214,7 +214,7 @@ router.post('/register', (req,res)=>{
 router.post('/createPage', (req, res)=>{
     let filename;
     account.AccountSchema.find({email:res.locals.user.email}).then(results=>{
-        filename = results[0].username+'.json';
+        filename = results[0].username.toLowerCase()+'.json';
         let readable = Readable.from([JSON.stringify(req.body)])
         readable.on('error', function(err) {
             res.set('X-Result', 'ERROR')

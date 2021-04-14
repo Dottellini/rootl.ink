@@ -34,6 +34,7 @@ router.use(['/testLogin', '/createPage'], (req, res, next)=>{
                         httpOnly: true,
                     });
                     res.locals.user = user;
+                    console.log(user)
                     next();
                     return;
                 case 'jwt malformed':
@@ -53,6 +54,8 @@ router.use(['/testLogin', '/createPage'], (req, res, next)=>{
             }
         }
         res.locals.user = user;
+        console.log(user)
+
         next();
         return;
     })
@@ -83,7 +86,7 @@ function refreshAccessToken(emailAddress){
                 err.status = 403;
                 return err;
             }
-            let payload = {email: emailAddress}
+            let payload = {email: emailAddress, username: results[0].username}
             let accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
             return accessToken;
         })
