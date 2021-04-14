@@ -25,20 +25,27 @@ export default new Vuex.Store({
         if(state.background_hex === "#FFFFFF" && state.text_hex === "#FFFFFF" && state.linkBox_hex === "#000000" && state.rootLink_hex === "#000000") {
           state.background_hex = "#181818";
           state.linkBox_hex = "#1d1d1d";
-          state.rootLink_hex = "#FFFFFF"
+          state.rootLink_hex = "#FFFFFF";
+          state.text_hex = "#FFFFFF"
         }
       } else if(!isDark){
         if(state.background_hex === "#121212" && state.text_hex === "#FFFFFF" && state.linkBox_hex === "#1d1d1d" && state.rootLink_hex === "#FFFFFF") {
-          state.background_hex = "";
-          state.linkBox_hex = "";
-          state.rootLink_hex = ""
+          state.background_hex = "#FFFFFF";
+          state.linkBox_hex = "#000000";
+          state.rootLink_hex = "#000000"
+          state.text_hex = "#FFFFFF"
         }
       }
     },
 
     setData(state, payload) {
-      //Set the data of the page after fetching it
-      state.account_username = payload.user.username;
+      let data = JSON.parse(payload)
+      console.log(data)
+      state.list = data.url_list;
+      state.background_hex = data.background_hex;
+      state.text_hex = data.text_hex;
+      state.linkBox_hex = data.text;
+      state.rootLink_hex = data.text;
     },
 
     emptyEntry(state) {
@@ -96,50 +103,26 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    fetchUserData({commit}, username) {
-      /*return fetch(`/checkUserPage?id=${username}`, {
-        method: "GET",
-      }).then(data => {
-        console.log(data)
-      }).catch(err => {
-        console.log(err)
-      })*/
-
-      fetch(`http://d26k63xuikc78y.cloudfront.net/${username}.json`, {
+    async fetchUserData({commit}, username) {
+      let string;
+      await fetch(`http://d26k63xuikc78y.cloudfront.net/${username.toLowerCase()}.json`, {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST',
         'mode': "cors"
       }).then(data => {
-            let reader = data.body.getReader();
-            reader.read().then(function processText({ done, value }) {
-              if (done) {
-                console.log('Stream complete');
-                return;
-              }
-              let string = new TextDecoder().decode(value);
-              console.log(string);
-              //document.body.innerHTML = string;
-              return reader.read().then(processText);
-            });
-          }).catch((err) => {
-            console.log(err)
+        let reader = data.body.getReader();
+        reader.read().then(function processText({done, value}) {
+          if (done) {
+            console.log('Stream complete');
+            commit("setData", string)
+            return
+          }
+          string = new TextDecoder().decode(value)
+          return reader.read().then(processText);
+        })
+      }).catch((err) => {
+        console.log(err)
       })
-
-      /*let data = {
-        user: {
-          username: "Ich_Bin_ein_Username",
-          indexArrayForSpaces: [3, 7, 11]
-        }
-      };
-
-      let usernameArray = data.user.username.split("");
-      data.user.indexArrayForSpaces.forEach(entry => {
-        usernameArray[entry] = " ";
-      })
-
-      data.user.username = usernameArray.join("")
-
-      commit("setData", data)*/
     },
 
     savePage({commit}, state) {

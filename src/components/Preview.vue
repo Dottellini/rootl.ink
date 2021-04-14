@@ -22,11 +22,6 @@
 export default {
   name: "Preview",
   props: ["usePhone"],
-  data() {
-    return{
-      links: this.$store.state.list,
-    }
-  },
 
   mounted() {
     this.$store.commit("changeThemeOnPreview", this.isDark)
@@ -35,6 +30,10 @@ export default {
   computed: {
     username: function () {
       return this.$store.state.username
+    },
+
+    links: function () {
+      return this.$store.state.list
     },
 
     bg_hex: function () {
