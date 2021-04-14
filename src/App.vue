@@ -38,7 +38,6 @@
               </p>
             </div>
           </Slide right>
-
         </div>
       </div>
       <router-view/>
@@ -131,6 +130,7 @@ export default {
     --background-color: white;
     --surface-color: white;
     --text-color: #0f0f0f;
+    --text-unimportant-color: #444444;
     --burger-page-color: rgba(0, 0, 0, 0.05);
     --ghost-color: #e0f3ff;
     --device-border-color: #222;
@@ -143,6 +143,7 @@ export default {
     --background-color: #181818;
     --surface-color: #1d1d1d;
     --text-color: white;
+    --text-unimportant-color: #8b8b8b;
     --burger-page-color: rgba(0, 0, 0, 0.9);
     --ghost-color: #3d3d60;
     --device-border-color: #323232;
@@ -163,7 +164,12 @@ export default {
   }
 
   p{
+    font-size: 10px;
     font-family: 'Montserrat', sans-serif;
+    color: var(--text-unimportant-color);
+    a {
+      color: var(--text-unimportant-color);
+    }
   }
 
   h1{
@@ -348,7 +354,7 @@ export default {
   .DarkMode-Container {
     display: flex;
     flex-direction: row;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: center;
 
     .DarkMode-Label{
