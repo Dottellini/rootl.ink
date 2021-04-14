@@ -141,12 +141,12 @@ router.post('/login', (req,res)=>{
 router.post('/confirmEmail', (req, res)=>{
     account.AccountSchema.find({email:req.body.email}).then(result=>{
         if(result.length==0){
-            res.set('X-Result', 'ERROR')
+            res.headers['X-Result'] = 'ERROR'
             res.status(401).json({'error': 'Account not found'});
             return;
         }
         if(result[0].confirmation_code!=req.body.code){
-            res.set('X-Result', 'ERROR')
+            res.headers['X-Result'] = 'ERROR'
             res.status(400).json({'error': 'Invalid confirmation code'});
             return;
         }
@@ -154,7 +154,7 @@ router.post('/confirmEmail', (req, res)=>{
         result[0].confirmation_code=undefined;
         result[0].save();
 
-        res.set('X-Result', 'OK')
+        res.headers['X-Result'] = 'OK'
         res.status(200).json({});
         return;
     })
