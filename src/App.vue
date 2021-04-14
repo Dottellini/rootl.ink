@@ -32,6 +32,11 @@
               </label>
             </span>
             </div>
+            <div>
+              <p>
+                Click <a href="#" @click.prevent="disableTracking">here</a> to disable Google Analytics tracking
+              </p>
+            </div>
           </Slide right>
 
         </div>
@@ -104,6 +109,11 @@ export default {
   },
 
   methods: {
+    disableTracking() {
+      this.$ga.disable();
+      alert('Tracking disabled');
+    },
+
     toggleTheme() {
       this.theme = this.theme === "darkMode" ? "" : "darkMode";
       this.isDark = this.isDark !== true;
