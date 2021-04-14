@@ -9,5 +9,7 @@ export default {
 </script>
 
 <style scoped>
-
+  h1{
+    color: var(--text-color)
+  }
 </style>

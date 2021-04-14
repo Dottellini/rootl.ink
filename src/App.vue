@@ -73,6 +73,10 @@ export default {
   },
 
   computed: {
+    username: function () {
+      return this.$store.state.account_username
+    },
+
     isMobile: function() {
       return this.$store.state.isMobile
     },
@@ -87,7 +91,8 @@ export default {
   },
 
   created() {
-    this.$store.commit("checkMobile", window.screen.width)
+    this.$store.commit("checkMobile", window.screen.width);
+    this.$store.dispatch("loginValid");
   },
 
   mounted() {

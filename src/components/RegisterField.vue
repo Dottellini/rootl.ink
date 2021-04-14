@@ -25,6 +25,12 @@ export default {
     }
   },
 
+  mounted() {
+    if(this.$store.state.isLoggedIn) {
+      this.$router.push({name: "Home"})
+    }
+  },
+
   methods: {
     /*convertUsername: function (username) {
       let userArray = username.split("");

@@ -14,6 +14,12 @@ export default {
   components: {
     PageBuilder,
     Preview
+  },
+
+  mounted() {
+    if(!this.$store.state.isLoggedIn) {
+      this.$router.push({name: "Home"})
+    }
   }
 }
 </script>

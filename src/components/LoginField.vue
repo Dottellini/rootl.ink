@@ -21,6 +21,12 @@ export default {
     }
   },
 
+  mounted() {
+    if(this.$store.state.isLoggedIn) {
+      this.$router.push({name: "Home"})
+    }
+  },
+
   methods: {
     submit: function () {
       this.error = "";
@@ -31,6 +37,8 @@ export default {
           return;
         }
       }
+      let complication = "";
+      let username = "";
       fetch('/login', {
         method: 'POST',
         headers: {
@@ -42,20 +50,34 @@ export default {
         }),
         mode: "cors"
       }).then(result => {
-            if(result.status === 401 || result.status === 403) {this.error = "Wrong Credentials"; return;}
-            let reader = result.body.getReader();
-            reader.read().then(function processText({ done, value }) {
-              if (done) return;
-              let string = new TextDecoder().decode(value);
-              localStorage.setItem('accessToken', JSON.parse(string).accessToken);
-              return reader.read().then(processText);
-            });
-            this.$store.commit("login");
+        result.headers.forEach(header => {
+          if(header === "ERROR") {this.error = "Wrong Credentials"}
+          else if(header === "WARNING") {this.error = "Please confirm your E-Mail"}
+        })
+        let reader = result.body.getReader();
+        reader.read().then(function processText({ done, value }) {
+          if (done) return;
+          let string = new TextDecoder().decode(value);
+          let data = JSON.parse(string)
+          if(data.result === "WARNING" || data.result === "ERROR") {
+            complication = data.message
+          } else if(data.result === "OK") {
+            username = data.username;
+            localStorage.setItem('accessToken', data.accessToken);
+            return reader.read().then(processText);
+          }
+        }).then(() => {
+          if(complication === "") {
+            this.$store.commit("login", username);
             this.$router.push({name: "Home"});
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-          });
+          } else {
+            this.error = complication
+          }
+        })
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
     }
   },
 

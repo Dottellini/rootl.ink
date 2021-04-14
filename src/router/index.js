@@ -15,47 +15,43 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
   },
   {
     path: '/signupcomplete',
     name: 'SignUpComplete',
-    component: SignUpComplete
+    component: SignUpComplete,
   },
   {
     path: '/emailconfirmation',
     name: 'EmailConfirmation',
-    component: EmailConfirmation
+    component: EmailConfirmation,
   },
   {
     path: '/editor',
     name: 'Editor',
     component: Editor,
-    meta: {
-      requiresAuth: true
-    }
   },
   {
     path: '/register',
     name: 'Register',
     component: Register,
-    meta: {
-      guest: true
-    }
   },
   {
     path: '/login',
     name: 'Login',
     component: Login,
-    meta: {
-      guest: true
-    }
   },
   {
     path: '/:username',
     name: 'Userpage',
-    component: Userpage
+    component: Userpage,
   },
+  {
+    path: '/pagenotfound',
+    name: 'PageNotFound',
+    component: NotFound,
+  }
   /*{
     path: '*',
     name: 'Not Found',

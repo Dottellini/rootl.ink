@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import router from "../router/index"
 
 Vue.use(Vuex)
 
@@ -16,8 +17,9 @@ export default new Vuex.Store({
     isMobile: false,
   },
   mutations: {
-    login(state) {
+    login(state, payload) {
       state.isLoggedIn = true;
+      state.account_username = payload;
     },
 
     changeThemeOnPreview(state, isDark) {
@@ -103,6 +105,14 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    loginValid({commit}){
+      fetch('/testLogin', {
+        method: 'GET'
+      }).then(data => {
+        console.log(data)
+      })
+    },
+
     async fetchUserData({commit}, username) {
       let string;
       await fetch(`http://d26k63xuikc78y.cloudfront.net/${username.toLowerCase()}.json`, {
@@ -110,6 +120,10 @@ export default new Vuex.Store({
         'Access-Control-Allow-Methods': 'GET, POST',
         'mode': "cors"
       }).then(data => {
+        if(data.status === 403) {
+          router.push({name: "PageNotFound"})
+          return;
+        }
         let reader = data.body.getReader();
         reader.read().then(function processText({done, value}) {
           if (done) {
@@ -122,6 +136,7 @@ export default new Vuex.Store({
         })
       }).catch((err) => {
         console.log(err)
+        router.push({name: "PageNotFound"})
       })
     },
 
