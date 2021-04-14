@@ -222,7 +222,7 @@ router.post('/createPage', (req, res)=>{
             return;
         });
         let uploadParams = {Bucket: 'rootlinkdata', Key: filename, Body: readable, ACL: 'public-read'};
-        var s3 = new AWS.S3({
+        var s3 = new aws.S3({
             apiVersion: '2006-03-01',
             params: {Bucket: 'rootlinkdata'}
         });

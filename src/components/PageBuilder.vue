@@ -74,9 +74,7 @@
       </tab>
     </tabs>
     <hr>
-    <button @click="submit" class="save-button">
-      Save
-    </button>
+    <button @click="submit" class="save-button">Save</button>
     <canvas id="imageCanvas" hidden></canvas>
   </div>
 </template>

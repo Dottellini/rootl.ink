@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Email confirmed!</h1>
-    <router-link to="/login">Login here!</router-link>
+    <router-link class="router" to="/login">Login here!</router-link>
   </div>
 </template>
 
@@ -32,5 +32,14 @@ export default {
 </script>
 
 <style scoped>
+  h1 {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--text-color);
+  }
+  .router {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--text-color)
+  }
+
 
 </style>

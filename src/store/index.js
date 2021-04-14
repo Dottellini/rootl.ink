@@ -97,20 +97,19 @@ export default new Vuex.Store({
   },
   actions: {
     fetchUserData({commit}, username) {
-      fetch(`/checkUserPage?id=${username}`, {
+      /*return fetch(`/checkUserPage?id=${username}`, {
         method: "GET",
       }).then(data => {
         console.log(data)
       }).catch(err => {
         console.log(err)
-      })
+      })*/
 
-      /*fetch(`http://d26k63xuikc78y.cloudfront.net${username}.json`, {
+      fetch(`http://d26k63xuikc78y.cloudfront.net/${username}.json`, {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST',
         'mode': "cors"
-      })
-          .then(data => {
+      }).then(data => {
             let reader = data.body.getReader();
             reader.read().then(function processText({ done, value }) {
               if (done) {
@@ -122,8 +121,11 @@ export default new Vuex.Store({
               //document.body.innerHTML = string;
               return reader.read().then(processText);
             });
-          });*/
-      let data = {
+          }).catch((err) => {
+            console.log(err)
+      })
+
+      /*let data = {
         user: {
           username: "Ich_Bin_ein_Username",
           indexArrayForSpaces: [3, 7, 11]
@@ -137,7 +139,7 @@ export default new Vuex.Store({
 
       data.user.username = usernameArray.join("")
 
-      commit("setData", data)
+      commit("setData", data)*/
     },
 
     savePage({commit}, state) {

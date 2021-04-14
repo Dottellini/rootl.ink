@@ -48,7 +48,6 @@ export default {
               if (done) return;
               let string = new TextDecoder().decode(value);
               localStorage.setItem('accessToken', JSON.parse(string).accessToken);
-              console.log(this.$store.state.isLoggedIn)
               return reader.read().then(processText);
             });
             this.$store.commit("login");
