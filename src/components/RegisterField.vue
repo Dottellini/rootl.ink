@@ -61,6 +61,7 @@ export default {
       if(this.password.length < 8) { this.error = "Password must be at least 8 characters" }
       else if(this.password !== this.rep_password) { this.error = "Passwords do not match!" }
       else {
+        let complication = "";
         fetch('/register', {
           method: 'POST',
           headers: {
@@ -73,10 +74,23 @@ export default {
           }),
         })
           .then(data => {
-            console.log(data);
-            if(data.status === 403) {this.error = "Account already exists"; return}
-            if(data.status === 500) {this.error = "Internal Server Error: 500"; return}
-            this.$router.push({name: "SignUpComplete"})
+            let reader = data.body.getReader();
+            reader.read().then(function processText({done, value}) {
+              if(done) return
+              let string = new TextDecoder().decode(value)
+              let data = JSON.parse(string)
+              if(data.result === "OK") {
+                return reader.read().then(processText);
+              } else if(data.result === "WARNING" || data.result === "ERROR") {
+                complication = data.message
+              }
+            }).then(() => {
+              if(complication === "") {
+                this.$router.push({name: "SignUpComplete"})
+              } else {
+                this.error = complication
+              }
+            })
           })
           .catch((error) => {
             this.error = "There was an error"

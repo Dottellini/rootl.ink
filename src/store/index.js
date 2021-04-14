@@ -107,9 +107,19 @@ export default new Vuex.Store({
   actions: {
     loginValid({commit}){
       fetch('/testLogin', {
-        method: 'GET'
-      }).then(data => {
-        console.log(data)
+        method: 'GET',
+        headers: {
+            "Content-Type": "application/json"
+        }
+      }).then(response => {
+        let reader = response.body.getReader()
+        reader.read().then(function processText({done, value}) {
+          if(done) return
+
+          let string = new TextDecoder().decode(value)
+          console.log(string)
+          return reader.read().then(processText);
+        })
       })
     },
 
