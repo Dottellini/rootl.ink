@@ -38,8 +38,7 @@ router.get('/login', (req,res)=>{
 //Get
 
 router.get('/testLogin', (req, res)=>{
-    res.set('X-Result', 'OK')
-    res.json({'username': res.locals.user});
+    res.json({'username': res.locals.user, 'result':'OK'});
 });
 
 router.get('/confirmEmailCode*', (req,res)=>{
@@ -52,11 +51,6 @@ router.get('/logout', (req,res)=>{
     res.sendFile('./views/logout.html', {'root': __dirname});
 });
 
-router.get('/p/*', (req, res)=>{
-    res.set('X-Result', 'OK')
-    res.sendFile('/views/template1.html', {'root':__dirname});
-});
-
 router.get('/checkUserPage?id=*', (req, res)=>{
     let params = {
         Bucket: "rootlinkdata", 
@@ -64,12 +58,10 @@ router.get('/checkUserPage?id=*', (req, res)=>{
     }
     new aws.S3({apiVersion: '2006-03-01'}).headObject(params, function (err, metadata) {  
         if (err && err.code === 'NotFound') {
-            res.set('X-Result', 'ERROR')    
-            res.status(404).json({'error': 'Page not found'})
+            res.status(404).json({'result': 'ERROR', 'message': 'Not Found'})
             return;
         }
-        res.set('X-Result', 'OK')    
-        res.json({})
+        res.json({'result':'OK'})
     })
 });
 
@@ -81,11 +73,9 @@ router.get('*', (req,res)=>{
        }
     new aws.S3({apiVersion: '2006-03-01'}).headObject(params, function (err, metadata) {  
         if (err && err.code === 'NotFound') {
-            res.set('X-Result', 'ERROR')    
-            res.status(404).json({'error': 'Page not found'})
+            res.status(404).json({'result':'ERROR', 'message': 'Page not found'})
             return;
         }
-        res.set('X-Result', 'OK')    
         res.sendFile('./views/template1.html', {'root': __dirname});
     })
 });
@@ -99,8 +89,7 @@ router.post('/login', (req,res)=>{
             res.cookie('accessToken', '', {
                 httpOnly: true,
             });
-            res.set('X-Result', 'ERROR');
-            res.status(401).json({'error': 'Account not found'})
+            res.status(401).json({result:'ERROR','message': 'Account not found'})
             return;
         }
         bcrypt.compare(req.body.password, results[0].password_hash, function(err, PasswordResult) {
@@ -108,8 +97,7 @@ router.post('/login', (req,res)=>{
                 res.cookie('accessToken', '', {
                     httpOnly: true,
                 });
-                res.set('X-Result', 'ERROR');
-                res.status(403).json({'error': 'Wrong password'});
+                res.status(401).json({result:'ERROR','message': 'Wrong password'})
                 return;
             }
             const payload = {email: req.body.email, username:req.body.username};
@@ -124,15 +112,13 @@ router.post('/login', (req,res)=>{
                 httpOnly: true,
             });
             if(results[0].email_confirmed){
-                res.set('X-Result', 'OK')
-            }
-            else{
-                res.set('X-Result', 'WARNING')
-                res.status(200).json({'warning': 'Email not confirmed yet','username':results[0].username, 'profilepicture': 'Not Implemented'})
+                res.status(200).json({'result':'OK', 'username':results[0].username, 'profilepicture': 'Not Implemented'})
                 return;
             }
-            res.status(200).json({'username':results[0].username, 'profilepicture': 'Not Implemented'})
-            return;
+            else{
+                res.status(200).json({'result':'WARNING', 'message': 'Email not confirmed yet','username':results[0].username, 'profilepicture': 'Not Implemented'})
+                return;
+            }
         });
     })
 
