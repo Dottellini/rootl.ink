@@ -14,10 +14,6 @@ const { check, validationResult, query } = require('express-validator');
 
 //Get
 
-router.get('/testLogin', (req, res)=>{
-    res.json({'username': res.locals.user, 'result':'OK'});
-});
-
 router.get('/confirmEmailCode*', (req,res)=>{
     res.sendFile('./views/confirmEmail.html', {'root': __dirname});
 });
@@ -86,17 +82,22 @@ router.post('/login', (req,res)=>{
                 httpOnly: true,
             });
             if(results[0].email_confirmed){
-                res.status(200).json({'result':'OK', 'username':results[0].username, 'profilepicture': 'Not Implemented'})
+                res.status(200).json({'result':'OK', 'username':results[0].username})
                 return;
             }
             else{
-                res.status(200).json({'result':'WARNING', 'message': 'Email not confirmed yet','username':results[0].username, 'profilepicture': 'Not Implemented'})
+                res.status(200).json({'result':'WARNING', 'message': 'Email not confirmed yet','username':results[0].username})
                 return;
             }
         });
     })
 
 });
+
+router.post('/testLogin', (req, res)=>{
+    res.json({'username': res.locals.user, 'result':'OK'});
+});
+
 
 router.post('/confirmEmail', (req, res)=>{
     account.AccountSchema.find({email:req.body.email}).then(result=>{
@@ -193,8 +194,9 @@ router.post('/createPage', (req, res)=>{
 
 router.post('/uploadProfilePicture', (req,res)=>{
     let filename;
+    console.log(res.locals.user);
     account.AccountSchema.find({email:res.locals.user.email}).then(results=>{
-        filename = results[0].username.toLowerCase()+'profilepicture.txt';
+        filename = results[0].username.toLowerCase()+'.profilepicture.txt';
         let readable = Readable.from([JSON.stringify(req.body)])
         readable.on('error', function(err) {
             res.status(500).json({'result':'ERROR', 'message': 'Cant read data'});

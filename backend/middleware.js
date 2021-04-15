@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 //authenticateToken
-router.use(['/testLogin', '/createPage'], (req, res, next)=>{
+router.use(['/testLogin', '/createPage', '/uploadProfilePicture'], (req, res, next)=>{
     if(req.headers.cookie == undefined){
         res.status(401).json({'result': 'ERROR', 'message': 'Not logged in'})
         return;
