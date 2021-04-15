@@ -21,13 +21,12 @@ export default {
       if(input.files.length === 0) { return }
       console.log(input.files[0])
 
-      let f = (URL || webkitURL).createObjectURL(input.files[0]);
-      let form = new FormData();
-      form.append("file", f)
+      //let form = new FormData();
+      //form.append("file", input.files[0])
 
       fetch('/uploadProfilePicture', {
         method: 'POST',
-        body: {avatar: form}
+        body: {avatar: input.files[0]}
       }).then(response => {
         console.log(response)
       }).catch(err => {
