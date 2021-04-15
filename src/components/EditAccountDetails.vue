@@ -22,10 +22,13 @@ export default {
 
       let f = (URL || webkitURL).createObjectURL(input.files[0]);
       let form = new FormData();
-      form.append("file", f, input.files[0].name)
+      form.append("file", f)
 
       fetch('/uploadProfilePicture', {
         method: 'POST',
+        headers: {
+          "Content-Type": "multipart/form-data"
+        },
         body: form
       }).then(response => {
         console.log(response)

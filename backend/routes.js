@@ -58,7 +58,7 @@ router.get('*', (req,res)=>{
 //Post
 
 router.post('/uploadProfilePicture', (req, res)=>{
-    console.log(req.body)
+    console.log(req)
 });
 
 //router.post('/login',check('email').whitelist(['abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ','123456789', '.']), (req,res)=>{
