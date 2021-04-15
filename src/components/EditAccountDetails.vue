@@ -18,14 +18,18 @@ export default {
   methods: {
     upload: function () {
       let input = document.getElementById("imageInput")
-      if(input.value.length === 0) { return }
+      if(input.files.length === 0) { return }
+
+      let data = new FormData();
+      data.append("name", input.files[0].name)
+      data.append("file", input.files[0])
 
       fetch('/uploadProfilePicture', {
         method: 'POST',
         headers: {
-          "Content-Type": "application/json" //"multipart/form-data"
+          "Content-Type": "multipart/form-data"
         },
-        body: {test: "test"}
+        body: data
       }).then(response => {
         console.log(response)
       }).catch(err => {
