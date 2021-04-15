@@ -2,38 +2,15 @@ const express = require('express');
 const router = express.Router();
 const middleware = require('./middleware');
 const account = require('./db-models/account');
-const fs = require('fs');
-const { Readable } = require("stream")
-const path = require('path');
+const { Readable } = require('stream')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const uuid = require('uuid');
 const ejs = require('ejs');
-const nodemailer = require('nodemailer');
+const {createTransport} = require('nodemailer');
 const aws = require('aws-sdk');
+const { check, validationResult, query } = require('express-validator');
 
-
-
-
-{
-    /*router.get('/', (req, res)=>{
-    res.sendFile('./views/index.html', {'root': __dirname});
-});
-
-router.get('/register', (req, res)=>{
-    res.sendFile('./views/register.html', {'root': __dirname});
-});
-
-router.get('/createPage', (req, res)=>{
-    res.sendFile('./views/createPage.html', {'root': __dirname});
-});
-
-router.get('/login', (req,res)=>{
-    res.sendFile('/views/login.html', {'root':__dirname});
-});
-
-*/
-}
 
 //Get
 
@@ -52,7 +29,7 @@ router.get('/logout', (req,res)=>{
 router.get('/checkUserPage?id=*', (req, res)=>{
     let params = {
         Bucket: "rootlinkdata", 
-        Key: req.url.replace('/checkUserPage?id=', '')+'.json'
+        Key: '${req.query.id}.json'
     }
     new aws.S3({apiVersion: '2006-03-01'}).headObject(params, function (err, metadata) {  
         if (err && err.code === 'NotFound') {
@@ -80,8 +57,15 @@ router.get('*', (req,res)=>{
 
 //Post
 
+//router.post('/login',check('email').whitelist(['abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ','123456789', '.']), (req,res)=>{
 router.post('/login', (req,res)=>{
-
+        console.log('!'+req.body.email)
+    const errors = validationResult(req)
+    if(!errors.isEmpty()){
+        console.log('ERROR!!!')
+    }else{
+        console.log('Kein error')
+    }
     account.AccountSchema.find({email:req.body.email}).then(results=>{
         if(!results.length){
             res.cookie('accessToken', '', {
@@ -143,7 +127,6 @@ router.post('/confirmEmail', (req, res)=>{
 router.post('/register', (req,res)=>{
     account.AccountSchema.find({$or:[{email: req.body.email},{username: /^req.body.username.toLowerCase()$/i}]}, (error, accounts)=>{
         if(error){
-            res.set('X-Result', 'ERROR')
             res.status(500).json({'result':'ERROR', 'message': 'Cant fetch accounts'});
             return;
         }
@@ -169,7 +152,7 @@ router.post('/register', (req,res)=>{
                     text: data,
                     html: data
                 };
-                var emailSender = nodemailer.createTransport({
+                var emailSender = createTransport({
                     service: 'gmail',
                     auth: {
                       user: 'rootlink.test123@gmail.com',
