@@ -24,11 +24,10 @@ export default {
       let f = (URL || webkitURL).createObjectURL(input.files[0]);
       let form = new FormData();
       form.append("file", f)
-      form.append("key", "avatar")
 
       fetch('/uploadProfilePicture', {
         method: 'POST',
-        body: form
+        body: {avatar: form}
       }).then(response => {
         console.log(response)
       }).catch(err => {
