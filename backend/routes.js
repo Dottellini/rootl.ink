@@ -42,12 +42,10 @@ router.get('/testLogin', (req, res)=>{
 });
 
 router.get('/confirmEmailCode*', (req,res)=>{
-    res.set('X-Result', 'OK')
     res.sendFile('./views/confirmEmail.html', {'root': __dirname});
 });
 
 router.get('/logout', (req,res)=>{
-    res.set('X-Result', 'OK')
     res.sendFile('./views/logout.html', {'root': __dirname});
 });
 
