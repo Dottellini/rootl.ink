@@ -10,7 +10,6 @@ const ejs = require('ejs');
 const {createTransport} = require('nodemailer');
 const aws = require('aws-sdk');
 const { check, validationResult, query } = require('express-validator');
-const multer = require('./multerMiddleware');
 
 
 //Get
@@ -193,8 +192,8 @@ router.post('/createPage', (req, res)=>{
     });
 });
 
-router.post('/uploadProfilePicture', multer.uploadUserPhoto(), (req, res)=>{
-    console.log(req);
-});
+//router.post('/uploadProfilePicture', multer.uploadUserPhoto(), (req, res)=>{
+ //   console.log(req);
+//});
 
 exports.router = router;
