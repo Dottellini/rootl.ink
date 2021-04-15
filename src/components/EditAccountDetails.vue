@@ -45,8 +45,7 @@ export default {
     },
 
     upload: function () {
-      let input = document.getElementById("imageInput")
-      if(input.files.length === 0) { return }
+      if(this.file === "") { return }
 
       let data = {image: this.file}
 
