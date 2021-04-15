@@ -24,6 +24,7 @@ export default new Vuex.Store({
       state.account_username = payload;
     },
 
+
     changeThemeOnPreview(state, isDark) {
       if(isDark) {
         if(state.background_hex === "#FFFFFF" && state.text_hex === "#FFFFFF" && state.linkBox_hex === "#000000" && state.rootLink_hex === "#000000") {
@@ -44,12 +45,12 @@ export default new Vuex.Store({
 
     setData(state, payload) {
       let data = JSON.parse(payload)
-      console.log(data)
+      state.username = data.username;
       state.list = data.url_list;
       state.background_hex = data.background_hex;
       state.text_hex = data.text_hex;
-      state.linkBox_hex = data.text;
-      state.rootLink_hex = data.text;
+      state.linkBox_hex = data.linkBox_hex;
+      state.rootLink_hex = data.rootLink_hex;
     },
 
     emptyEntry(state) {
@@ -153,6 +154,7 @@ export default new Vuex.Store({
 
     savePage({commit}, state) {
       const data = {
+        username: state.account_username,
         url_list: state.list,
         background_hex: state.background_hex,
         text_hex: state.text_hex,

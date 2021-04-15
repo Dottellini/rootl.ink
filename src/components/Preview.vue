@@ -107,7 +107,6 @@ export default {
     height: 40px;
     align-items: center;
     justify-content: flex-start;
-    background-color: black;
     margin: 1em auto;
     padding: 0.3em 0;
     max-width: 21em;

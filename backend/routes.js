@@ -191,6 +191,7 @@ router.post('/createPage', (req, res)=>{
     });
 });
 
+<<<<<<< HEAD
 router.post('/uploadProfilePicture', (req,res)=>{
     let filename;
     account.AccountSchema.find({email:res.locals.user.email}).then(results=>{
@@ -216,5 +217,10 @@ router.post('/uploadProfilePicture', (req,res)=>{
         });
     });
 });
+=======
+//router.post('/uploadProfilePicture', multer.uploadUserPhoto(), (req, res)=>{
+ //   console.log(req);
+//});
+>>>>>>> 15c46918b7990fb5280c6c23c3cd8a287d19896a
 
 exports.router = router;
