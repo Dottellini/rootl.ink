@@ -19,6 +19,7 @@ export default {
     upload: function () {
       let input = document.getElementById("imageInput")
       if(input.files.length === 0) { return }
+      console.log(input.files[0])
 
       fetch('/uploadProfilePicture', {
         method: 'POST',
