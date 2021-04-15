@@ -1,12 +1,7 @@
 <template>
   <div class="container">
-    <form method="POST" action="/uploadProfilePicture" enctype="multipart/form-data">
-      <input id="imageInput" type="file" name="avatar">
-      <input type="submit" name="submit-Button" value="Upload">
-    </form>
-    <!--
     <input id="imageInput" type="file" name="avatar">
-    <button type="button" @click="upload">Upload</button>-->
+    <button type="button" @click="upload">Upload</button>
     <input id="username" type="text">
     <button>Save</button>
   </div>
@@ -29,6 +24,7 @@ export default {
       let f = (URL || webkitURL).createObjectURL(input.files[0]);
       let form = new FormData();
       form.append("file", f)
+      form.append("key", "avatar")
 
       fetch('/uploadProfilePicture', {
         method: 'POST',
