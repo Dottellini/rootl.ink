@@ -18,10 +18,6 @@ router.get('/confirmEmailCode*', (req,res)=>{
     res.sendFile('./views/confirmEmail.html', {'root': __dirname});
 });
 
-router.get('/logout', (req,res)=>{
-    res.sendFile('./views/logout.html', {'root': __dirname});
-});
-
 router.get('/checkUserPage?id=*', (req, res)=>{
     let params = {
         Bucket: "rootlinkdata", 
@@ -98,6 +94,9 @@ router.post('/testLogin', (req, res)=>{
     res.json({'username': res.locals.user, 'result':'OK'});
 });
 
+router.post('/logout', (req,res)=>{
+    res.status(200).json({'result':'OK'});
+});
 
 router.post('/confirmEmail', (req, res)=>{
     account.AccountSchema.find({email:req.body.email}).then(result=>{
