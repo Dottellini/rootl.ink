@@ -16,10 +16,18 @@ export default {
     Preview
   },
 
-  mounted() {
+  beforeCreate() {
     if(!this.$store.state.isLoggedIn) {
       this.$router.push({name: "Home"})
     }
+  },
+
+  created() {
+    this.$store.commit('changeUsername', this.$store.state.account_username)
+  },
+
+  destroyed() {
+    this.$store.commit('changeUsername', 'USERNAME')
   }
 }
 </script>

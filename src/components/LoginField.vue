@@ -63,7 +63,7 @@ export default {
             complication = data.message
           } else if(data.result === "OK") {
             username = data.username;
-            localStorage.setItem('accessToken', data.accessToken);
+            localStorage.setItem('username', data.username);
             return reader.read().then(processText);
           }
         }).then(() => {

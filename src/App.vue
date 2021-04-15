@@ -36,6 +36,7 @@
               </label>
             </span>
             </div>
+            <button v-if="isLoggedIn" type="button" class="logout-Button" @click="logout">Logout</button>
             <div>
               <p>
                 Click <a href="#" @click.prevent="disableTracking">here</a> to disable Google Analytics tracking
@@ -111,11 +112,14 @@ export default {
     document.documentElement.setAttribute("data-theme", localTheme);
     this.theme = localTheme;
     this.isDark = this.theme !== "";
-    this.$store.commit("changeThemeOnPreview", this.isDark)
     this.$store.dispatch("loginValid");
   },
 
   methods: {
+    logout() {
+      this.$store.dispatch("logout")
+    },
+
     disableTracking() {
       this.$ga.disable();
       alert('Tracking disabled');
@@ -126,7 +130,6 @@ export default {
       this.isDark = this.isDark !== true;
       document.documentElement.setAttribute("data-theme", this.theme);
       localStorage.setItem("theme", this.theme)
-
       this.$store.commit("changeThemeOnPreview", this.isDark)
     }
   }
@@ -219,13 +222,22 @@ export default {
 
   .account-button {
     margin: 0 1em;
-    padding: 0.5em;
+    padding: 0.4em;
     border: none;
     outline: none;
     text-decoration: none;
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
     font-size: 0.9em;
+  }
+
+  .logout-Button {
+    cursor: pointer;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border: 1px solid var(--text-color);
+    border-radius: 50px;
+    font-size: 0.8em;
   }
 
   .login-button {

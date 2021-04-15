@@ -23,7 +23,16 @@ export default {
   name: "Preview",
   props: ["usePhone"],
 
+  data() {
+    return {
+      isDark: false
+    }
+  },
+
   mounted() {
+    let theme = localStorage.getItem('theme');
+    this.isDark = theme !== "";
+
     this.$store.commit("changeThemeOnPreview", this.isDark)
   },
 
@@ -124,7 +133,6 @@ export default {
     a{
       font-weight: 600;
       font-family: 'Montserrat', sans-serif;
-      color: white;
       text-decoration: none;
     }
   }

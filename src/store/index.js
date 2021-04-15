@@ -24,6 +24,9 @@ export default new Vuex.Store({
       state.account_username = payload;
     },
 
+    changeUsername(state, payload) {
+      state.username = payload;
+    },
 
     changeThemeOnPreview(state, isDark) {
       if(isDark) {
@@ -31,14 +34,14 @@ export default new Vuex.Store({
           state.background_hex = "#181818";
           state.linkBox_hex = "#1d1d1d";
           state.rootLink_hex = "#FFFFFF";
-          state.text_hex = "#FFFFFF"
+          state.text_hex = "#FFFFFF";
         }
       } else if(!isDark){
         if(state.background_hex === "#121212" && state.text_hex === "#FFFFFF" && state.linkBox_hex === "#1d1d1d" && state.rootLink_hex === "#FFFFFF") {
           state.background_hex = "#FFFFFF";
           state.linkBox_hex = "#000000";
-          state.rootLink_hex = "#000000"
-          state.text_hex = "#FFFFFF"
+          state.rootLink_hex = "#000000";
+          state.text_hex = "#FFFFFF";
         }
       }
     },
@@ -52,6 +55,7 @@ export default new Vuex.Store({
       state.text_hex = data.text_hex;
       state.linkBox_hex = data.linkBox_hex;
       state.rootLink_hex = data.rootLink_hex;
+      document.body.style.backgroundColor = state.background_hex;
     },
 
     emptyEntry(state) {
@@ -77,15 +81,26 @@ export default new Vuex.Store({
       console.log(state.list)
     },
 
-    addExample(state) {
+    addExample(state, isDark) {
       state.list = [{name: "Youtube", link: "https://youtube.com", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/YouTube_social_white_squircle_%282017%29.svg/1200px-YouTube_social_white_squircle_%282017%29.svg.png", id: 1},
                     {name: "Instagram", link: "https://instagram.com", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/1200px-Instagram_logo_2016.svg.png", id: 2},
                     {name: "Twitter", link: "https://twitter.com", img: "https://image.flaticon.com/icons/png/512/124/124021.png", id: 3},
                     {name: "TikTok", link: "https://tiktok.com", img: "https://cdn.worldvectorlogo.com/logos/tiktok-logo-2--1.svg", id: 4}];
-      state.text_hex = "";
-      state.linkBox_hex = "";
-      state.rootLink_hex = "";
-      state.background_hex = "";
+      if(isDark) {
+        if(state.background_hex === "#FFFFFF" && state.text_hex === "#FFFFFF" && state.linkBox_hex === "#000000" && state.rootLink_hex === "#000000") {
+          state.background_hex = "#181818";
+          state.linkBox_hex = "#1d1d1d";
+          state.rootLink_hex = "#FFFFFF";
+          state.text_hex = "#FFFFFF";
+        }
+      } else if(!isDark){
+        if(state.background_hex === "#121212" && state.text_hex === "#FFFFFF" && state.linkBox_hex === "#1d1d1d" && state.rootLink_hex === "#FFFFFF") {
+          state.background_hex = "#FFFFFF";
+          state.linkBox_hex = "#000000";
+          state.rootLink_hex = "#000000";
+          state.text_hex = "#FFFFFF";
+        }
+      }
     },
 
     updateText(state, payload) {
@@ -111,19 +126,21 @@ export default new Vuex.Store({
   actions: {
     loginValid({commit}){
       fetch('/testLogin', {
-        method: 'GET',
+        method: 'POST',
         headers: {
             "Content-Type": "application/json"
         }
-      }).then(response => {
-        let reader = response.body.getReader()
-        reader.read().then(function processText({done, value}) {
-          if(done) return
-          let string = new TextDecoder().decode(value)
-          console.log(string)
-          return reader.read().then(processText);
-        })
+      }).then(response => response.json()).then(data => {
+        if(data.result === "ERROR") {
+          localStorage.setItem('username', null)
+          return
+        }
+        if(data.result === "OK") {
+          let username = localStorage.getItem('username');
+          commit("login", username)
+        }
       })
+
     },
 
     async fetchUserData({commit}, username) {
@@ -179,6 +196,12 @@ export default new Vuex.Store({
           .catch((error) => {
             console.error('Error:', error);
           });
+    },
+
+    logout({commit}) {
+      fetch('/logout', {
+        method: "POST"
+      }).then(response => console.log(response))
     }
   },
   modules: {

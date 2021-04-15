@@ -59,7 +59,9 @@ export default {
   },
 
   beforeCreate() {
-    this.$store.commit("addExample")
+    let theme = localStorage.getItem('theme');
+    let isDark = theme !== "";
+    this.$store.commit("addExample", isDark)
   }
 }
 </script>

@@ -18,6 +18,12 @@ export default {
     EditAccountDetails,
     tabs,
     tab
+  },
+
+  beforeCreate() {
+    if(!this.$store.state.isLoggedIn) {
+      this.$router.push({name: "Home"})
+    }
   }
 }
 </script>

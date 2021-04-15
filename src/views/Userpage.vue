@@ -26,10 +26,8 @@ export default {
     }
   },
 
-  mounted() {
+  beforeCreate() {
     this.$store.dispatch("fetchUserData", this.$route.params.username);
-
-    document.body.style.backgroundColor = this.bg_hex.backgroundColor;
   },
 
   destroyed() {
