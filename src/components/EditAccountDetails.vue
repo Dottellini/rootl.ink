@@ -4,6 +4,7 @@
     <button type="button" @click="upload">Upload</button>
     <input id="username" type="text">
     <button>Save</button>
+    <!--test-->
     <canvas id="imageCanvas" hidden></canvas>
   </div>
 </template>
