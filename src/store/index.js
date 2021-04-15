@@ -8,7 +8,7 @@ export default new Vuex.Store({
   state: {
     list: [],
     username: "USERNAME", //Used for the "User-pages" and other stuff. This username if not to be used for the logged in account as it may change
-    account_username: "Alfonso", //Used for logged in user
+    account_username: null, //Used for logged in user
     profile_picture: "https://de.meming.world/images/de/thumb/b/bc/Mike_Wazowski-Sulley_Face_Swap.jpg/300px-Mike_Wazowski-Sulley_Face_Swap.jpg", //Used for UserPages
     account_profile_picture: "https://pbs.twimg.com/profile_images/949787136030539782/LnRrYf6e.jpg", //Used for logged in user
     background_hex: "#FFFFFF",
@@ -26,6 +26,13 @@ export default new Vuex.Store({
 
     changeUsername(state, payload) {
       state.username = payload;
+    },
+
+    logout(state, payload) {
+      state.isLoggedIn = false;
+      state.account_username = null;
+      state.account_profile_picture = "";
+      localStorage.setItem('username', null)
     },
 
     changeThemeOnPreview(state, isDark) {
@@ -201,7 +208,9 @@ export default new Vuex.Store({
     logout({commit}) {
       fetch('/logout', {
         method: "POST"
-      }).then(response => console.log(response))
+      }).then(() => {
+        commit("logout")
+      })
     }
   },
   modules: {
