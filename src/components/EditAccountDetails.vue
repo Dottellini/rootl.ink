@@ -22,6 +22,9 @@ export default {
       console.log(input.files[0])
       fetch('/uploadProfilePicture', {
         method: 'POST',
+        headers: {
+          "Content-Type": "multipart/form-data"
+        },
         body: input.files[0]
       }).then(response => {
         console.log(response)
