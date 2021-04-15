@@ -1,7 +1,12 @@
 <template>
   <div class="container">
-    <input id="imageInput" type="file">
-    <button type="button" @click="upload">Upload</button>
+    <form method="POST" action="/uploadProfilePicture" enctype="multipart/form-data">
+      <input id="imageInput" type="file" name="avatar">
+      <input type="submit" value="Upload">
+    </form>
+    <!--
+    <input id="imageInput" type="file" name="avatar">
+    <button type="button" @click="upload">Upload</button>-->
     <input id="username" type="text">
     <button>Save</button>
   </div>
