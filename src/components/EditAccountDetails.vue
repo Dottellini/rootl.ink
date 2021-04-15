@@ -25,7 +25,7 @@ export default {
         headers: {
           "Content-Type": "multipart/form-data"
         },
-        body: input.files[0]
+        body: {picture: input.files[0]}
       }).then(response => {
         console.log(response)
       }).catch(err => {
