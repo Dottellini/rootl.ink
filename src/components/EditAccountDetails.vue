@@ -20,15 +20,12 @@ export default {
       let input = document.getElementById("imageInput")
       if(input.value.length === 0) { return }
 
-      let data = new FormData();
-      data.append('file', input.files[0])
-
       fetch('/uploadProfilePicture', {
         method: 'POST',
         headers: {
-          "Content-Type": "multipart/form-data"
+          "Content-Type": "application/json" //"multipart/form-data"
         },
-        body: data
+        body: JSON.stringify(input.files[0])
       }).then(response => {
         console.log(response)
       }).catch(err => {
