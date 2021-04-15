@@ -10,7 +10,6 @@ const ejs = require('ejs');
 const {createTransport} = require('nodemailer');
 const aws = require('aws-sdk');
 const { check, validationResult, query } = require('express-validator');
-const multer = require('./multerMiddleware');
 
 
 //Get
@@ -185,7 +184,6 @@ router.post('/createPage', (req, res)=>{
 
                 return;
             }if(data){
-                res.set('X-Result', 'OK')
                 res.status(200).json({'result':'OK'});
                 return;
             }
@@ -193,8 +191,30 @@ router.post('/createPage', (req, res)=>{
     });
 });
 
-router.post('/uploadProfilePicture', multer.uploadUserPhoto(), (req, res)=>{
-    console.log(req);
+router.post('/uploadProfilePicture', (req,res)=>{
+    let filename;
+    account.AccountSchema.find({email:res.locals.user.email}).then(results=>{
+        filename = results[0].username.toLowerCase()+'profilepicture.txt';
+        let readable = Readable.from([JSON.stringify(req.body)])
+        readable.on('error', function(err) {
+            res.status(500).json({'result':'ERROR', 'message': 'Cant read data'});
+            return;
+        });
+        let uploadParams = {Bucket: 'rootlinkdata', Key: filename, Body: readable, ACL: 'public-read'};
+        var s3 = new aws.S3({
+            apiVersion: '2006-03-01',
+            params: {Bucket: 'rootlinkdata'}
+        });
+        s3.upload (uploadParams, function (err, data) {
+            if(err){
+                res.status(500).json({'result':'ERROR', 'message': 'Cant upload data'});
+                return;
+            }if(data){
+                res.status(200).json({'result':'OK'});
+                return;
+            }
+        });
+    });
 });
 
 exports.router = router;
