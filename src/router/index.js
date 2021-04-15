@@ -8,6 +8,7 @@ import Userpage from "../views/Userpage";
 import NotFound from "../views/NotFound";
 import SignUpComplete from "../views/SignUpComplete";
 import EmailConfirmation from "../views/EmailConfirmation";
+import account from "../views/account";
 
 Vue.use(VueRouter)
 
@@ -41,6 +42,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login,
+  },
+  {
+    path: '/account',
+    name: 'Account',
+    component: account
   },
   {
     path: '/:username',

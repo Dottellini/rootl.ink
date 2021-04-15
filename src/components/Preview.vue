@@ -4,7 +4,7 @@
     <div class="url-container" :style="rootl_hex">
       <h1>rootl.ink/</h1><h2>{{username}}</h2>
     </div>
-    <img src="https://de.meming.world/images/de/thumb/b/bc/Mike_Wazowski-Sulley_Face_Swap.jpg/300px-Mike_Wazowski-Sulley_Face_Swap.jpg" width="100" height="100">
+    <img :src="profile_picture" width="100" height="100">
     <div id="links">
       <div v-for="link in links">
         <div class="linkBox" :style="box_hex" v-if="link.name !== ''">
@@ -30,6 +30,10 @@ export default {
   computed: {
     username: function () {
       return this.$store.state.username
+    },
+
+    profile_picture: function () {
+      return this.$store.state.profile_picture
     },
 
     links: function () {

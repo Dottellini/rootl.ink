@@ -47,6 +47,7 @@ export default {
 <style scoped lang="scss">
   ul.tabs__header {
     font-family: 'Montserrat', sans-serif;
+    color: var(--text-color);
     display: block;
     list-style: none;
     margin: 0 0 0 1em;
@@ -66,7 +67,7 @@ export default {
   }
   .tab {
     display: inline-block;
-    color: black;
+    color: var(--text-color);
     padding: 20px;
     min-width: 800px;
     border-radius: 10px;

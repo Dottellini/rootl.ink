@@ -8,12 +8,14 @@ export default new Vuex.Store({
   state: {
     list: [],
     username: "USERNAME", //Used for the "User-pages" and other stuff. This username if not to be used for the logged in account as it may change
-    account_username: null,
+    account_username: "Alfonso", //Used for logged in user
+    profile_picture: "https://de.meming.world/images/de/thumb/b/bc/Mike_Wazowski-Sulley_Face_Swap.jpg/300px-Mike_Wazowski-Sulley_Face_Swap.jpg", //Used for UserPages
+    account_profile_picture: "https://pbs.twimg.com/profile_images/949787136030539782/LnRrYf6e.jpg", //Used for logged in user
     background_hex: "#FFFFFF",
     text_hex: "#FFFFFF",
     linkBox_hex: "#000000",
     rootLink_hex: "#000000",
-    isLoggedIn: false,
+    isLoggedIn: true,
     isMobile: false,
   },
   mutations: {
@@ -115,7 +117,6 @@ export default new Vuex.Store({
         let reader = response.body.getReader()
         reader.read().then(function processText({done, value}) {
           if(done) return
-
           let string = new TextDecoder().decode(value)
           console.log(string)
           return reader.read().then(processText);

@@ -20,9 +20,13 @@
               <button v-if="!isLoggedIn" class="login-button account-button">
                 <router-link class="router" to="/login">Log In</router-link>
               </button>
-
             </div>
-            <router-link v-if="isLoggedIn" to="/editor">Editor</router-link>
+            <div v-if="isLoggedIn" class="account-container">
+              <img class="profile-picture" :src="account_profile_picture" width="100" height="100">
+              <div class="hello-msg">Hello {{account_username}}</div>
+            </div>
+            <router-link v-if="isLoggedIn" to="/account">Account</router-link>
+            <router-link v-if="isLoggedIn" to="/editor">My Page</router-link>
             <div class="DarkMode-Container">
               <div class="DarkMode-Label">DarkMode</div>
               <span>
@@ -77,7 +81,11 @@ export default {
   },
 
   computed: {
-    username: function () {
+    account_profile_picture: function () {
+      return this.$store.state.account_profile_picture
+    },
+
+    account_username: function () {
       return this.$store.state.account_username
     },
 
@@ -144,7 +152,7 @@ export default {
     --surface-color: #1d1d1d;
     --text-color: white;
     --text-unimportant-color: #8b8b8b;
-    --burger-page-color: rgba(0, 0, 0, 0.9);
+    --burger-page-color: rgba(0, 0, 0, 0.89);
     --ghost-color: #3d3d60;
     --device-border-color: #323232;
     --editor-items-border: 1px solid #272727;
@@ -161,15 +169,6 @@ export default {
   body {
     background: var(--background-color);
     margin: 0;
-  }
-
-  p{
-    font-size: 10px;
-    font-family: 'Montserrat', sans-serif;
-    color: var(--text-unimportant-color);
-    a {
-      color: var(--text-unimportant-color);
-    }
   }
 
   h1{
@@ -193,6 +192,10 @@ export default {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
+  }
+
+  .hello-msg {
+    font-size: 16px;
   }
 
   .desktop-navbar {
@@ -324,7 +327,6 @@ export default {
     left: 0;
     background-color: var(--background-color); /* Black*/
     overflow-x: hidden; /* Disable horizontal scroll */
-    padding-top: 3em; /* Place content 60px from the top */
     transition: 0.5s; /*0.5 second transition effect to slide in the sidenav*/
   }
 
@@ -335,6 +337,30 @@ export default {
     color: #b8b7ad;
     margin: 0;
     font-size: 20px;
+    font-weight: 500;
+
+    p{
+      font-size: 10px;
+      font-weight: 400;
+      font-family: 'Montserrat', sans-serif;
+      color: var(--text-unimportant-color);
+      a {
+        color: var(--text-unimportant-color);
+      }
+    }
+
+    .account-container {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      font-weight: 400;
+      border-bottom: 1px solid var(--text-unimportant-color);
+
+      .profile-picture {
+        margin: 5px auto;
+        border-radius: 50%;
+      }
+    }
   }
   .bm-item-list > * {
     display: flex;
@@ -343,10 +369,7 @@ export default {
     color: var(--text-color);
     font-family: 'Montserrat', sans-serif;
     padding: 0.7em;
-  }
-  .bm-item-list > * > span {
-    font-weight: 700;
-    color: white;
+    margin: 0 auto;
   }
 
   //DarkMode Switch
@@ -361,7 +384,7 @@ export default {
       font-family: 'Montserrat', sans-serif;
       margin-right: 10px;
       color: var(--text-color);
-      font-weight: 400;
+      font-weight: 500;
     }
   }
 
