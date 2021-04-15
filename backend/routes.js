@@ -59,11 +59,6 @@ router.get('*', (req,res)=>{
 });
 
 //Post
-
-router.post('/uploadProfilePicture', (req, res)=>{
-    console.log(req)
-});
-
 //router.post('/login',check('email').whitelist(['abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ','123456789', '.']), (req,res)=>{
 router.post('/login', (req,res)=>{
     account.AccountSchema.find({email:req.body.email}).then(results=>{
