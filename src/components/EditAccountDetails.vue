@@ -2,7 +2,7 @@
   <div class="container">
     <form method="POST" action="/uploadProfilePicture" enctype="multipart/form-data">
       <input id="imageInput" type="file" name="avatar">
-      <input type="submit" value="Upload">
+      <input type="submit" name="submit-Button" value="Upload">
     </form>
     <!--
     <input id="imageInput" type="file" name="avatar">
