@@ -10,6 +10,9 @@ const ejs = require('ejs');
 const {createTransport} = require('nodemailer');
 const aws = require('aws-sdk');
 const { check, validationResult, query } = require('express-validator');
+var multer  = require('multer')
+var upload = multer({ dest: 'uploads/' })
+
 
 
 //Get
@@ -63,13 +66,6 @@ router.post('/uploadProfilePicture', (req, res)=>{
 
 //router.post('/login',check('email').whitelist(['abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ','123456789', '.']), (req,res)=>{
 router.post('/login', (req,res)=>{
-        console.log('!'+req.body.email)
-    const errors = validationResult(req)
-    if(!errors.isEmpty()){
-        console.log('ERROR!!!')
-    }else{
-        console.log('Kein error')
-    }
     account.AccountSchema.find({email:req.body.email}).then(results=>{
         if(!results.length){
             res.cookie('accessToken', '', {
@@ -202,6 +198,11 @@ router.post('/createPage', (req, res)=>{
             }
         });
     });
+});
+
+router.post('/uploadProfilePicture', upload.single('avatar'), (req, res)=>{
+    console.log(req.body);
+    console.log(req.file);
 });
 
 exports.router = router;

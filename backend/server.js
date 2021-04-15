@@ -10,6 +10,7 @@ const aws = require('aws-sdk');
 const fs = require('fs');
 var history = require('connect-history-api-fallback');
 
+
 const credentials = fs.readFileSync('credentials.json');
 
 
