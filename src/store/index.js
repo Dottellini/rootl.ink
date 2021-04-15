@@ -46,6 +46,7 @@ export default new Vuex.Store({
     setData(state, payload) {
       let data = JSON.parse(payload)
       state.username = data.username;
+      state.profile_picture = data.profilePicture;
       state.list = data.url_list;
       state.background_hex = data.background_hex;
       state.text_hex = data.text_hex;
@@ -154,6 +155,7 @@ export default new Vuex.Store({
 
     savePage({commit}, state) {
       const data = {
+        profilePicture: state.account_profile_picture,
         username: state.account_username,
         url_list: state.list,
         background_hex: state.background_hex,

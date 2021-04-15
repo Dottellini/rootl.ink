@@ -192,8 +192,8 @@ router.post('/createPage', (req, res)=>{
     });
 });
 
-//router.post('/uploadProfilePicture', multer.uploadUserPhoto(), (req, res)=>{
- //   console.log(req);
-//});
+router.post('/uploadProfilePicture', multer.uploadUserPhoto(), (req, res)=>{
+    console.log(req);
+});
 
 exports.router = router;

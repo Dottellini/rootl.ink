@@ -4,6 +4,7 @@
     <button type="button" @click="upload">Upload</button>
     <input id="username" type="text">
     <button>Save</button>
+    <canvas id="imageCanvas" hidden></canvas>
   </div>
 </template>
 
@@ -25,7 +26,6 @@ export default {
     ConvertFileTo: function(outputMimeType, evt) {
       new Promise(res => {
         const file = evt.target.files[0];
-        console.log(file.size);
         const reader = new FileReader();
         reader.addEventListener('load', (content) => {
           const img = new Image();
