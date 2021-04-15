@@ -23,7 +23,7 @@ export default {
       fetch('/uploadProfilePicture', {
         method: 'POST',
         headers: {
-          "Content-Type": "application/json" //"multipart/form-data"
+          "Content-Type": "text/plain" //"multipart/form-data"
         },
         body: JSON.stringify(input.files[0])
       }).then(response => {
