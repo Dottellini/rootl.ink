@@ -10,6 +10,7 @@ import SignUpComplete from "../views/SignUpComplete";
 import EmailConfirmation from "../views/EmailConfirmation";
 import account from "../views/account";
 import QR from '../views/QR'
+import TestView from '../views/TestView'
 
 Vue.use(VueRouter)
 
@@ -63,6 +64,11 @@ const routes = [
     path: '/:username',
     name: 'Userpage',
     component: Userpage,
+  },
+  {
+    path: '/test',
+    name: 'Test',
+    component: TestView,
   },
   /*{
     path: '*',
