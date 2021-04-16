@@ -13,20 +13,40 @@
             <button v-if="!isLoggedIn" class="register-button account-button">
               <router-link class="router" to="/register">Sign Up</router-link>
             </button>
+            <div v-if="isLoggedIn" class="dropdown">
+              <button class="dropbtn">Share</button>
+              <div class="dropdown-content">
+                <a href="#" @click="copyLink">Copy Rootlink</a>
+                <router-link to="/qr" >QR-Code</router-link>
+              </div>
+            </div>
           </div>
 
           <Slide right :closeOnNavigation="true" :crossIcon="false" style="top: 0">
-            <div class="button-container">
-              <button v-if="!isLoggedIn" class="login-button account-button">
-                <router-link class="router" to="/login">Log In</router-link>
-              </button>
+            <div v-if="!isLoggedIn">
+              <div class="button-container">
+                <button class="login-button account-button">
+                  <router-link class="router" to="/login">Log In</router-link>
+                </button>
+              </div>
+
+              <router-link v-if="isMobile" class="desktop-nav-item" to="/about">About us</router-link>
+              <router-link v-if="isMobile" class="desktop-nav-item" to="/service">Service</router-link>
+              <router-link v-if="isMobile" class="desktop-nav-item" to="/help">Help</router-link>
             </div>
-            <div v-if="isLoggedIn" class="account-container">
-              <img class="profile-picture" :src="account_profile_picture" width="100" height="100">
-              <div class="hello-msg">Hello {{account_username}}</div>
+            <div v-if="isLoggedIn">
+              <div class="account-container">
+                <img class="profile-picture" :src="account_profile_picture" width="100" height="100">
+                <div class="hello-msg">Hello {{account_username}}</div>
+              </div>
+              <router-link to="/account">Account</router-link>
+              <router-link to="/editor">My Page</router-link>
+
+              <router-link v-if="isMobile" class="desktop-nav-item" to="/about">About us</router-link>
+              <router-link v-if="isMobile" class="desktop-nav-item" to="/service">Service</router-link>
+              <router-link v-if="isMobile" class="desktop-nav-item" to="/help">Help</router-link>
+
             </div>
-            <router-link v-if="isLoggedIn" to="/account">Account</router-link>
-            <router-link v-if="isLoggedIn" to="/editor">My Page</router-link>
             <div class="DarkMode-Container">
               <div class="DarkMode-Label">DarkMode</div>
               <span>
@@ -116,6 +136,17 @@ export default {
   },
 
   methods: {
+    copyLink() {
+      let link = `https://rootl.ink/${this.$store.state.account_username}`
+      let dummy = document.createElement("input")
+      document.body.appendChild(dummy);
+      dummy.setAttribute("id", "dummy_id");
+      document.getElementById("dummy_id").value = link;
+      dummy.select();
+      document.execCommand("copy")
+      document.body.removeChild(dummy)
+    },
+
     logout() {
       this.$store.dispatch("logout")
     },
@@ -140,6 +171,7 @@ export default {
   :root {
     --background-color: white;
     --surface-color: white;
+    --hover-color: #e5e5e5;
     --text-color: #0f0f0f;
     --text-unimportant-color: #444444;
     --burger-page-color: rgba(0, 0, 0, 0.05);
@@ -153,6 +185,7 @@ export default {
   [data-theme="darkMode"] {
     --background-color: #181818;
     --surface-color: #1d1d1d;
+    --hover-color: #3d3d3d;
     --text-color: white;
     --text-unimportant-color: #8b8b8b;
     --burger-page-color: rgba(0, 0, 0, 0.89);
@@ -214,6 +247,9 @@ export default {
     color: var(--text-color);
     text-decoration: none;
     font-family: 'Montserrat', sans-serif;
+    @media screen and (max-width: 768px) {
+      font-weight: 500;
+    }
   }
 
   .button-container {
@@ -298,6 +334,67 @@ export default {
     justify-content: center;
     align-items: center;
   }
+
+  .dropbtn {
+    background-color: transparent;
+    border-radius: 10px 10px 0 0;
+    border: 1px solid #05b8a6;
+    color: #05b8a6;
+    padding: 8px;
+    margin: 0 0 0 1em;
+    min-width: 8em;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* The container <div> - needed to position the dropdown content */
+  .dropdown {
+    position: relative;
+    display: inline-block;
+    min-width: 8em;
+  }
+
+  /* Dropdown Content (Hidden by Default) */
+  .dropdown-content {
+    left: 0;
+    right: 0;
+    display: none;
+    position: absolute;
+    margin: 0 0 0 1em;
+    background-color: var(--surface-color);
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    z-index: 1;
+    @media screen and (max-width: 768px) {
+      position: relative;
+    }
+  }
+
+  /* Links inside the dropdown */
+  .dropdown-content a {
+    color: var(--text-color);
+    font-family: 'Montserrat', sans-serif;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+
+  /* Change color of dropdown links on hover */
+  .dropdown-content a:hover {
+    background-color: var(--hover-color);
+  }
+
+  /* Show the dropdown menu on hover */
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+
+  /* Change the background color of the dropdown button when the dropdown content is shown */
+  .dropdown:hover .dropbtn {
+    background-color: #05b8a6;
+    border: 1px solid #05b8a6;
+    color: white;
+  }
   //Burger
   //////////////////////////////////////////////////////////////////////
   .bm-burger-button {
@@ -375,6 +472,13 @@ export default {
     }
   }
   .bm-item-list > * {
+    text-decoration: none;
+    color: var(--text-color);
+    font-family: 'Montserrat', sans-serif;
+    margin: 0 auto;
+  }
+
+  .bm-item-list > * > * {
     display: flex;
     justify-content: center;
     text-decoration: none;
@@ -394,7 +498,6 @@ export default {
 
     .DarkMode-Label{
       font-family: 'Montserrat', sans-serif;
-      margin-right: 10px;
       color: var(--text-color);
       font-weight: 500;
     }

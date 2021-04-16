@@ -24,6 +24,7 @@
     "vue-analytics": "^5.22.1",
     "vue-burger-menu": "^2.0.5",
     "vue-gtag": "^1.12.0",
+    "vue-qart": "^2.2.0",
     "vue-router": "^3.2.0",
     "vuedraggable": "^2.24.3",
     "vuex": "^3.4.0"

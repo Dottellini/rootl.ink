@@ -34,7 +34,6 @@ export default {
 
 <style scoped lang="scss">
 
-
   .flex-container{
     flex-direction: row;
     justify-content: center;

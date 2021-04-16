@@ -172,6 +172,7 @@ export default {
     padding: 0 0.4em;
     margin-left: 0.1em;
     .text {
+      font-family: 'Montserrat', sans-serif;
       font-weight: 700;
     }
 

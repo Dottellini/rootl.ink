@@ -9,6 +9,7 @@ import NotFound from "../views/NotFound";
 import SignUpComplete from "../views/SignUpComplete";
 import EmailConfirmation from "../views/EmailConfirmation";
 import account from "../views/account";
+import QR from '../views/QR'
 
 Vue.use(VueRouter)
 
@@ -49,15 +50,20 @@ const routes = [
     component: account
   },
   {
-    path: '/:username',
-    name: 'Userpage',
-    component: Userpage,
+    path: '/qr',
+    name: 'QR',
+    component: QR
   },
   {
     path: '/pagenotfound',
     name: 'PageNotFound',
     component: NotFound,
-  }
+  },
+  {
+    path: '/:username',
+    name: 'Userpage',
+    component: Userpage,
+  },
   /*{
     path: '*',
     name: 'Not Found',
