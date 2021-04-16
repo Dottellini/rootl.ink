@@ -3,7 +3,13 @@
 </template>
 
 <script>
+import TestComponent from "../components/TestComponent";
+
+
 export default {
-  name: "TestView"
+  name: "Testview",
+  components: {
+    TestComponent
+  }
 }
 </script>

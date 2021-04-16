@@ -61,15 +61,16 @@ const routes = [
     component: NotFound,
   },
   {
-    path: '/:username',
-    name: 'Userpage',
-    component: Userpage,
-  },
-  {
     path: '/test',
     name: 'Test',
     component: TestView,
   },
+  {
+    path: '/:username',
+    name: 'Userpage',
+    component: Userpage,
+  },
+
   /*{
     path: '*',
     name: 'Not Found',
