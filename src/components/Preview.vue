@@ -7,11 +7,14 @@
     <img :src="profile_picture" width="100" height="100">
     <div id="links">
       <div v-for="link in links">
-        <div class="linkBox" :style="box_hex" v-if="link.name !== ''">
-          <img :src='link.img' class="link-image" height="40px" width="40px" v-if="link.img !== ''">
-          <div class="link-box-text">
-            <a target="_blank" :style="text_hex" :href="link.link">{{link.name}}</a>
+        <div @mouseover="link.hover=true" @mouseleave="link.hover=false" class="linkBox-Wrapper" v-bind:class="{ embedded: link.embedded }" :style="box_hex" v-if="link.name !== ''" >
+          <div class="linkBox">
+            <img :src='link.img' class="link-image" height="40px" width="40px" v-if="link.img !== ''">
+            <div class="link-box-text">
+              <a target="_blank" :style="text_hex" :href="link.link">{{link.name}}</a>
+            </div>
           </div>
+          <VideoEmbed v-if="link.hover && link.embedded"></VideoEmbed>
         </div>
       </div>
     </div>
@@ -19,12 +22,17 @@
 </template>
 
 <script>
+
+import VideoEmbed from "../components/VideoEmbed";
+
 export default {
   name: "Preview",
+  components: {VideoEmbed},
   props: ["usePhone"],
 
   data() {
     return {
+      hover: false,
       isDark: false
     }
   },
@@ -35,6 +43,7 @@ export default {
 
     this.$store.commit("changeThemeOnPreview", this.isDark)
   },
+  
 
   computed: {
     username: function () {
@@ -69,6 +78,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
   .bar{
     background: var(--device-border-color);
     border-bottom-left-radius: 20px;
@@ -111,15 +121,24 @@ export default {
     min-height: 40px;
   }
 
+  .linkBox-Wrapper {
+    display: flex;
+    flex-direction:column;
+    width: 21em;
+    align-items: center;
+    justify-content: flex-start;
+    margin: 1em auto;
+    padding: 0.3em 0;
+    border-radius: 5px;
+  }
+
   .linkBox {
     display: flex;
     height: 40px;
     align-items: center;
     justify-content: flex-start;
-    margin: 1em auto;
-    padding: 0.3em 0;
-    max-width: 21em;
-    border-radius: 50px;
+    width: 21em;
+    border-radius: 5px;
 
     .link-box-text {
       width: 100%;
@@ -130,14 +149,26 @@ export default {
       margin-left: 0.3em;
       float: left;
     }
-    a{
+    a {
       font-weight: 600;
       font-family: 'Montserrat', sans-serif;
       text-decoration: none;
     }
   }
 
+  .linkBox-Wrapper.embedded {
+    transition: 0.3s;
+  }
+
+  .linkBox-Wrapper.embedded:hover{
+    width:580px;
+    height:335px;
+    vertical-align: top;
+    border-radius: 5px;
+  }
+
   img{
     border-radius: 50px;
   }
+
 </style>

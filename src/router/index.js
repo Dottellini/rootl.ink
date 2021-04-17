@@ -10,7 +10,6 @@ import SignUpComplete from "../views/SignUpComplete";
 import EmailConfirmation from "../views/EmailConfirmation";
 import account from "../views/account";
 import QR from '../views/QR'
-import TestView from '../views/TestView'
 
 Vue.use(VueRouter)
 
@@ -59,11 +58,6 @@ const routes = [
     path: '/pagenotfound',
     name: 'PageNotFound',
     component: NotFound,
-  },
-  {
-    path: '/test',
-    name: 'Test',
-    component: TestView,
   },
   {
     path: '/:username',
