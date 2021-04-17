@@ -1,28 +1,32 @@
 <template>
   <div id="preview" :class="{container: usePhone}" :style="bg_hex">
+
+    <!-- HEAD -->
     <div :class="{bar: usePhone}"></div>
     <div class="url-container" :style="rootl_hex">
       <h1>rootl.ink/</h1><h2>{{username}}</h2>
     </div>
     <img :src="profile_picture" width="100" height="100">
+
+    <!-- Links -->
     <div id="links">
-      <div v-for="link in links">
-        <div @mouseover="link.hover=true" @mouseleave="link.hover=false" class="linkBox-Wrapper" v-bind:class="{ embedded: link.embedded }" :style="box_hex" v-if="link.name !== ''" >
+      <div v-for="link in links" :key="link.id" :ref="'link-'+link.id" v-on:click="showEmbeded(link)">
+        <div class="linkBox-Wrapper" :class="{ embedded: link.embedded }" :style="box_hex" v-if="link.name !== ''" >
           <div class="linkBox">
             <img :src='link.img' class="link-image" height="40px" width="40px" v-if="link.img !== ''">
             <div class="link-box-text">
               <a target="_blank" :style="text_hex" :href="link.link">{{link.name}}</a>
             </div>
           </div>
-          <VideoEmbed v-if="link.hover && link.embedded"></VideoEmbed>
+          <iframe v-if="link.embedded" width="0px" height="0px" :src="link.link" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen :ref="'video-'+link.id"></iframe>
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
 <script>
-
 import VideoEmbed from "../components/VideoEmbed";
 
 export default {
@@ -32,7 +36,6 @@ export default {
 
   data() {
     return {
-      hover: false,
       isDark: false
     }
   },
@@ -40,10 +43,33 @@ export default {
   mounted() {
     let theme = localStorage.getItem('theme');
     this.isDark = theme !== "";
-
     this.$store.commit("changeThemeOnPreview", this.isDark)
   },
-  
+
+  methods: {
+    showEmbeded: function (item) {
+      if(!item.embedded){
+        return;
+      }
+      let wrapper = this.$refs[`link-${item.id}`][0].childNodes[0]
+      let iframe = this.$refs[`video-${item.id}`];
+      if(iframe[0].width == "560px"){
+        wrapper.style.width="21em";
+        wrapper.style.height="40px";
+        wrapper.style.verticalAlign="center";
+        iframe[0].width = "0px"
+        iframe[0].height = "0px"
+      } else {
+        wrapper.style.width="580px";
+        wrapper.style.height="335px";
+        wrapper.style.verticalAlign="top";
+        wrapper.style.borderRadius="5px";
+        iframe[0].width = "560px"
+        iframe[0].height = "315px"
+      }
+    }
+  },
+
 
   computed: {
     username: function () {
@@ -157,10 +183,10 @@ export default {
   }
 
   .linkBox-Wrapper.embedded {
-    transition: 0.3s;
+    transition: 0.15s;
   }
 
-  .linkBox-Wrapper.embedded:hover{
+  .linkBox-Wrapper.embedded.clicked{
     width:580px;
     height:335px;
     vertical-align: top;
