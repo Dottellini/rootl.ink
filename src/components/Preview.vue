@@ -10,15 +10,15 @@
 
     <!-- Links -->
     <div id="links">
-      <div v-for="link in links" :key="link.id" :ref="'link-'+link.id" v-on:click="showEmbeded(link)">
-        <div class="linkBox-Wrapper" :class="{ embedded: link.embedded }" :style="box_hex" v-if="link.name !== ''" >
+      <div v-for="link in links" :key="link.id" :ref="'link-'+link.id" @click="showEmbeded(link)">
+        <div class="linkBox-Wrapper" :class="{ embedded: link.embed }" :style="box_hex" v-if="link.name !== ''" >
           <div class="linkBox">
             <img :src='link.img' class="link-image" height="40px" width="40px" v-if="link.img !== ''">
             <div class="link-box-text">
               <a target="_blank" :style="text_hex" :href="link.link">{{link.name}}</a>
             </div>
           </div>
-          <iframe v-if="link.embedded" width="0px" height="0px" :src="link.link" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen :ref="'video-'+link.id"></iframe>
+          <iframe v-if="link.embed" width="0px" height="0px" :src="link.link" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen :ref="'video-'+link.id"></iframe>
         </div>
       </div>
     </div>
@@ -48,7 +48,7 @@ export default {
 
   methods: {
     showEmbeded: function (item) {
-      if(!item.embedded){
+      if(!item.embed){
         return;
       }
       let wrapper = this.$refs[`link-${item.id}`][0].childNodes[0]
