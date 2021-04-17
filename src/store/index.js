@@ -19,6 +19,11 @@ export default new Vuex.Store({
     isMobile: false,
   },
   mutations: {
+    isYoutubeVideo(state, payload) {
+      let index = state.list.map(item => item.id).indexOf(payload.id);
+      state.list[index].isYoutubeVideo = payload.result;
+    },
+
     login(state, payload) {
       state.isLoggedIn = true;
       state.account_username = payload;
@@ -70,7 +75,7 @@ export default new Vuex.Store({
       const num = Math.floor(Math.random() * 999999);
       const id = parseInt(`${dt}${num}`)
 
-      state.list.push({name: "", link: "", img: "", id: id})
+      state.list.push({name: "", link: "", img: "", isYoutubeVideo: false, embed: false, id: id})
     },
 
     checkMobile(state, payload) {
@@ -89,10 +94,10 @@ export default new Vuex.Store({
     },
 
     addExample(state, isDark) {
-      state.list = [{name: "Youtube", link: "https://www.youtube.com/watch?v=2INpDCWOy0Q", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/YouTube_social_white_squircle_%282017%29.svg/1200px-YouTube_social_white_squircle_%282017%29.svg.png", id: 1},
-                    {name: "Instagram", link: "https://instagram.com", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/1200px-Instagram_logo_2016.svg.png", id: 2},
-                    {name: "Twitter", link: "https://twitter.com", img: "https://image.flaticon.com/icons/png/512/124/124021.png", id: 3},
-                    {name: "TikTok", link: "https://tiktok.com", img: "https://cdn.worldvectorlogo.com/logos/tiktok-logo-2--1.svg", id: 4}];
+      state.list = [{name: "Youtube", link: "https://www.youtube.com/watch?v=2INpDCWOy0Q", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/YouTube_social_white_squircle_%282017%29.svg/1200px-YouTube_social_white_squircle_%282017%29.svg.png", isYoutubeVideo:true, embed: true, id: 1},
+                    {name: "Instagram", link: "https://instagram.com", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/1200px-Instagram_logo_2016.svg.png", isYoutubeVideo:false, embed: false, id: 2},
+                    {name: "Twitter", link: "https://twitter.com", img: "https://image.flaticon.com/icons/png/512/124/124021.png", isYoutubeVideo:false, embed: false, id: 3},
+                    {name: "TikTok", link: "https://tiktok.com", img: "https://cdn.worldvectorlogo.com/logos/tiktok-logo-2--1.svg", isYoutubeVideo:false, embed: false, id: 4}];
       if(isDark) {
         if(state.background_hex === "#FFFFFF" && state.text_hex === "#FFFFFF" && state.linkBox_hex === "#000000" && state.rootLink_hex === "#000000") {
           state.background_hex = "#181818";

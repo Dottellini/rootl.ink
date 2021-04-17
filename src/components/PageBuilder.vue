@@ -34,9 +34,13 @@
                   <input type="text" class="form-control" v-model="element.name" placeholder="Name" maxlength="30">
                 </div>
                 <div>
-                  <input type="text" class="form-control" v-model="element.link" placeholder="URL"/>
+                  <input type="text" class="form-control" v-model="element.link" @change="checkIfYoutube(element.id, element.link)" placeholder="URL"/>
                 </div>
-                <img src="../assets/embed.png" width="20px" height="20px" @click="x=0"/>
+                <div v-if="element.isYoutubeVideo">
+                  <label for="embedCheck" class="embed">Embed Video</label>
+                  <input id="embedCheck" type="checkbox" v-model="element.embed">
+                </div>
+                <!--<img src="../assets/embed.png" width="20px" height="20px" @click="x=0"/>-->
               </div>
             </div>
             <button class="delete-button" @click="removeEntry(element.id)">
@@ -119,6 +123,14 @@ export default {
   },
 
   methods: {
+    checkIfYoutube: function (id, url) {
+      if(/http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/g.test(url)) {
+        this.$store.commit("isYoutubeVideo", {id: id, result: true});
+      } else {
+        this.$store.commit("isYoutubeVideo", {id: id, result: false});
+      }
+    },
+
     submit: function () {
       this.$store.dispatch("savePage", this.$store.state)
     },
@@ -192,6 +204,12 @@ export default {
     padding: 10px;
     border-radius: 50%;
     cursor: pointer;
+  }
+
+  .embed {
+    color: var(--text-color);
+    font-size: 16px;
+    font-family: 'Montserrat', sans-serif;
   }
 
   .color-container {
