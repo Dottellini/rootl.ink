@@ -10,15 +10,15 @@
 
     <!-- Links -->
     <div id="links">
-      <div v-for="link in links" :key="link.id" :ref="'link-'+link.id" @click="showEmbeded(link)">
+      <div v-for="link in links" :key="link.id" :ref="'link-'+link.id">
         <div class="linkBox-Wrapper" :class="{ embedded: link.embed }" :style="box_hex" v-if="link.name !== ''" >
-          <div class="linkBox">
+          <div class="linkBox" @mouseenter="showEmbeded(link)" @mouseleave="hideEmbed(link)">
             <img :src='link.img' class="link-image" height="40px" width="40px" v-if="link.img !== ''">
             <div class="link-box-text">
               <a target="_blank" :style="text_hex" :href="link.link">{{link.name}}</a>
             </div>
           </div>
-          <iframe v-if="link.embed" width="0px" height="0px" :src="link.link" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen :ref="'video-'+link.id"></iframe>
+          <iframe v-if="link.embed" :src="getEmbedUrl(link.link)" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen :ref="'video-'+link.id"></iframe>
         </div>
       </div>
     </div>
@@ -47,26 +47,38 @@ export default {
   },
 
   methods: {
+    getEmbedUrl: function (url) {
+      return url.replace(/http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/g, 'https://www.youtube.com/embed/$1')
+    },
+
     showEmbeded: function (item) {
       if(!item.embed){
         return;
       }
       let wrapper = this.$refs[`link-${item.id}`][0].childNodes[0]
       let iframe = this.$refs[`video-${item.id}`];
-      if(iframe[0].width == "560px"){
-        wrapper.style.width="21em";
-        wrapper.style.height="40px";
-        wrapper.style.verticalAlign="center";
-        iframe[0].width = "0px"
-        iframe[0].height = "0px"
-      } else {
-        wrapper.style.width="580px";
-        wrapper.style.height="335px";
-        wrapper.style.verticalAlign="top";
-        wrapper.style.borderRadius="5px";
-        iframe[0].width = "560px"
-        iframe[0].height = "315px"
+      wrapper.style.width="580px";
+      wrapper.style.height="335px";
+      wrapper.style.verticalAlign="top";
+      wrapper.style.borderRadius="5px";
+      iframe[0].width = "560px"
+      iframe[0].height = "315px"
+
+    },
+
+    hideEmbed: function (item) {
+      if(!item.embed){
+        return;
       }
+      let wrapper = this.$refs[`link-${item.id}`][0].childNodes[0]
+      let iframe = this.$refs[`video-${item.id}`];
+
+      wrapper.style.width="21em";
+      wrapper.style.height="40px";
+      wrapper.style.verticalAlign="center";
+      iframe[0].width = "0px"
+      iframe[0].height = "0px"
+
     }
   },
 
