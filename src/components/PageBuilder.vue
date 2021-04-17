@@ -36,6 +36,7 @@
                 <div>
                   <input type="text" class="form-control" v-model="element.link" placeholder="URL"/>
                 </div>
+                <img src="../assets/embed.png" width="20px" height="20px" @click="x=0"/>
               </div>
             </div>
             <button class="delete-button" @click="removeEntry(element.id)">
