@@ -11,8 +11,8 @@
     <!-- Links -->
     <div id="links">
       <div v-for="link in links" :key="link.id" :ref="'link-'+link.id">
-        <div class="linkBox-Wrapper" :class="{ embedded: link.embed }" :style="box_hex" v-if="link.name !== ''" >
-          <div class="linkBox" @mouseenter="showEmbeded(link)" @mouseleave="hideEmbed(link)">
+        <div class="linkBox-Wrapper" :class="{ embedded: link.embed }" :style="box_hex" v-if="link.name !== ''" @mouseenter="showEmbeded(link)" @mouseleave="hideEmbed(link)">
+          <div class="linkBox" >
             <img :src='link.img' class="link-image" height="40px" width="40px" v-if="link.img !== ''">
             <div class="link-box-text">
               <a target="_blank" :style="text_hex" :href="link.link">{{link.name}}</a>
