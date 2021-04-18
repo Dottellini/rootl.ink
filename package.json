@@ -7,6 +7,7 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@mailchimp/mailchimp_marketing": "^3.0.40",
     "aws-sdk": "^2.884.0",
     "bcrypt": "^5.0.1",
     "connect-history-api-fallback": "^1.6.0",
@@ -16,6 +17,7 @@
     "express-fileupload": "^1.2.1",
     "express-validator": "^6.10.0",
     "jsonwebtoken": "^8.5.1",
+    "mailchimp-api-v3": "^1.15.0",
     "mongoose": "^5.12.3",
     "nodemailer": "^6.5.0",
     "nodemon": "^2.0.7",

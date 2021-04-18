@@ -18,7 +18,7 @@
               <a target="_blank" :style="text_hex" :href="link.link">{{link.name}}</a>
             </div>
           </div>
-          <iframe v-if="link.embed" :src="getEmbedUrl(link.link)" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen :ref="'video-'+link.id"></iframe>
+          <iframe v-if="link.embed" width="0px" height="0px" :src="getEmbedUrl(link.link)" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen :ref="'video-'+link.id"></iframe>
         </div>
       </div>
     </div>

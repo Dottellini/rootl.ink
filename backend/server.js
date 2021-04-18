@@ -10,6 +10,18 @@ const aws = require('aws-sdk');
 const fs = require('fs');
 var history = require('connect-history-api-fallback');
 
+if(false){
+    var Mailchimp = require('mailchimp-api-v3')
+
+    var mailchimp = new Mailchimp("6240aec66307b866ab3a34c81a78cfa-us1");
+    
+    mailchimp.post('https://us1.api.mailchimp.com/list/rootlink/members', {
+        "email_address": "$test@gmail.edu",
+        "status": "subscribed",
+    })
+    
+    
+}
 
 const credentials = fs.readFileSync('credentials.json');
 
