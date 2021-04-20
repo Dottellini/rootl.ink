@@ -10,7 +10,7 @@
         <a target="_blank" :style="textColor" :href="link.link">{{link.name}}</a>
       </div>
     </div>
-    <iframe :ref="'iframe-1'" v-if="isembedded" :src="link.link" width="0px" height="0px" title="YouTube video player" frameborder="0"/>
+    <iframe :ref="'iframe-1'" v-if="isembedded" :src="getEmbedUrl(link.link)" width="0px" height="0px" title="YouTube video player" frameborder="0"/>
   </div>
 </template>
 
