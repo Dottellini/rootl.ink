@@ -57,6 +57,7 @@
             </span>
             </div>
             <button v-if="isLoggedIn" type="button" class="logout-Button" @click="logout">Logout</button>
+            <LanguageDrop></LanguageDrop>
             <div>
               <p>
                 Click <a href="#" @click.prevent="disableTracking">here</a> to disable Google Analytics tracking
@@ -87,10 +88,12 @@
 
 <script>
 import { Slide } from "vue-burger-menu"
+import languageDrop from "./components/languageDrop";
 
 export default {
   components: {
     Slide,
+    languageDrop
   },
 
   data() {
