@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="content" :class="{'content-background': !isMobile}" >
-      <h1>The root of<br>all your links</h1>
-      <h2>The simplest way to redirect your audience</h2>
+      <h1>{{$t('homepage.headline.one')}}<br>{{$t('homepage.headline.two')}}</h1>
+      <h2>{{$t('homepage.footnote')}}</h2>
       <button @click="scroll" class="learnButton">Learn More</button>
       <Preview class="preview" :use-phone="true"></Preview>
       <div class="line"></div>
