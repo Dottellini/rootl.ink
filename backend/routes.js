@@ -1,7 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const middleware = require('./middleware');
-const account = require('./db-models/account');
 const { Readable } = require('stream')
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -9,7 +7,12 @@ const uuid = require('uuid');
 const ejs = require('ejs');
 const {createTransport} = require('nodemailer');
 const aws = require('aws-sdk');
-const { check, validationResult, query } = require('express-validator');
+const fs = require('fs');
+//const helperFunctions = require('./helperFunctions')
+const credentials = JSON.parse(fs.readFileSync('credentials.json'));
+aws.config.update({ "accessKeyId": credentials.aws.accessKeyId, "secretAccessKey": credentials.aws.secretAccessKey, "region": "eu-central-1" });
+
+var dynamodb = new aws.DynamoDB({apiVersion: '2012-08-10'});
 
 
 //Get
@@ -114,53 +117,87 @@ router.post('/confirmEmail', (req, res)=>{
         res.status(200).json({'result':'OK'});
         return;
     })
+
+
+    dynamodb.getItem({Key:{"username":{"S": req.body.username}},TableName: "Users"},(err, data)=>{
+        if(Object.keys(data).length == 0){
+            res.status(401).json({'result':'ERROR', 'message': 'Account not found'});
+            return;
+        }
+        if(data.Item.confirmationCode!=req.body.code){
+            res.status(401).json({'result':'ERROR', 'message': 'Invalid confirmation code'});
+            return;
+        }
+        dynamodb.putItem({
+            Item:{
+                "emailConfirmed":{BOOL: true},
+            },TableName:"Users"},(err, data)=>{
+                res.status(200).json({'result':'OK'});
+                return;        
+            });
+    });
+
+
+
+
+
+
+
+
+
 });
 
 router.post('/register', (req,res)=>{
-    account.AccountSchema.find({$or:[{email: req.body.email},{username: /^req.body.username.toLowerCase()$/i}]}, (error, accounts)=>{
-        if(error){
-            res.status(500).json({'result':'ERROR', 'message': 'Cant fetch accounts'});
-            return;
-        }
-        if(accounts.length!=0){
+    dynamodb.getItem({Key:{"username":{"S": req.body.username}},TableName: "Users"},(err, data)=>{
+        if(Object.keys(data).length !== 0){
             res.status(403).json({'result':'ERROR', 'message': 'Account already exists'});
             return;
         }
-        const confirmationCode = uuid.v4();
-        bcrypt.hash(req.body.password, 10, function(error, hash) {
-            let Account = new account.AccountSchema({
-                password_hash: hash,
-                email: req.body.email,
-                username: req.body.username,
-                email_confirmed: false,
-                confirmation_code: confirmationCode
-            });
+        dynamodb.query({TableName:"Users",IndexName:"email-index",Select:'ALL_PROJECTED_ATTRIBUTES',KeyConditionExpression:'email = :email',ExpressionAttributeValues:{":email": {"S": req.body.email}}}, (err, data)=>{
+            if(data.Items.length!=0){
+                console.log(err,data)
 
-            ejs.renderFile(__dirname+'/email-templates/email-template1.ejs', {code: confirmationCode, email:req.body.email},(error, data)=>{
-                var mailOptions = {
-                    from: 'rootlink.test123@gmail.com',
-                    to: req.body.email,
-                    subject: 'Confirm Your Email Adress - Rootl.ink',
-                    text: data,
-                    html: data
-                };
-                var emailSender = createTransport({
-                    service: 'gmail',
-                    auth: {
-                      user: 'rootlink.test123@gmail.com',
-                      pass: '%pFJM,hwr_b,uyv#,F?+66Hb'
-                    }
-                  });                
-                emailSender.sendMail(mailOptions, function(error, info){
-                    if (error) {
-                        res.status(500).json({'result':'ERROR', 'message': 'Cant send confirmation email'});
-                        return;
-                    }
-                });
-            });
-            Account.save();
-            res.status(200).json({'result':'OK'});
-        })
+                res.status(403).json({'result':'ERROR', 'message': 'Account already exists'});
+                return;
+            }
+            const confirmationCode = uuid.v4();
+            bcrypt.hash(req.body.password, 10, function(error, hash) {
+                dynamodb.putItem({
+                    Item:{
+                        "email":{S: req.body.email},
+                        "username":{S: req.body.username},
+                        "emailConfirmed":{BOOL: false},
+                        "passwordHash":{S: hash},
+                        "refreshToken": {S: ""}
+                    },TableName:"Users"},(err, data)=>{
+                    ejs.renderFile(__dirname+'/email-templates/email-template1.ejs', {code: confirmationCode, username:req.body.username},(error, data)=>{
+                        var mailOptions = {
+                            from: 'rootlink.test123@gmail.com',
+                            to: req.body.email,
+                            subject: 'Confirm Your Email Adress - Rootl.ink',
+                            text: data,
+                            html: data
+                        };
+                        var emailSender = createTransport({
+                            service: 'gmail',
+                            auth: {
+                            user: 'rootlink.test123@gmail.com',
+                            pass: '%pFJM,hwr_b,uyv#,F?+66Hb'
+                            }
+                        });                
+                        emailSender.sendMail(mailOptions, function(error, info){
+                            if (error) {
+                                res.status(500).json({'result':'ERROR', 'message': 'Cant send confirmation email'});
+                                return;
+                            }
+                            res.status(200).json({'result':'OK'});
+                            return;
+                        });
+
+                    });        
+                })
+            })
+        });
     });
 });
 

@@ -1,9 +1,10 @@
 require('dotenv').config();
 const express = require('express');
 const router = express.Router();
-const account = require('./db-models/account');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+
+
 
 //authenticateToken
 router.use(['/testLogin', '/createPage', '/uploadProfilePicture'], (req, res, next)=>{
