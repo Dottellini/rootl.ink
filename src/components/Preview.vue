@@ -11,7 +11,8 @@
     <!-- Links -->
     <div id="links">
       <div v-for="link in links" :key="link.id" :ref="'link-'+link.id">
-        <Linkbox :link=link :boxColor=box_hex :textColor=text_hex></Linkbox>
+        <Linkbox :link=link :boxColor=box_hex :textColor=text_hex />
+        <!--<NewsletterSignup :link=link :boxColor=box_hex :textColor=text_hex />-->
       </div>
     </div>
 
@@ -21,10 +22,11 @@
 <script>
 import VideoEmbed from "../components/VideoEmbed";
 import Linkbox from "../components/Linkbox";
+import NewsletterSignup from './NewsletterSignup.vue';
 
 export default {
   name: "Preview",
-  components: {VideoEmbed, Linkbox},
+  components: {Linkbox, NewsletterSignup},
   props: ["usePhone"],
 
   data() {

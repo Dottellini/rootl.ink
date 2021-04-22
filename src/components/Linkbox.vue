@@ -1,5 +1,5 @@
 <template>
-  <div @mouseover="showEmbeded(link)" @mouseleave="hideEmbeded(link)" :ref="'wrapper-1'" class="LinkBox-Wrapper" :class="{ embedded: isembedded}" :style="boxColor" >
+  <div @mouseover="showEmbeded(link)" @mouseleave="hideEmbeded(link)" :ref="'wrapper-1'" class="LinkBox-Wrapper" :class="{ embedded: link.isembedded}" :style="boxColor" >
     <div class="LinkBox">
       <img :src=link.img
         class="LinkImage" 
@@ -61,11 +61,11 @@
       }
     },
 
-    computed: {
+    /*computed: {
       isembedded: function() {
         return "{{link.embedded}}"
       },
-    },
+    },*/
   }
 </script>
 
