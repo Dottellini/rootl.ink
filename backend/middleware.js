@@ -69,12 +69,11 @@ router.use('/logout', (req,res,next)=>{
 });
 
 function refreshAccessToken(emailAddress){
-    account.AccountSchema.find({email:emailAddress}).then(results=>{
-        if(!results.length){
+    dynamodb.getItem({Key:{"username":{"S": req.body.username}},TableName: "Users"},(err, data)=>{
+        if(Object.keys(data).length !== 0){
             let err = new Error('Account does not exist');
             err.status = 500;
             return err;
-
         }
         jwt.verify(results[0].refresh_token, process.env.ACCESS_TOKEN_SECRET, (err)=>{
             if(err) {
@@ -82,7 +81,7 @@ function refreshAccessToken(emailAddress){
                 err.status = 403;
                 return err;
             }
-            let payload = {email: emailAddress, username: results[0].username}
+            let payload = {username: results[0].username}
             let accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
             return accessToken;
         })

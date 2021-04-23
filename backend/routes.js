@@ -8,6 +8,7 @@ const ejs = require('ejs');
 const {createTransport} = require('nodemailer');
 const aws = require('aws-sdk');
 const fs = require('fs');
+const { DynamoDB } = require('aws-sdk');
 //const helperFunctions = require('./helperFunctions')
 const credentials = JSON.parse(fs.readFileSync('credentials.json'));
 aws.config.update({ "accessKeyId": credentials.aws.accessKeyId, "secretAccessKey": credentials.aws.secretAccessKey, "region": "eu-central-1" });
@@ -35,7 +36,6 @@ router.get('/checkUserPage?id=*', (req, res)=>{
     })
 });
 
-
 router.get('*', (req,res)=>{
     let params = {
         Bucket: "rootlinkdata", 
@@ -51,46 +51,47 @@ router.get('*', (req,res)=>{
 });
 
 //Post
-//router.post('/login',check('email').whitelist(['abcdefghijklmnopqrstuvwxyz','ABCDEFGHIJKLMNOPQRSTUVWXYZ','123456789', '.']), (req,res)=>{
 router.post('/login', (req,res)=>{
-    account.AccountSchema.find({email:req.body.email}).then(results=>{
-        if(!results.length){
+    dynamodb.getItem({Key:{"username":{"S": req.body.username}},TableName: "Users"},(err, data)=>{
+        if(Object.keys(data).length == 0){
             res.cookie('accessToken', '', {
                 httpOnly: true,
             });
             res.status(401).json({'result':'ERROR','message': 'Account not found'})
             return;
         }
-        bcrypt.compare(req.body.password, results[0].password_hash, function(err, PasswordResult) {
-            if(!PasswordResult) {
+        bcrypt.compare(req.body.password, data.Items[0].passwordHash, function(err, passwordResult) {
+            if(!passwordResult) {
                 res.cookie('accessToken', '', {
                     httpOnly: true,
                 });
                 res.status(401).json({'result':'ERROR','message': 'Wrong password'})
                 return;
             }
-            const payload = {email: req.body.email, username:req.body.username};
+            const payload = {username:req.body.username};
             const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
             const refreshToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '60m' });
-            results[0].refresh_token = refreshToken;
-            results[0].save();
+            data.Items[0].refreshToken = refreshToken;
+            dynamodb.putItem({
+                Item:{
+                    "refreshToken":{S: refreshToken},
+                },
+                TableName:"Users"
+            },(err, data)=>{});
             res.cookie('accessToken', accessToken, {
                 httpOnly: true,
             });
             res.cookie('refreshToken', refreshToken, {
                 httpOnly: true,
             });
-            if(results[0].email_confirmed){
-                res.status(200).json({'result':'OK', 'username':results[0].username})
+            if(data.Items[0].emailConfirmed){
+                res.status(200).json({'result':'OK', 'username':data.Items[0].username})
                 return;
             }
-            else{
-                res.status(200).json({'result':'WARNING', 'message': 'Email not confirmed yet','username':results[0].username})
-                return;
-            }
+            res.status(200).json({'result':'WARNING', 'message': 'Email not confirmed yet','username':data.Items[0].username})
+            return;
         });
     })
-
 });
 
 router.post('/testLogin', (req, res)=>{
@@ -102,23 +103,6 @@ router.post('/logout', (req,res)=>{
 });
 
 router.post('/confirmEmail', (req, res)=>{
-    account.AccountSchema.find({email:req.body.email}).then(result=>{
-        if(result.length==0){
-            res.status(401).json({'result':'ERROR', 'message': 'Account not found'});
-            return;
-        }
-        if(result[0].confirmation_code!=req.body.code){
-            res.status(401).json({'result':'ERROR', 'message': 'Invalid confirmation code'});
-            return;
-        }
-        result[0].email_confirmed=true;
-        result[0].confirmation_code=undefined;
-        result[0].save();
-        res.status(200).json({'result':'OK'});
-        return;
-    })
-
-
     dynamodb.getItem({Key:{"username":{"S": req.body.username}},TableName: "Users"},(err, data)=>{
         if(Object.keys(data).length == 0){
             res.status(401).json({'result':'ERROR', 'message': 'Account not found'});
@@ -134,17 +118,8 @@ router.post('/confirmEmail', (req, res)=>{
             },TableName:"Users"},(err, data)=>{
                 res.status(200).json({'result':'OK'});
                 return;        
-            });
+        });
     });
-
-
-
-
-
-
-
-
-
 });
 
 router.post('/register', (req,res)=>{
@@ -203,8 +178,8 @@ router.post('/register', (req,res)=>{
 
 router.post('/createPage', (req, res)=>{
     let filename;
-    account.AccountSchema.find({email:res.locals.user.email}).then(results=>{
-        filename = results[0].username.toLowerCase()+'.json';
+    dynamodb.getItem({Key:{"username":{"S": res.locals.user.username}},TableName: "Users"},(err, data)=>{
+        filename = res.locals.user.username.toLowerCase()+'.json';
         let readable = Readable.from([JSON.stringify(req.body)])
         readable.on('error', function(err) {
             res.status(500).json({'result':'ERROR', 'message': 'Cant read data'});
@@ -231,8 +206,8 @@ router.post('/createPage', (req, res)=>{
 router.post('/uploadProfilePicture', (req,res)=>{
     let filename;
     console.log(res.locals.user);
-    account.AccountSchema.find({email:res.locals.user.email}).then(results=>{
-        filename = results[0].username.toLowerCase()+'.profilepicture.txt';
+    dynamodb.getItem({Key:{"username":{"S": res.locals.user.username}},TableName: "Users"},(err, data)=>{
+        filename = res.locals.user.username.toLowerCase()+'.profilepicture.txt';
         let readable = Readable.from([JSON.stringify(req.body)])
         readable.on('error', function(err) {
             res.status(500).json({'result':'ERROR', 'message': 'Cant read data'});
