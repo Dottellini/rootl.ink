@@ -2,7 +2,7 @@
   <div class="container">
     <h1>Login</h1>
     <form class="form">
-      <input type="email" v-model="email" placeholder="E-Mail" required>
+      <input type="username" v-model="username" placeholder="Username" required>
       <input type="password" v-model="password" placeholder="Password" required>
       <button type="button" @click="submit">Log in</button>
     </form>
@@ -15,7 +15,7 @@ export default {
   name: "LoginField",
   data() {
     return {
-      email: "",
+      username: "",
       password: "",
       error: ""
     }
@@ -45,7 +45,7 @@ export default {
           'Content-Type': 'application/json',
         },
         body:JSON.stringify({
-          email: this.email,
+          username: this.username,
           password: this.password
         }),
         mode: "cors"

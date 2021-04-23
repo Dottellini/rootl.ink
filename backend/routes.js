@@ -8,7 +8,6 @@ const ejs = require('ejs');
 const {createTransport} = require('nodemailer');
 const aws = require('aws-sdk');
 const fs = require('fs');
-const { DynamoDB } = require('aws-sdk');
 //const helperFunctions = require('./helperFunctions')
 const credentials = JSON.parse(fs.readFileSync('credentials.json'));
 aws.config.update({ "accessKeyId": credentials.aws.accessKeyId, "secretAccessKey": credentials.aws.secretAccessKey, "region": "eu-central-1" });
@@ -60,7 +59,8 @@ router.post('/login', (req,res)=>{
             res.status(401).json({'result':'ERROR','message': 'Account not found'})
             return;
         }
-        bcrypt.compare(req.body.password, data.Items[0].passwordHash, function(err, passwordResult) {
+        console.log(data)
+        bcrypt.compare(req.body.password, data.Item.passwordHash.S, function(err, passwordResult) {
             if(!passwordResult) {
                 res.cookie('accessToken', '', {
                     httpOnly: true,
@@ -71,7 +71,7 @@ router.post('/login', (req,res)=>{
             const payload = {username:req.body.username};
             const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
             const refreshToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '60m' });
-            data.Items[0].refreshToken = refreshToken;
+            data.Item.refreshToken.S = refreshToken;
             dynamodb.putItem({
                 Item:{
                     "refreshToken":{S: refreshToken},
@@ -84,11 +84,11 @@ router.post('/login', (req,res)=>{
             res.cookie('refreshToken', refreshToken, {
                 httpOnly: true,
             });
-            if(data.Items[0].emailConfirmed){
-                res.status(200).json({'result':'OK', 'username':data.Items[0].username})
+            if(data.Item.emailConfirmed.BOOL){
+                res.status(200).json({'result':'OK', 'username':data.Item.username.S})
                 return;
             }
-            res.status(200).json({'result':'WARNING', 'message': 'Email not confirmed yet','username':data.Items[0].username})
+            res.status(200).json({'result':'WARNING', 'message': 'Email not confirmed yet','username':data.Item.username.S})
             return;
         });
     })
@@ -108,14 +108,25 @@ router.post('/confirmEmail', (req, res)=>{
             res.status(401).json({'result':'ERROR', 'message': 'Account not found'});
             return;
         }
-        if(data.Item.confirmationCode!=req.body.code){
+        console.log(data.Item.confirmationCode.S,req.body.code)
+        if(data.Item.confirmationCode.S!=req.body.code){
             res.status(401).json({'result':'ERROR', 'message': 'Invalid confirmation code'});
             return;
         }
-        dynamodb.putItem({
-            Item:{
-                "emailConfirmed":{BOOL: true},
-            },TableName:"Users"},(err, data)=>{
+        dynamodb.updateItem({
+            TableName: "Users",
+            Key: {
+                "username": {S: req.body.username}
+            },
+            UpdateExpression: "set #emailConfirmed  = :true",
+            ExpressionAttributeNames: {
+                "#emailConfirmed": "emailConfirmed"
+            },
+            ExpressionAttributeValues:{
+                ":true": {BOOL: true}
+            }
+        },(err, data)=>{
+                console.log(err,data)
                 res.status(200).json({'result':'OK'});
                 return;        
         });
@@ -143,7 +154,8 @@ router.post('/register', (req,res)=>{
                         "username":{S: req.body.username},
                         "emailConfirmed":{BOOL: false},
                         "passwordHash":{S: hash},
-                        "refreshToken": {S: ""}
+                        "refreshToken": {S: ""},
+                        "confirmationCode":{S:confirmationCode}
                     },TableName:"Users"},(err, data)=>{
                     ejs.renderFile(__dirname+'/email-templates/email-template1.ejs', {code: confirmationCode, username:req.body.username},(error, data)=>{
                         var mailOptions = {

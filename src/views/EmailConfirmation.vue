@@ -12,13 +12,13 @@ export default {
   mounted() {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
-    const email = urlParams.get('email');
+    const username = urlParams.get('username');
     fetch('/confirmEmail', {
       method: 'POST', // or 'PUT'
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({code: code, email:email}),
+      body: JSON.stringify({code: code, username:username}),
     })
         .then(data => {
           console.log('Success:', data);

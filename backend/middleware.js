@@ -3,7 +3,11 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
+const fs = require('fs')
+const aws = require('aws-sdk')
+const credentials = JSON.parse(fs.readFileSync('credentials.json'));
+aws.config.update({ "accessKeyId": credentials.aws.accessKeyId, "secretAccessKey": credentials.aws.secretAccessKey, "region": "eu-central-1" });
+var dynamodb = new aws.DynamoDB({apiVersion: '2012-08-10'});
 
 
 //authenticateToken
@@ -23,7 +27,7 @@ router.use(['/testLogin', '/createPage', '/uploadProfilePicture'], (req, res, ne
             switch(err.message) {
                 case 'jwt expired':
                     const payload = jwt.verify(cookies.accessToken, process.env.ACCESS_TOKEN_SECRET, {ignoreExpiration: true} );
-                    const refresh = refreshAccessToken(payload.email);
+                    const refresh = refreshAccessToken(payload.username);
                     if(refresh instanceof Error){
                         res.status(401).json({'result': 'ERROR', 'message': 'Invalid token'})
                         return;
@@ -68,14 +72,14 @@ router.use('/logout', (req,res,next)=>{
     next()
 });
 
-function refreshAccessToken(emailAddress){
-    dynamodb.getItem({Key:{"username":{"S": req.body.username}},TableName: "Users"},(err, data)=>{
+function refreshAccessToken(username){
+    dynamodb.getItem({Key:{"username":{"S": username}},TableName: "Users"},(err, data)=>{
         if(Object.keys(data).length !== 0){
             let err = new Error('Account does not exist');
             err.status = 500;
             return err;
         }
-        jwt.verify(results[0].refresh_token, process.env.ACCESS_TOKEN_SECRET, (err)=>{
+        jwt.verify(data.Item.refreshToken.S, process.env.ACCESS_TOKEN_SECRET, (err)=>{
             if(err) {
                 let err = new Error('RefreshToken expired');
                 err.status = 403;
