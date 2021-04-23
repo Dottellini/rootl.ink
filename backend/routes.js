@@ -15,6 +15,15 @@ var dynamodb = new aws.DynamoDB({apiVersion: '2012-08-10'});
 
 //Get
 
+router.post('/analyticstimm', (req,res)=>{
+    console.log("LOL")
+    dynamodb.getItem({Key:{"url":{"S": "timm"}},TableName: "Analytics"},(err, data)=>{
+        console.log(err,data)
+        res.status(200).json(JSON.stringify(data));
+    });
+})
+
+
 router.get('/confirmEmailCode*', (req,res)=>{
     res.sendFile('./views/confirmEmail.html', {'root': __dirname});
 });
@@ -46,6 +55,7 @@ router.get('*', (req,res)=>{
         res.sendFile('./views/template1.html', {'root': __dirname});
     })
 });
+
 
 //Post
 router.post('/login', (req,res)=>{
@@ -242,6 +252,7 @@ router.post('/uploadProfilePicture', (req,res)=>{
 });
 
 router.post('/analytics', (req,res)=>{
+    console.log("ertguiowegirhirehg")
     console.log(req.headers)
     console.log(req.headers.referer.split('/')[3])
     dynamodb.updateItem({
