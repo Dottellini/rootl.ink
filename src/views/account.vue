@@ -1,23 +1,23 @@
 <template>
-  <tabs>
-    <tab title="Account" class="tab">
+  <Tabs>
+    <Tab title="Account" class="tab">
       <edit-account-details></edit-account-details>
-    </tab>
-    <tab title="Analytics" class="tab"></tab>
-  </tabs>
+    </Tab>
+    <Tab title="Analytics" class="tab"></Tab>
+  </Tabs>
 </template>
 
 <script>
 import EditAccountDetails from "../components/EditAccountDetails";
-import tabs from "../components/tab-system/Tabs"
-import tab from "../components/tab-system/Tab"
+import Tabs from "../components/TabSystem/Tabs"
+import Tab from "../components/TabSystem/Tab"
 
 export default {
   name: "account",
   components: {
     EditAccountDetails,
-    tabs,
-    tab
+    Tabs,
+    Tab
   },
 
   beforeCreate() {

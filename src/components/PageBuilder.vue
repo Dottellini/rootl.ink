@@ -1,8 +1,8 @@
 <template>
   <div id="pageBuilder" class="container">
     <h1>Design your Page</h1>
-    <tabs>
-      <tab title="rootlinks">
+    <Tabs>
+      <Tab title="rootlinks">
         <draggable :list="list"
             :disabled="!enabled"
             :animation="200"
@@ -56,8 +56,8 @@
             <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"/>
           </svg>
         </button>
-      </tab>
-      <tab title="Colors">
+      </Tab>
+      <Tab title="Colors">
         <div class="color-container">
           <div id="background-color-picker" class="picker">
             <label for="backgroundPicker">Background-Color:</label>
@@ -76,8 +76,8 @@
             <input id="rootlPicker" value="#000000" type="color" @input="updateRLColor($event.target.value)">
           </div>
         </div>
-      </tab>
-    </tabs>
+      </Tab>
+    </Tabs>
     <hr>
     <button @click="submit" class="save-button">Save</button>
     <canvas id="imageCanvas" hidden></canvas>
@@ -86,8 +86,8 @@
 
 <script>
 import draggable from "vuedraggable";
-import Tab from "./tab-system/Tab";
-import Tabs from "./tab-system/Tabs";
+import Tab from "./TabSystem/Tab";
+import Tabs from "./TabSystem/Tabs";
 
 export default {
   name: "simple",

@@ -88,12 +88,12 @@
 
 <script>
 import { Slide } from "vue-burger-menu"
-import languageDrop from "./components/languageDrop";
+import LanguageDrop from "./components/LanguageDrop";
 
 export default {
   components: {
     Slide,
-    languageDrop
+    LanguageDrop
   },
 
   data() {

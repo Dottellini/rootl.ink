@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import QR_GEN from '../components/qr-code-generator'
+import QR_GEN from '../components/QrCodeGenerator'
 
 export default {
   name: "QR",

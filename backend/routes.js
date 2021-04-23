@@ -8,10 +8,8 @@ const ejs = require('ejs');
 const {createTransport} = require('nodemailer');
 const aws = require('aws-sdk');
 const fs = require('fs');
-//const helperFunctions = require('./helperFunctions')
 const credentials = JSON.parse(fs.readFileSync('credentials.json'));
 aws.config.update({ "accessKeyId": credentials.aws.accessKeyId, "secretAccessKey": credentials.aws.secretAccessKey, "region": "eu-central-1" });
-
 var dynamodb = new aws.DynamoDB({apiVersion: '2012-08-10'});
 
 
@@ -241,5 +239,9 @@ router.post('/uploadProfilePicture', (req,res)=>{
         });
     });
 });
+
+router.post('/analytics', (req,res)=>{
+    console.log(req.body)
+})
 
 exports.router = router;
