@@ -153,7 +153,8 @@ router.post('/register', (req,res)=>{
                         "emailConfirmed":{BOOL: false},
                         "passwordHash":{S: hash},
                         "refreshToken": {S: ""},
-                        "confirmationCode":{S:confirmationCode}
+                        "confirmationCode":{S:confirmationCode},
+                        "userPageUrl":{S:req.body.username.toLowerCase()}
                     },TableName:"Users"},(err, data)=>{
                     ejs.renderFile(__dirname+'/email-templates/email-template1.ejs', {code: confirmationCode, username:req.body.username},(error, data)=>{
                         var mailOptions = {
@@ -241,7 +242,16 @@ router.post('/uploadProfilePicture', (req,res)=>{
 });
 
 router.post('/analytics', (req,res)=>{
-    console.log(req.body)
+    console.log(req.headers)
+    console.log(req.headers.referer.split('/')[3])
+    dynamodb.updateItem({
+        TableName: "Analytics",
+        Key: { "url": { S: req.headers.referer.split('/')[3] } },
+        ExpressionAttributeValues: { ":inc": {N: "1"} },
+        UpdateExpression: "ADD pageViews :inc"
+      }, (err, data)=>{
+          console.log(err,data)
+      })
 })
 
 exports.router = router;

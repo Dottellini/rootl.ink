@@ -20,7 +20,6 @@
 </template>
 
 <script>
-import VideoEmbed from "../components/VideoEmbed";
 import Linkbox from "../components/Linkbox";
 import NewsletterSignup from './NewsletterSignup.vue';
 
@@ -39,6 +38,16 @@ export default {
     let theme = localStorage.getItem('theme');
     this.isDark = theme !== "";
     this.$store.commit("changeThemeOnPreview", this.isDark)
+    fetch('/analytics', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body:JSON.stringify({
+      event: "Page Viewed"
+      }),
+      mode: "cors"
+    }).then(result =>{});
   },
 
   methods: {
