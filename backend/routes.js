@@ -149,7 +149,7 @@ router.post('/register', (req,res)=>{
         }
         dynamodb.query({TableName:"Users",IndexName:"emailAddress-index",Select:'ALL_PROJECTED_ATTRIBUTES',KeyConditionExpression:'emailAddress = :emailAddress',ExpressionAttributeValues:{":emailAddress": {"S": req.body.email.toLowerCase()}}}, (err, data)=>{
             if(data.Items.length!=0){
-                res.status(403).json({'result':'ERROR', 'message': 'There Already is an Account using that Email Address'});
+                res.status(403).json({'result':'ERROR', 'message': 'Email Address already in use'});
                 return;
             }
             const confirmationCode = v4();
