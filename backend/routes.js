@@ -22,11 +22,6 @@ router.post('/analyticstimm', (req,res)=>{
     });
 })
 
-
-router.get('/confirmEmailCode*', (req,res)=>{
-    res.sendFile('./views/confirmEmail.html', {'root': __dirname});
-});
-
 router.get('/checkUserPage?id=*', (req, res)=>{
     let params = {
         Bucket: "rootlinkdata", 
@@ -75,8 +70,8 @@ router.post('/login', (req,res)=>{
                 return;
             }
             const payload = {username:req.body.username};
-            const accessToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
-            const refreshToken = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '60m' });
+            const accessToken = sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+            const refreshToken = sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '60m' });
             data.Item.refreshToken.S = refreshToken;
             dynamodb.putItem({
                 Item:{
@@ -90,11 +85,11 @@ router.post('/login', (req,res)=>{
             res.cookie('refreshToken', refreshToken, {
                 httpOnly: true,
             });
-            if(data.Item.emailConfirmed.BOOL){
+            if(data.Item.emailAddressConfirmed.BOOL){
                 res.status(200).json({'result':'OK', 'username':data.Item.username.S})
                 return;
             }
-            res.status(200).json({'result':'WARNING', 'message': 'Email not confirmed yet','username':data.Item.username.S})
+            res.status(200).json({'result':'WARNING', 'message': 'Email Address not confirmed yet','username':data.Item.username.S})
             return;
         });
     })
@@ -108,8 +103,9 @@ router.post('/logout', (req,res)=>{
     res.status(200).json({'result':'OK'});
 });
 
-router.post('/confirmEmail', (req, res)=>{
-    dynamodb.getItem({Key:{"username":{"S": req.body.username}},TableName: "Users"},(err, data)=>{
+router.post('/confirmEmailAddress', (req, res)=>{
+    console.log("KEY:"+req.body.username.toLowerCase())
+    dynamodb.getItem({Key:{"usernameLowerCase":{"S":req.body.username.toLowerCase()}},TableName: "Users"},(err, data)=>{
         if(Object.keys(data).length == 0){
             res.status(401).json({'result':'ERROR', 'message': 'Account not found'});
             return;
@@ -122,11 +118,11 @@ router.post('/confirmEmail', (req, res)=>{
         dynamodb.updateItem({
             TableName: "Users",
             Key: {
-                "username": {S: req.body.username}
+                "usernameLowerCase": {S: req.body.username.toLowerCase()}
             },
-            UpdateExpression: "set #emailConfirmed  = :true",
+            UpdateExpression: "set #emailAddressConfirmed  = :true",
             ExpressionAttributeNames: {
-                "#emailConfirmed": "emailConfirmed"
+                "#emailAddressConfirmed": "emailAddressConfirmed"
             },
             ExpressionAttributeValues:{
                 ":true": {BOOL: true}
@@ -145,25 +141,24 @@ router.post('/register', (req,res)=>{
         res.status(403).json({'result':'ERROR', 'message': 'Invalid Username'});
         return;
     }
-    dynamodb.getItem({Key:{"username":{"S": req.body.username}},TableName: "Users"},(err, data)=>{
+    dynamodb.getItem({Key:{"usernameLowerCase":{"S": req.body.username.toLowerCase()}},TableName: "Users"},(err, data)=>{
         if(Object.keys(data).length !== 0){
-            res.status(403).json({'result':'ERROR', 'message': 'Account already exists'});
+            res.status(403).json({'result':'ERROR', 'message': 'Username already exists'});
             return;
         }
-        dynamodb.query({TableName:"Users",IndexName:"email-index",Select:'ALL_PROJECTED_ATTRIBUTES',KeyConditionExpression:'email = :email',ExpressionAttributeValues:{":email": {"S": req.body.email}}}, (err, data)=>{
+        dynamodb.query({TableName:"Users",IndexName:"emailAddress-index",Select:'ALL_PROJECTED_ATTRIBUTES',KeyConditionExpression:'emailAddress = :emailAddress',ExpressionAttributeValues:{":emailAddress": {"S": req.body.email}}}, (err, data)=>{
             if(data.Items.length!=0){
-                console.log(err,data)
-
-                res.status(403).json({'result':'ERROR', 'message': 'Account already exists'});
+                res.status(403).json({'result':'ERROR', 'message': 'There Already is an Account using that Email Address'});
                 return;
             }
             const confirmationCode = v4();
             hash(req.body.password, 10, function(error, hash) {
                 dynamodb.putItem({
                     Item:{
-                        "email":{S: req.body.email},
+                        "emailAddress":{S: req.body.email},
                         "username":{S: req.body.username},
-                        "emailConfirmed":{BOOL: false},
+                        "usernameLowerCase":{S:req.body.username.toLowerCase()},
+                        "emailAddressConfirmed":{BOOL: false},
                         "passwordHash":{S: hash},
                         "refreshToken": {S: ""},
                         "confirmationCode":{S:confirmationCode},

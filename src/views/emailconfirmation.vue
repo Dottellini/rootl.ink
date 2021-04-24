@@ -13,7 +13,7 @@ export default {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
     const username = urlParams.get('username');
-    fetch('/confirmEmail', {
+    fetch('/confirmEmailAddress', {
       method: 'POST', // or 'PUT'
       headers: {
         'Content-Type': 'application/json',
