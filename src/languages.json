@@ -1,0 +1,106 @@
+{
+  "en": {
+    "homepage": {
+      "headline": {"one": "The root of", "two": "all your links"},
+      "footnote": "The simplest way to redirect your audience",
+      "learn_more": "Learn More",
+      "start_creating": "Start Creating!"
+    },
+    "app": {
+      "about": "About us",
+      "service": "Service",
+      "help": "Help",
+      "greeting": "Hello",
+      "account": "Account",
+      "page": "My Page",
+      "darkMode": "DarkMode",
+      "googleAnalytics": {
+        "click": "Click",
+        "here": "here",
+        "disable": "to disable Google Analytics tracking"
+      }
+    },
+    "pageBuilder": {
+      "headline": "Design your Page",
+      "backgroundColor": "Background-Color:",
+      "textColor": "Text-Color:",
+      "LinkBackgroundColor": "Link-Background-Color:",
+      "rootlinkColor": "rootl.ink-Color:"
+    },
+    "emailConfirmation":{
+      "confirmed": "Email confirmed!",
+      "loginHere": "Login here!"
+    },
+    "signupComplete": {
+      "headline": "Sign up complete",
+      "text": "Check your E-Mail to confirm your registration"
+    },
+    "NoAccount": "Don't have an account?",
+    "alreadyAccount": "Already have an account?",
+    "goHome": "Go back Home",
+    "upload": "Upload",
+    "save": "Save",
+    "language": "Language",
+    "login": "Login",
+    "logout": "Logout",
+    "register": "Register",
+    "signUp": "Sign Up",
+    "submit": "Submit",
+    "hide": "Hide",
+    "share": "Share",
+    "copyRootlink": "Copy Rootlink",
+    "qr": "QR-Code"
+  },
+  "de": {
+    "homepage": {
+      "headline": {"one": "Die Wurzel all", "two": "deiner Links"},
+      "footnote": "Der einfachste Weg deine Fans weiterzuleiten",
+      "learn_more": "Erfahre Mehr",
+      "start_creating": "Baue deine Seite"
+    },
+    "app": {
+      "about": "Über uns",
+      "service": "Service",
+      "help": "Hilfe",
+      "greeting": "Hallo",
+      "account": "Konto",
+      "page": "Meine Seite",
+      "darkMode": "Dunkel",
+      "googleAnalytics": {
+        "click": "Drücke",
+        "here": "hier",
+        "disable": "um Google Analytics tracking zu deaktivieren"
+      }
+    },
+    "pageBuilder": {
+      "headline": "Design deine Seite",
+      "backgroundColor": "Hintergrund-Farbe:",
+      "textColor": "Text-Farbe:",
+      "LinkBackgroundColor": "Link-Hintergrund-Farbe:",
+      "rootlinkColor": "rootl.ink-Farbe:"
+    },
+    "emailConfirmation":{
+      "confirmed": "Email bestätigt!",
+      "loginHere": "Hier Anmelden!"
+    },
+    "signupComplete": {
+      "headline": "Registrierung beendet",
+      "text": "Überprüfe deine E-Mails, um die Registrierung zu bestätigen"
+    },
+    "NoAccount": "Noch kein Konto?",
+    "alreadyAccount": "Bereits ein Konto?",
+    "goHome": "Zurück zur Startseite",
+    "upload": "Hochladen",
+    "save": "Speichern",
+    "language": "Sprache",
+    "login": "Anmelden",
+    "logout": "Abmelden",
+    "register": "Registrieren",
+    "signUp": "Registrieren",
+    "submit": "Einreichen",
+    "hide": "Verstecken",
+    "share": "Teilen",
+    "copyRootlink": "Rootlink kopieren",
+    "qr": "QR-Code"
+  }
+}

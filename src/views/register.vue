@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <RegisterField class="register"></RegisterField>
-    <p>already have an account? <router-link to="/login">Log in!</router-link></p>
+    <p>{{$t('alreadyAccount')}} <router-link to="/login">{{$t('login')}}!</router-link></p>
   </div>
 </template>
 

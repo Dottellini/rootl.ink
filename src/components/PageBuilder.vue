@@ -1,6 +1,6 @@
 <template>
   <div id="pageBuilder" class="container">
-    <h1>Design your Page</h1>
+    <h1>{{$t('pageBuilder.headline')}}</h1>
     <tabs>
       <tab title="rootlinks">
         <draggable :list="list"
@@ -60,26 +60,26 @@
       <tab title="Colors">
         <div class="color-container">
           <div id="background-color-picker" class="picker">
-            <label for="backgroundPicker">Background-Color:</label>
+            <label for="backgroundPicker">{{$t('pageBuilder.backgroundColor')}}</label>
             <input id="backgroundPicker" value="#FFFFFF" type="color" @input="updateBGColor($event.target.value)">
           </div>
           <div id="text-color-picker" class="picker">
-            <label for="textPicker">Text-Color:</label>
+            <label for="textPicker">{{$t('pageBuilder.textColor')}}</label>
             <input id="textPicker" value="#FFFFFF" type="color" @input="updateTXTColor($event.target.value)">
           </div>
           <div id="box-color-picker" class="picker">
-            <label for="boxPicker">Link-Background-Color:</label>
+            <label for="boxPicker">{{$t('pageBuilder.LinkBackgroundColor')}}</label>
             <input id="boxPicker" value="#000000" type="color" @input="updateBOXColor($event.target.value)">
           </div>
           <div id="rootl-picker" class="picker">
-            <label for="rootlPicker">rootl.ink-Color:</label>
+            <label for="rootlPicker">{{$t('pageBuilder.rootlinkColor')}}</label>
             <input id="rootlPicker" value="#000000" type="color" @input="updateRLColor($event.target.value)">
           </div>
         </div>
       </tab>
     </tabs>
     <hr>
-    <button @click="submit" class="save-button">Save</button>
+    <button @click="submit" class="save-button">{{$t('save')}}</button>
     <canvas id="imageCanvas" hidden></canvas>
   </div>
 </template>

@@ -1,12 +1,12 @@
 <template>
   <div class="container">
-    <h1>Register</h1>
+    <h1>{{$t('register')}}</h1>
     <form class="form">
       <input type="text" v-model="username" maxlength="30" placeholder="Username" required>
       <input type="email" v-model="email" placeholder="E-Mail" required>
       <input type="password" v-model="password" placeholder="Password" required>
       <input type="password" v-model="rep_password" placeholder="Repeat Password" required>
-      <button type="button" @click="submit">Register</button>
+      <button type="button" @click="submit">{{$t('register')}}</button>
     </form>
     <p class="error">{{error}}</p>
   </div>

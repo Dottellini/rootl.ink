@@ -1,9 +1,9 @@
 <template>
   <div class="container">
     <input id="imageInput" type="file" name="avatar" @change="ConvertFileTo('image/jpeg', $event)">
-    <button type="button" @click="upload">Upload</button>
+    <button type="button" @click="upload">{{$t('upload')}}</button>
     <input id="username" type="text">
-    <button>Save</button>
+    <button>{{$t('save')}}</button>
     <canvas id="imageCanvas" hidden></canvas>
   </div>
 </template>

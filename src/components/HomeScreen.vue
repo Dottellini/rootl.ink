@@ -3,7 +3,7 @@
     <div class="content" :class="{'content-background': !isMobile}" >
       <h1>{{$t('homepage.headline.one')}}<br>{{$t('homepage.headline.two')}}</h1>
       <h2>{{$t('homepage.footnote')}}</h2>
-      <button @click="scroll" class="learnButton">Learn More</button>
+      <button @click="scroll" class="learnButton">{{$t('homepage.learn_more')}}</button>
       <Preview class="preview" :use-phone="true"></Preview>
       <div class="line"></div>
       <div class="input">
@@ -19,7 +19,7 @@
         <div v-show="username.length > 0 && showButton" class="line"></div>
       </transition>
       <transition name="bounce">
-        <router-link to="/register" v-show="username.length > 0 && showButton" class="register">Start Creating!</router-link>
+        <router-link to="/register" v-show="username.length > 0 && showButton" class="register">{{$t('homepage.start_creating')}}</router-link>
       </transition>
     </div>
   </div>

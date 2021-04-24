@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h1>Email confirmed!</h1>
-    <router-link class="router" to="/login">Login here!</router-link>
+    <h1>{{$t('emailConfirmation.confirmed')}}</h1>
+    <router-link class="router" to="/login">{{$t('emailConfirmation.loginHere')}}</router-link>
   </div>
 </template>
 

@@ -1,6 +1,6 @@
 <template>
   <div class="dropdown">
-    <button class="dropbtn">Language</button>
+    <button class="btn">{{$t('language')}} ▼</button>
     <div class="dropdown-content">
       <button v-for="entry in languages" :key="entry.title" @click="changeLocale(entry.language)">
         {{entry.title}}
@@ -30,13 +30,12 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.dropbtn {
+.btn {
   background-color: transparent;
   border-radius: 10px 10px 0 0;
-  border: 1px solid #05b8a6;
+  border: none;
   color: #05b8a6;
   padding: 8px;
-  margin: 0 0 0 1em;
   min-width: 8em;
   font-size: 16px;
   font-weight: 600;
@@ -47,7 +46,7 @@ export default {
 .dropdown {
   position: relative;
   display: inline-block;
-  min-width: 8em;
+  min-width: 4em;
 }
 
 /* Dropdown Content (Hidden by Default) */
@@ -56,7 +55,6 @@ export default {
   right: 0;
   display: none;
   position: absolute;
-  margin: 0 0 0 1em;
   background-color: var(--surface-color);
   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
   z-index: 1;
@@ -66,29 +64,31 @@ export default {
 }
 
 /* Links inside the dropdown */
-.dropdown-content a {
+.dropdown-content button {
   color: var(--text-color);
+  background-color: var(--surface-color);
+  cursor: pointer;
+  outline: none;
   font-family: 'Montserrat', sans-serif;
-  padding: 12px 16px;
   text-decoration: none;
+  border: none;
+  padding: 10px 0;
   display: block;
 }
 
 /* Change color of dropdown links on hover */
-.dropdown-content a:hover {
+.dropdown-content button:hover {
+  border: none;
   background-color: var(--hover-color);
 }
 
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {
-  display: block;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 }
 
-/* Change the background color of the dropdown button when the dropdown content is shown */
-.dropdown:hover .dropbtn {
-  background-color: #05b8a6;
-  border: 1px solid #05b8a6;
-  color: white;
-}
+
 
 </style>

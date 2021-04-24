@@ -9,8 +9,8 @@
       <a target="_blank" :style="textColor" :href="link.link">{{link.name}}</a>
     </div>
     <input v-if="showInput">
-    <button v-if="showInput">Submit</button>
-    <button v-if="showInput">Hide</button>
+    <button v-if="showInput">{{$t('submit')}}</button>
+    <button v-if="showInput">{{$t('hide')}}</button>
   </div>
 </template>
 

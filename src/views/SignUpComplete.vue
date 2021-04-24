@@ -1,9 +1,9 @@
 <template>
   <div class="container">
-    <h1>Sign up complete</h1>
-    <h2>Check your E-Mail to confirm your registration</h2>
+    <h1>{{$t('signupComplete.headline')}}</h1>
+    <h2>{{$t('signupComplete.text')}}</h2>
 
-    <router-link class="redirect-home" to="/">Go back Home</router-link>
+    <router-link class="redirect-home" to="/">{{$t('goHome')}}</router-link>
   </div>
 </template>
 

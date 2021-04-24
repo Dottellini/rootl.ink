@@ -1,10 +1,10 @@
 <template>
   <div class="container">
-    <h1>Login</h1>
+    <h1>{{$t('login')}}</h1>
     <form class="form">
       <input type="email" v-model="email" placeholder="E-Mail" required>
       <input type="password" v-model="password" placeholder="Password" required>
-      <button type="button" @click="submit">Log in</button>
+      <button type="button" @click="submit">{{$t('login')}}</button>
     </form>
     <p class="error">{{error}}</p>
   </div>
@@ -51,7 +51,7 @@ export default {
         mode: "cors"
       }).then(result => {
         result.headers.forEach(header => {
-          if(header === "ERROR") {this.error = "Wrong Credentials"}
+          if(header === "ERROR") {this.error = "Wrong Credentials"} //this.$t('error')
           else if(header === "WARNING") {this.error = "Please confirm your E-Mail"}
         })
         let reader = result.body.getReader();

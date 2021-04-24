@@ -7,48 +7,48 @@
         </div>
         <div class="child">
           <div v-if="!isMobile" class="desktop-navbar">
-            <router-link class="desktop-nav-item" to="/about">About us</router-link>
-            <router-link class="desktop-nav-item" to="/service">Service</router-link>
-            <router-link class="desktop-nav-item" to="/help">Help</router-link>
+            <router-link class="desktop-nav-item" to="/about">{{$t('app.about')}}</router-link>
+            <router-link class="desktop-nav-item" to="/service">{{$t('app.service')}}</router-link>
+            <router-link class="desktop-nav-item" to="/help">{{$t('app.help')}}</router-link>
             <button v-if="!isLoggedIn" class="register-button account-button">
-              <router-link class="router" to="/register">Sign Up</router-link>
+              <router-link class="router" to="/register">{{$t('signUp')}}</router-link>
             </button>
             <div v-if="isLoggedIn" class="dropdown">
-              <button class="dropbtn">Share</button>
+              <button class="dropbtn">{{$t('share')}}</button>
               <div class="dropdown-content">
-                <a href="#" @click="copyLink">Copy Rootlink</a>
-                <router-link to="/qr" >QR-Code</router-link>
+                <a href="#" @click="copyLink">{{$t('copyRootlink')}}</a>
+                <router-link to="/qr" >{{$t('qr')}}</router-link>
               </div>
             </div>
           </div>
 
-          <Slide right :closeOnNavigation="true" :crossIcon="false" style="top: 0">
+          <Slide right :crossIcon="false" style="top: 0">
             <div v-if="!isLoggedIn">
               <div class="button-container">
                 <button class="login-button account-button">
-                  <router-link class="router" to="/login">Log In</router-link>
+                  <router-link class="router" to="/login">{{$t('login')}}</router-link>
                 </button>
               </div>
 
-              <router-link v-if="isMobile" class="desktop-nav-item" to="/about">About us</router-link>
-              <router-link v-if="isMobile" class="desktop-nav-item" to="/service">Service</router-link>
-              <router-link v-if="isMobile" class="desktop-nav-item" to="/help">Help</router-link>
+              <router-link v-if="isMobile" class="desktop-nav-item" to="/about">{{$t('app.about')}}</router-link>
+              <router-link v-if="isMobile" class="desktop-nav-item" to="/service">{{$t('app.service')}}</router-link>
+              <router-link v-if="isMobile" class="desktop-nav-item" to="/help">{{$t('app.help')}}</router-link>
             </div>
             <div v-if="isLoggedIn">
               <div class="account-container">
                 <img class="profile-picture" :src="account_profile_picture" width="100" height="100">
-                <div class="hello-msg">Hello {{account_username}}</div>
+                <div class="hello-msg">{{$t('app.greeting')}} {{account_username}}</div>
               </div>
-              <router-link to="/account">Account</router-link>
-              <router-link to="/editor">My Page</router-link>
+              <router-link to="/account">{{$t('app.account')}}</router-link>
+              <router-link to="/editor">{{$t('app.page')}}</router-link>
 
-              <router-link v-if="isMobile" class="desktop-nav-item" to="/about">About us</router-link>
-              <router-link v-if="isMobile" class="desktop-nav-item" to="/service">Service</router-link>
-              <router-link v-if="isMobile" class="desktop-nav-item" to="/help">Help</router-link>
+              <router-link v-if="isMobile" class="desktop-nav-item" to="/about">{{$t('app.about')}}</router-link>
+              <router-link v-if="isMobile" class="desktop-nav-item" to="/service">{{$t('app.service')}}</router-link>
+              <router-link v-if="isMobile" class="desktop-nav-item" to="/help">{{$t('app.help')}}</router-link>
 
             </div>
             <div class="DarkMode-Container">
-              <div class="DarkMode-Label">DarkMode</div>
+              <div class="DarkMode-Label">{{$t('app.darkMode')}}</div>
               <span>
               <label class="switch">
                 <input type="checkbox" @click="toggleTheme" v-model="isDark">
@@ -56,11 +56,13 @@
               </label>
             </span>
             </div>
-            <button v-if="isLoggedIn" type="button" class="logout-Button" @click="logout">Logout</button>
-            <LanguageDrop></LanguageDrop>
+            <button v-if="isLoggedIn" type="button" class="logout-Button" @click="logout">{{$t('logout')}}</button>
             <div>
+              <language-drop></language-drop>
+            </div>
+            <div class="test">
               <p>
-                Click <a href="#" @click.prevent="disableTracking">here</a> to disable Google Analytics tracking
+                {{$t('app.googleAnalytics.click')}}<a href="#" @click.prevent="disableTracking"> {{$t('app.googleAnalytics.here')}} </a>{{$t('app.googleAnalytics.disable')}}
               </p>
             </div>
           </Slide right>
@@ -87,8 +89,8 @@
 </template>
 
 <script>
-import { Slide } from "vue-burger-menu"
 import languageDrop from "./components/languageDrop";
+import { Slide } from "vue-burger-menu"
 
 export default {
   components: {
@@ -452,6 +454,7 @@ export default {
     font-weight: 500;
 
     p{
+      display: block;
       font-size: 10px;
       font-weight: 400;
       font-family: 'Montserrat', sans-serif;

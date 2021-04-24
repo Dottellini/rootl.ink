@@ -1,6 +1,6 @@
 <template>
   <div>
-    <VueQArt :config="config"></VueQArt>
+    <vue-q-art :config="config"></vue-q-art>
     <button @click="download">Download</button>
   </div>
 </template>
