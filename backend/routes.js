@@ -53,7 +53,7 @@ router.get('*', (req,res)=>{
 
 //Post
 router.post('/login', (req,res)=>{
-    dynamodb.getItem({Key:{"username":{"S": req.body.username}},TableName: "Users"},(err, data)=>{
+    dynamodb.getItem({Key:{"usernameLowerCase":{"S": req.body.username.toLowerCase()}},TableName: "Users"},(err, data)=>{
         if(Object.keys(data).length == 0){
             res.cookie('accessToken', '', {
                 httpOnly: true,
@@ -61,7 +61,7 @@ router.post('/login', (req,res)=>{
             res.status(401).json({'result':'ERROR','message': 'Account not found'})
             return;
         }
-        compare(req.body.password, data.Items[0].passwordHash, function(err, passwordResult) {
+        compare(req.body.password, data.Item.passwordHash.S, function(err, passwordResult) {
             if(!passwordResult) {
                 res.cookie('accessToken', '', {
                     httpOnly: true,
@@ -100,6 +100,7 @@ router.post('/testLogin', (req, res)=>{
 });
 
 router.post('/logout', (req,res)=>{
+    //set refresh token in db to ""
     res.status(200).json({'result':'OK'});
 });
 
