@@ -10,6 +10,9 @@ import SignUpComplete from "../views/signupcomplete";
 import EmailConfirmation from "../views/emailconfirmation";
 import account from "../views/account";
 import QR from '../views/qr'
+import About from '../views/about'
+import Service from '../views/service'
+import Help from '../views/help'
 
 Vue.use(VueRouter)
 
@@ -18,6 +21,21 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home,
+  },
+  {
+    path: '/about',
+    name: 'About',
+    component: About,
+  },
+  {
+    path: '/help',
+    name: 'Help',
+    component: Help,
+  },
+  {
+    path: '/service',
+    name: 'Service',
+    component: Service,
   },
   {
     path: '/signupcomplete',
