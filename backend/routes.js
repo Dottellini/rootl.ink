@@ -1,16 +1,15 @@
-const express = require('express');
-const router = express.Router();
+const router = require('express').Router();
 const { Readable } = require('stream')
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const uuid = require('uuid');
-const ejs = require('ejs');
+const {compare, hash} = require('bcrypt');
+const {sign} = require('jsonwebtoken');
+const {v4} = require('uuid');
+const {renderFile} = require('ejs');
 const {createTransport} = require('nodemailer');
 const aws = require('aws-sdk');
-const fs = require('fs');
-const credentials = JSON.parse(fs.readFileSync('credentials.json'));
+const {readFileSync} = require('fs');
+const credentials = JSON.parse(readFileSync('credentials.json'));
 aws.config.update({ "accessKeyId": credentials.aws.accessKeyId, "secretAccessKey": credentials.aws.secretAccessKey, "region": "eu-central-1" });
-var dynamodb = new aws.DynamoDB({apiVersion: '2012-08-10'});
+const dynamodb = new aws.DynamoDB({apiVersion: '2012-08-10'});
 
 
 //Get
@@ -67,8 +66,7 @@ router.post('/login', (req,res)=>{
             res.status(401).json({'result':'ERROR','message': 'Account not found'})
             return;
         }
-        console.log(data)
-        bcrypt.compare(req.body.password, data.Item.passwordHash.S, function(err, passwordResult) {
+        compare(req.body.password, data.Items[0].passwordHash, function(err, passwordResult) {
             if(!passwordResult) {
                 res.cookie('accessToken', '', {
                     httpOnly: true,
@@ -142,6 +140,11 @@ router.post('/confirmEmail', (req, res)=>{
 });
 
 router.post('/register', (req,res)=>{
+    const invalidUsernames = ["login","register","about","help","pricing","service"]
+    if(invalidUsernames.includes(req.body.username.toLowerCase())){
+        res.status(403).json({'result':'ERROR', 'message': 'Invalid Username'});
+        return;
+    }
     dynamodb.getItem({Key:{"username":{"S": req.body.username}},TableName: "Users"},(err, data)=>{
         if(Object.keys(data).length !== 0){
             res.status(403).json({'result':'ERROR', 'message': 'Account already exists'});
@@ -154,8 +157,8 @@ router.post('/register', (req,res)=>{
                 res.status(403).json({'result':'ERROR', 'message': 'Account already exists'});
                 return;
             }
-            const confirmationCode = uuid.v4();
-            bcrypt.hash(req.body.password, 10, function(error, hash) {
+            const confirmationCode = v4();
+            hash(req.body.password, 10, function(error, hash) {
                 dynamodb.putItem({
                     Item:{
                         "email":{S: req.body.email},
@@ -166,7 +169,7 @@ router.post('/register', (req,res)=>{
                         "confirmationCode":{S:confirmationCode},
                         "userPageUrl":{S:req.body.username.toLowerCase()}
                     },TableName:"Users"},(err, data)=>{
-                    ejs.renderFile(__dirname+'/email-templates/email-template1.ejs', {code: confirmationCode, username:req.body.username},(error, data)=>{
+                    renderFile(__dirname+'/email-templates/email-template1.ejs', {code: confirmationCode, username:req.body.username},(error, data)=>{
                         var mailOptions = {
                             from: 'rootlink.test123@gmail.com',
                             to: req.body.email,
