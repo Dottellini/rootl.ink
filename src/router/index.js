@@ -4,12 +4,12 @@ import Home from "../views/home"
 import Editor from '../views/editor'
 import Register from '../views/register'
 import Login from '../views/login'
-import Userpage from "../views/Userpage";
-import NotFound from "../views/NotFound";
-import SignUpComplete from "../views/SignUpComplete";
-import EmailConfirmation from "../views/EmailConfirmation";
+import Userpage from "../views/userpage";
+import NotFound from "../views/notfound";
+import SignUpComplete from "../views/signupcomplete";
+import EmailConfirmation from "../views/emailconfirmation";
 import account from "../views/account";
-import QR from '../views/QR'
+import QR from '../views/qr'
 
 Vue.use(VueRouter)
 

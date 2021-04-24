@@ -20,7 +20,6 @@
 </template>
 
 <script>
-import VideoEmbed from "../components/VideoEmbed";
 import Linkbox from "../components/Linkbox";
 import NewsletterSignup from './NewsletterSignup.vue';
 

@@ -89,14 +89,19 @@
 </template>
 
 <script>
+<<<<<<< HEAD
 import languageDrop from "./components/languageDrop";
 import { Slide } from "vue-burger-menu"
 import i18n from "./i18n";
+=======
+import { Slide } from "vue-burger-menu"
+import LanguageDrop from "./components/LanguageDrop";
+>>>>>>> origin/Rootlink_Analytics
 
 export default {
   components: {
     Slide,
-    languageDrop
+    LanguageDrop
   },
 
   data() {
