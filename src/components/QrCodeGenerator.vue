@@ -9,7 +9,7 @@
 import VueQArt from 'vue-qart'
 
 export default {
-  name: "qr-code-generator",
+  name: "QrCodeGenerator",
   components: {VueQArt},
 
   data() {
@@ -24,6 +24,7 @@ export default {
 
   methods: {
     download: function () {
+      console.log(this.$refs)
       const myCanvas = this.$refs.qart.children[0];
       const type = 'image/png';
       window.location.href = myCanvas.toDataURL(type).replace(type, "image/octet-stream"); // it will save locally

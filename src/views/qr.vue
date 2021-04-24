@@ -1,22 +1,22 @@
 <template>
-  <QR_GEN></QR_GEN>
+  <div>
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{this.value}}">
+  </div>
 </template>
 
 <script>
-import QR_GEN from '../components/QrCodeGenerator'
 
-export default {
-  name: "QR",
-  components: {
-    QR_GEN
-  },
-
-  beforeCreate() {
-    if(!this.$store.state.isLoggedIn) {
-      this.$router.push({name: "Home"})
-    }
-  },
-}
+  export default {
+    data() {
+      return {
+        value: 'https://example.com',
+        size: 300,
+        QRCode: undefined
+      }
+    },
+    components: {
+    },
+  }
 </script>
 
 <style scoped lang="scss">
