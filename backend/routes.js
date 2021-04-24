@@ -147,7 +147,7 @@ router.post('/register', (req,res)=>{
             res.status(403).json({'result':'ERROR', 'message': 'Username already exists'});
             return;
         }
-        dynamodb.query({TableName:"Users",IndexName:"emailAddress-index",Select:'ALL_PROJECTED_ATTRIBUTES',KeyConditionExpression:'emailAddress = :emailAddress',ExpressionAttributeValues:{":emailAddress": {"S": req.body.email}}}, (err, data)=>{
+        dynamodb.query({TableName:"Users",IndexName:"emailAddress-index",Select:'ALL_PROJECTED_ATTRIBUTES',KeyConditionExpression:'emailAddress = :emailAddress',ExpressionAttributeValues:{":emailAddress": {"S": req.body.email.toLowerCase()}}}, (err, data)=>{
             if(data.Items.length!=0){
                 res.status(403).json({'result':'ERROR', 'message': 'There Already is an Account using that Email Address'});
                 return;
