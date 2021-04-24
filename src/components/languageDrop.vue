@@ -24,6 +24,7 @@ export default {
   methods: {
     changeLocale: function(locale) {
       i18n.locale = locale;
+      localStorage.setItem("language", locale)
     }
   }
 }

@@ -91,6 +91,7 @@
 <script>
 import languageDrop from "./components/languageDrop";
 import { Slide } from "vue-burger-menu"
+import i18n from "./i18n";
 
 export default {
   components: {
@@ -138,6 +139,11 @@ export default {
     this.theme = localTheme;
     this.isDark = this.theme !== "";
     this.$store.dispatch("loginValid");
+    if(localStorage.getItem('language') === null) {
+      i18n.locale = navigator.language.split('-')[0];
+    } else {
+      i18n.locale = localStorage.getItem('language');
+    }
   },
 
   methods: {
