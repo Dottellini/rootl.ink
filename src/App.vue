@@ -58,7 +58,7 @@
             </div>
             <button v-if="isLoggedIn" type="button" class="logout-Button" @click="logout">{{$t('logout')}}</button>
             <div>
-              <language-drop></language-drop>
+              <LanguageDrop></LanguageDrop>
             </div>
             <div class="test">
               <p>
@@ -89,11 +89,9 @@
 </template>
 
 <script>
-import languageDrop from "./components/languageDrop";
-import { Slide } from "vue-burger-menu"
+import LanguageDrop from "./components/LanguageDrop";
 import i18n from "./i18n";
 import { Slide } from "vue-burger-menu"
-import LanguageDrop from "./components/LanguageDrop";
 
 export default {
   components: {

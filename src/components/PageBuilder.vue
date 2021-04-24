@@ -1,14 +1,8 @@
 <template>
   <div id="pageBuilder" class="container">
-<<<<<<< HEAD
     <h1>{{$t('pageBuilder.headline')}}</h1>
-    <tabs>
-      <tab title="rootlinks">
-=======
-    <h1>Design your Page</h1>
     <Tabs>
       <Tab title="rootlinks">
->>>>>>> origin/Rootlink_Analytics
         <draggable :list="list"
             :disabled="!enabled"
             :animation="200"
