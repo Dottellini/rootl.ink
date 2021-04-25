@@ -53,7 +53,10 @@ router.get('*', (req,res)=>{
 
 //Post
 router.post('/login', (req,res)=>{
+    console.log(req.body.username)
     dynamodb.getItem({Key:{"usernameLowerCase":{"S": req.body.username.toLowerCase()}},TableName: "Users"},(err, data)=>{
+        console.log("Test")
+        console.log(data)
         if(Object.keys(data).length == 0){
             res.cookie('accessToken', '', {
                 httpOnly: true,
