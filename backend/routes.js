@@ -53,10 +53,10 @@ router.get('*', (req,res)=>{
 
 //Post
 router.post('/login', (req,res)=>{
-    console.log(req.body.username)
-    dynamodb.getItem({Key:{"usernameLowerCase":{"S": req.body.username.toLowerCase()}},TableName: "Users"},(err, data)=>{
+    console.log(req.body.username.toLowerCase())
+    dynamodb.getItem({Key:{"usernameLowerCase":{S:req.body.username.toLowerCase()}},TableName: "Users"},(err, data)=>{
         console.log("Test")
-        console.log(data)
+        console.log(err, data)
         if(Object.keys(data).length == 0){
             res.cookie('accessToken', '', {
                 httpOnly: true,
@@ -229,7 +229,8 @@ router.post('/createPage', (req, res)=>{
 router.post('/uploadProfilePicture', (req,res)=>{
     let filename;
     console.log(res.locals.user);
-    dynamodb.getItem({Key:{"username":{"S": res.locals.user.username}},TableName: "Users"},(err, data)=>{
+    dynamodb.getItem({Key:{"usernameLowerCase":{"S": res.locals.user.username.toLowerCase()}},TableName: "Users"},(err, data)=>{
+        console.log(err, data)
         filename = res.locals.user.username.toLowerCase()+'.profilepicture.txt';
         let readable = Readable.from([JSON.stringify(req.body)])
         readable.on('error', function(err) {

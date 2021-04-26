@@ -27,6 +27,7 @@ export default new Vuex.Store({
     login(state, payload) {
       state.isLoggedIn = true;
       state.account_username = payload;
+      state.account_profile_picture = `d26k63xuikc78y.cloudfront.net/${state.account_username.toLowerCase()}.profilepicture.txt`;
     },
 
     changeUsername(state, payload) {
