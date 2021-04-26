@@ -1,5 +1,5 @@
 <template>
-  <div @mouseover="showEmbeded(link)" @mouseleave="hideEmbeded(link)" :ref="'wrapper-1'" class="LinkBox-Wrapper" :class="{ embedded: link.embed, embedShown: embedShown, previewMode: previewMode}" :style="boxColor" viewp>
+  <div @click="if(link.embed){embedShown = !embedShown}" :ref="'wrapper-1'" class="LinkBox-Wrapper" :class="{ embedded: link.embed, embedShown: embedShown, previewMode: previewMode}" :style="boxColor" viewp>
     <div class="LinkBox">
       <img :src=link.img
         class="LinkImage" 
@@ -32,22 +32,15 @@
     },
     methods: {
       getEmbedUrl: function (url) {
-        return url.replace(/http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/g, 'https://www.youtube.com/embed/$1')
-      },
-
-      showEmbeded: function (item) {
-        if(!item.embed){
-          return;
+        console.log(url)
+        console.log(url.split('/')[2])
+        
+        switch(url.split('/')[2]){
+          case 'www.youtube.com':
+            return url.replace(/http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/g, 'https://www.youtube.com/embed/$1')
+          case 'vimeo.com':
+            return `http://player.vimeo.com/video/${url.replace('https://vimeo.com/','')}`
         }
-        this.embedShown = true;
-        return;
-      },
-      hideEmbeded: function (item) {
-        if(!item.embed){
-          return;
-        }
-        this.embedShown = false;
-        return;
       }
     }
   }

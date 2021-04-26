@@ -34,7 +34,7 @@
                   <input type="text" class="form-control" v-model="element.name" placeholder="Name" maxlength="30">
                 </div>
                 <div>
-                  <input type="text" class="form-control" v-model="element.link" @change="checkIfYoutube(element.id, element.link)" placeholder="URL"/>
+                  <input type="text" class="form-control" v-model="element.link" @change="checkIfVideo(element.id, element.link)" placeholder="URL"/>
                 </div>
                 <div v-if="element.isYoutubeVideo">
                   <label for="embedCheck" class="embed">Embed Video</label>
@@ -123,12 +123,16 @@ export default {
   },
 
   methods: {
-    checkIfYoutube: function (id, url) {
+    checkIfVideo: function (id, url) {
       if(/http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/g.test(url)) {
         this.$store.commit("isYoutubeVideo", {id: id, result: true});
-      } else {
-        this.$store.commit("isYoutubeVideo", {id: id, result: false});
+        return;
       }
+      if(url.split('/')[2]== 'vimeo.com'){
+        this.$store.commit("isYoutubeVideo", {id: id, result: true});
+        return
+      }
+      this.$store.commit("isYoutubeVideo", {id: id, result: false});
     },
 
     submit: function () {

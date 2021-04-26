@@ -74,6 +74,7 @@ router.use('/logout', (req,res,next)=>{
 
 function refreshAccessToken(username){
     dynamodb.getItem({Key:{"username":{"S": username}},TableName: "Users"},(err, data)=>{
+        console.log(err,data)
         if(Object.keys(data).length !== 0){
             let err = new Error('Account does not exist');
             err.status = 500;
