@@ -10,7 +10,7 @@
 
     <!-- Links -->
     <div id="links">
-      <div v-for="link in links" :key="link.id" :ref="'link-'+link.id">
+      <div v-for="link in links" :key="link.id" :ref="'link-'+link.id" @click="clicked(link.name)">
         <Linkbox :link=link :boxColor=box_hex :textColor=text_hex />
         <!--<NewsletterSignup :link=link :boxColor=box_hex :textColor=text_hex />-->
       </div>
@@ -41,6 +41,9 @@ export default {
   },
 
   methods: {
+    clicked(name) {
+      ga("send", "event", "UserLink", "click", name)
+    }
   },
 
 

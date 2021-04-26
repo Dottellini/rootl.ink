@@ -11,29 +11,29 @@ export default {
   components: {Preview},
 
   mounted() {
-    fetch('/analytics', {
+    ga("send", "UserPage", "mount", this.user)
+
+    /*fetch('/analytics', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body:JSON.stringify({
-      event: "Page Viewed"
+      body: JSON.stringify({
+        event: "Page Viewed",
+        device: navigator.userAgent,
+        country: "test"
       }),
       mode: "cors"
-    }).then(result =>{});
+    }).then(result => {});*/
   },
   computed: {
     user() {
       return this.$route.params.username
     },
-
-    bg_hex: function () {
-      return {backgroundColor: this.$store.state.background_hex}
-    },
   },
 
   watch: {
-    $route(to, from) {
+    $route(to) {
       this.$store.dispatch("fetchUserData", to.params.username);
     }
   },
