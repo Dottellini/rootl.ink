@@ -1,6 +1,6 @@
 <template>
   <div id="QrCode">
-    <script type="text/javascript" src="../qrcode-gen/GenerateQrCode.js"></script>
+    <!--<script type="text/javascript" src="../../qrcode-gen/GenerateQrCode.js"></script>-->
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <div @click="if(link.embed){embedShown = !embedShown}" :ref="'wrapper-1'" class="LinkBox-Wrapper" :class="{ embedded: link.embed, embedShown: embedShown, previewMode: previewMode}" :style="boxColor" viewp>
+  <div @click="embedShown = !link.embed" :ref="'wrapper-1'" class="LinkBox-Wrapper" :class="{ embedded: link.embed, embedShown: embedShown, previewMode: previewMode}" :style="boxColor" viewp>
     <div class="LinkBox">
       <img :src=link.img
         class="LinkImage" 

@@ -1,6 +1,8 @@
 <template>
   <div class="container">
     <h1>{{$t('login')}}</h1>
+    <GoogleLogin></GoogleLogin>
+    <h3>{{$t('or')}}</h3>
     <form class="form">
       <input type="username" v-model="username" placeholder="Username" required>
       <input type="password" v-model="password" placeholder="Password" required>
@@ -11,8 +13,12 @@
 </template>
 
 <script>
+import GoogleLogin from "./GoogleLogin";
 export default {
   name: "LoginField",
+  components: {
+    GoogleLogin
+  },
   data() {
     return {
       username: "",
@@ -91,9 +97,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  h1{
+  h1, h3{
+    font-family: 'Montserrat', sans-serif;
     color: var(--text-color)
   }
+
 
   .error {
     color: red;

@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <LoginField class="login"></LoginField>
-    <p>d{{$t('NoAccount')}} <router-link to="/register">{{$t('register')}}!</router-link></p>
+    <p>{{$t('NoAccount')}} <router-link to="/register">{{$t('register')}}!</router-link></p>
   </div>
 </template>
 
