@@ -16,11 +16,15 @@ require('./passport');
 
 //Get
 ///////////////Google stuff zum Testen
+router.get('/failed', (req, res) => {
+    res.send('<h1>Log in Failed :(</h1>')
+});
+
 router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/failed' }),
     function(req, res) {
-        res.redirect('/profile');
+        res.redirect('/');
     }
 );
 ///////////////////////////////////////

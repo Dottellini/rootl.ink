@@ -26,21 +26,20 @@ if(false){
 
 const server = express();
 
-////////////////Google Auth Stuff
-server.use(cookieSession({
-    name: 'session-name',
-    keys: ['key1', 'key2']
-}))
-server.use(passport.initialize());
-server.use(passport.session());
-/////////////////////////////////
-
-server.listen(80,'0.0.0.0', ()=>{
+server.listen(3000,'0.0.0.0', ()=>{
     console.log('HTTP Server Started');
     addUses(server)
 })
 
 function addUses(server){
+    ////////////////Google Auth Stuff
+    server.use(cookieSession({
+        name: 'session-name',
+        keys: ['key1', 'key2']
+    }))
+    server.use(passport.initialize());
+    server.use(passport.session());
+    /////////////////////////////////
     server.use(history());
     server.use(bodyParser.urlencoded({ extended: false }))
     server.use(bodyParser.json())
