@@ -5,6 +5,9 @@ const routes = require('./routes');
 const middleware = require('./middleware');
 const bodyParser = require('body-parser');
 const history = require('connect-history-api-fallback');
+const passport = require('passport');
+const cookieSession = require('cookie-session');
+require('./passport');
 
 
 if(false){
@@ -22,6 +25,16 @@ if(false){
 
 
 const server = express();
+
+////////////////Google Auth Stuff
+server.use(cookieSession({
+    name: 'session-name',
+    keys: ['key1', 'key2']
+}))
+server.use(passport.initialize());
+server.use(passport.session());
+/////////////////////////////////
+
 server.listen(80,'0.0.0.0', ()=>{
     console.log('HTTP Server Started');
     addUses(server)

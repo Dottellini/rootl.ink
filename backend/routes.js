@@ -10,9 +10,21 @@ const {readFileSync} = require('fs');
 const credentials = JSON.parse(readFileSync('credentials.json'));
 aws.config.update({ "accessKeyId": credentials.aws.accessKeyId, "secretAccessKey": credentials.aws.secretAccessKey, "region": "eu-central-1" });
 const dynamodb = new aws.DynamoDB({apiVersion: '2012-08-10'});
+const passport = require('passport');
+require('./passport');
 
 
 //Get
+///////////////Google stuff zum Testen
+router.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/failed' }),
+    function(req, res) {
+        res.redirect('/profile');
+    }
+);
+///////////////////////////////////////
+
 
 router.post('/analyticstimm', (req,res)=>{
     console.log("LOL")

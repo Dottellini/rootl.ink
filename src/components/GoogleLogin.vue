@@ -8,7 +8,7 @@
 export default {
   name: "GoogleLogin",
   methods: {
-    async handleClickSignIn() {
+    handleClickSignIn: async function() {
       try {
         const googleUser = await this.$gAuth.signIn();
         if (!googleUser) {
