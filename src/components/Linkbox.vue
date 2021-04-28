@@ -10,7 +10,7 @@
         <a target="_blank" :style="textColor" :href="link.link">{{link.name}}</a>
       </div>
     </div>
-    <iframe :ref="'iframe-1'" v-if="link.embed" :src="getEmbedUrl(link.link)" width="0px" height="0px" title="YouTube video player" frameborder="0" :class="{embedShown: embedShown}" />
+    <iframe :ref="'iframe-1'" v-if="link.embed" :src="getEmbedUrl(link.link)" width="0px" height="0px" title="YouTube video player" frameborder="0" allowfullscreen="true" :class="{embedShown: embedShown}" />
   </div>
 </template>
 
@@ -31,6 +31,7 @@
       this.$store.commit("changeThemeOnPreview", this.isDark)
     },
     methods: {
+<<<<<<< HEAD
       check: function (embed) {
         if(embed){this.embedShown = !this.embedShown}
       },
@@ -39,10 +40,20 @@
         console.log(url.split('/')[2])
         
         switch(url.split('/')[2]){
+=======
+      getEmbedUrl: function (url) {        
+        url = url
+        .replace('http://','')
+        .replace('https://','')
+        switch(url.split('/')[0]){
+          case 'www.twitch.tv':
+            return `https://player.twitch.tv/?video=${url.replace('www.twitch.tv/videos/','')}&parent=localhost`;
+>>>>>>> Added Twitch Embedding + Bugfixes
           case 'www.youtube.com':
-            return url.replace(/http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/g, 'https://www.youtube.com/embed/$1')
+            return `https://youtube.com/embed/${url.replace('www.youtube.com/watch?v=','').split('&')[0]}`
+            //return url.replace(/http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/g, 'https://www.youtube.com/embed/$1')
           case 'vimeo.com':
-            return `http://player.vimeo.com/video/${url.replace('https://vimeo.com/','')}`
+            return `https://player.vimeo.com/video/${url.replace('vimeo.com/','')}`
         }
       }
     }

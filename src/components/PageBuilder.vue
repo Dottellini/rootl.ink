@@ -124,15 +124,31 @@ export default {
 
   methods: {
     checkIfVideo: function (id, url) {
-      if(/http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/g.test(url)) {
-        this.$store.commit("isYoutubeVideo", {id: id, result: true});
-        return;
-      }
-      if(url.split('/')[2]== 'vimeo.com'){
-        this.$store.commit("isYoutubeVideo", {id: id, result: true});
-        return
+      console.log(url)
+      url = url
+      .replace('http://','')
+      .replace('https://','')
+      console.log(url)
+      console.log(url.split('/'))
+      if(url.split('/').length>1){
+        console.log(url.split('/')[0])
+        //if(/http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/g.test(url)) {
+        if(url.split('/')[0]== 'www.youtube.com'){
+          console.log("HÄH")
+          this.$store.commit("isYoutubeVideo", {id: id, result: true});
+          return;
+        }
+        if(url.split('/')[0]== 'vimeo.com'){
+          this.$store.commit("isYoutubeVideo", {id: id, result: true});
+          return;
+        }
+        if(url.split('/')[0]=='www.twitch.tv'){
+          this.$store.commit("isYoutubeVideo", {id: id, result: true});
+          return;
+        }
       }
       this.$store.commit("isYoutubeVideo", {id: id, result: false});
+      return;
     },
 
     submit: function () {
