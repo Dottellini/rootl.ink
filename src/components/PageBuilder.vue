@@ -37,8 +37,8 @@
                   <input type="text" class="form-control" v-model="element.link" @change="checkIfVideo(element.id, element.link)" placeholder="URL"/>
                 </div>
                 <div v-if="element.isYoutubeVideo">
-                  <label for="embedCheck" class="embed">Embed Video</label>
-                  <input id="embedCheck" type="checkbox" v-model="element.embed">
+                  <label :for="element.id + 1" class="embed">Embed Video</label>
+                  <input :id="element.id + 1" type="checkbox" v-model="element.embed">
                 </div>
                 <!--<img src="../assets/embed.png" width="20px" height="20px" @click="x=0"/>-->
               </div>

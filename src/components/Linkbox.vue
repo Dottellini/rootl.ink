@@ -1,5 +1,5 @@
 <template>
-  <div @click="if(link.embed)embedShown = !embedShown" :ref="'wrapper-1'" class="LinkBox-Wrapper" :class="{ embedded: link.embed, embedShown: embedShown, previewMode: previewMode}" :style="boxColor" viewp>
+  <div @click="check(link.embed)" :ref="'wrapper-1'" class="LinkBox-Wrapper" :class="{ embedded: link.embed, embedShown: embedShown, previewMode: previewMode}" :style="boxColor" viewp>
     <div class="LinkBox">
       <img :src=link.img
         class="LinkImage" 
@@ -31,6 +31,9 @@
       this.$store.commit("changeThemeOnPreview", this.isDark)
     },
     methods: {
+      check: function (embed) {
+        if(embed){this.embedShown = !this.embedShown}
+      },
       getEmbedUrl: function (url) {
         console.log(url)
         console.log(url.split('/')[2])
