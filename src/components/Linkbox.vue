@@ -31,16 +31,9 @@
       this.$store.commit("changeThemeOnPreview", this.isDark)
     },
     methods: {
-<<<<<<< HEAD
       check: function (embed) {
         if(embed){this.embedShown = !this.embedShown}
       },
-      getEmbedUrl: function (url) {
-        console.log(url)
-        console.log(url.split('/')[2])
-        
-        switch(url.split('/')[2]){
-=======
       getEmbedUrl: function (url) {        
         url = url
         .replace('http://','')
@@ -48,7 +41,6 @@
         switch(url.split('/')[0]){
           case 'www.twitch.tv':
             return `https://player.twitch.tv/?video=${url.replace('www.twitch.tv/videos/','')}&parent=localhost`;
->>>>>>> Added Twitch Embedding + Bugfixes
           case 'www.youtube.com':
             return `https://youtube.com/embed/${url.replace('www.youtube.com/watch?v=','').split('&')[0]}`
             //return url.replace(/http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/g, 'https://www.youtube.com/embed/$1')
