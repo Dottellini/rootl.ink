@@ -15,7 +15,7 @@ require('./passport');
 
 
 //Get
-///////////////Google stuff zum Testen
+///////////////Google stuff zum Testen fick mein arschloch
 router.get('/failed', (req, res) => {
     res.send('<h1>Log in Failed :(</h1>')
 });

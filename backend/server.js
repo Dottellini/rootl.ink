@@ -33,10 +33,13 @@ server.listen(80,'0.0.0.0', ()=>{
 
 function addUses(server){
     ////////////////Google Auth Stuff
+    //Configure Session Storage
     server.use(cookieSession({
         name: 'session-name',
         keys: ['key1', 'key2']
     }))
+
+//Configure Passport
     server.use(passport.initialize());
     server.use(passport.session());
     /////////////////////////////////
