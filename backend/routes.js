@@ -30,10 +30,42 @@ router.get('/auth/google/callback', passport.authenticate('google', { failureRed
 ///////////////////////////////////////
 
 
-router.post('/analyticstimm', (req,res)=>{
-    console.log("LOL")
-    dynamodb.getItem({Key:{"url":{"S": "timm"}},TableName: "Analytics"},(err, data)=>{
+router.post('/api/analytics/*', (req,res)=>{
+    console.log("Page Viewed")
+    dynamodb.getItem({Key:{"url":{"S": req.url.replace('/api/analytics/','')}},TableName: "Analytics"},(err, data)=>{
         console.log(err,data)
+        console.log(req.url.replace('/api/analytics/',''))
+        dynamodb.updateItem({
+            TableName: "Analytics",
+            Key: { "url": { S: req.url.replace('/api/analytics/','') } },
+            UpdateExpression: 'SET #a = :value',
+            ConditionExpression: 'attribute_not_exists(#a)',
+            ExpressionAttributeValues: {
+                ":value":  { M: {} },
+            },
+            ExpressionAttributeNames: {
+                '#a': new Date().getFullYear().toString()
+            }
+        },(err,data)=>{
+            console.log("#1",err,data)
+            dynamodb.updateItem({
+                TableName: "Analytics",
+                Key: { "url": { S: req.url.replace('/api/analytics/','') } },
+                UpdateExpression:'ADD #VALUE.#FIELD :inc',
+                ExpressionAttributeNames:{
+                    '#VALUE': new Date().getFullYear().toString(),
+                    '#FIELD': 'id1',
+                },
+                ExpressionAttributeValues:{
+                    ':inc': {"N":"1"},
+    
+                },
+                ReturnValues:'UPDATED_NEW'
+            },(err,data)=>{
+                  console.log(err,data)
+            })
+        });
+        console.log("123")
         res.status(200).json(JSON.stringify(data));
     });
 })
@@ -184,34 +216,41 @@ router.post('/register', (req,res)=>{
                         "confirmationCode":{S:confirmationCode},
                         "userPageUrl":{S:req.body.username.toLowerCase()}
                     },TableName:"Users"},(err, data)=>{
-                    renderFile(__dirname+'/email-templates/email-template1.ejs', {code: confirmationCode, username:req.body.username},(error, data)=>{
-                        var mailOptions = {
-                            from: 'rootlink.test123@gmail.com',
-                            to: req.body.email,
-                            subject: 'Confirm Your Email Adress - Rootl.ink',
-                            text: data,
-                            html: data
-                        };
-                        var emailSender = createTransport({
-                            service: 'gmail',
-                            auth: {
-                            user: 'rootlink.test123@gmail.com',
-                            pass: '%pFJM,hwr_b,uyv#,F?+66Hb'
-                            }
-                        });                
-                        emailSender.sendMail(mailOptions, function(error, info){
-                            if (error) {
-                                res.status(500).json({'result':'ERROR', 'message': 'Cant send confirmation email'});
-                                return;
-                            }
-                            res.status(200).json({'result':'OK'});
-                            return;
-                        });
-
-                    });        
+                        dynamodb.putItem({
+                            Item:{
+                                [req.body.username]:{"NULL":true},
+                            },
+                            TableName:"Analytics"                
+                        },(err,data)=>{
+                            console.log(err,data);
+                        })
                 })
+                renderFile(__dirname+'/email-templates/email-template1.ejs', {code: confirmationCode, username:req.body.username},(error, data)=>{
+                    var mailOptions = {
+                        from: 'rootlink.test123@gmail.com',
+                        to: req.body.email,
+                        subject: 'Confirm Your Email Adress - Rootl.ink',
+                        text: data,
+                        html: data
+                    };
+                    var emailSender = createTransport({
+                        service: 'gmail',
+                        auth: {
+                        user: 'rootlink.test123@gmail.com',
+                        pass: '%pFJM,hwr_b,uyv#,F?+66Hb'
+                        }
+                    });                
+                    emailSender.sendMail(mailOptions, function(error, info){
+                        if (error) {
+                            res.status(500).json({'result':'ERROR', 'message': 'Cant send confirmation email'});
+                            return;
+                        }
+                        res.status(200).json({'result':'OK'});
+                        return;
+                    });
+                });        
             })
-        });
+        })
     });
 });
 

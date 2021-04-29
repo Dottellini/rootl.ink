@@ -11,7 +11,7 @@ export default {
   components: {Preview},
 
   mounted() {
-    ga("send", "UserPage", "mount", this.user)
+    //ga("send", "UserPage", "mount", this.user)
 
     /*fetch('/analytics', {
       method: 'POST',
@@ -25,6 +25,14 @@ export default {
       }),
       mode: "cors"
     }).then(result => {});*/
+
+    console.log("Sending")
+    fetch('/api/analytics/timm',{
+      method: 'POST',
+      body: undefined,
+    }).then(result => {
+      console.log("Sent")
+    });
   },
   computed: {
     user() {
