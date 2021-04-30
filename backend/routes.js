@@ -29,43 +29,122 @@ router.get('/auth/google/callback', passport.authenticate('google', { failureRed
 );
 ///////////////////////////////////////
 
-
 router.post('/api/analytics/*', (req,res)=>{
-    console.log("Page Viewed")
+    console.log(req.body)
+    //Check if Page Analytics exist
     dynamodb.getItem({Key:{"url":{"S": req.url.replace('/api/analytics/','')}},TableName: "Analytics"},(err, data)=>{
-        console.log(err,data)
-        console.log(req.url.replace('/api/analytics/',''))
-        dynamodb.updateItem({
-            TableName: "Analytics",
-            Key: { "url": { S: req.url.replace('/api/analytics/','') } },
-            UpdateExpression: 'SET #a = :value',
-            ConditionExpression: 'attribute_not_exists(#a)',
-            ExpressionAttributeValues: {
-                ":value":  { M: {} },
-            },
-            ExpressionAttributeNames: {
-                '#a': new Date().getFullYear().toString()
-            }
-        },(err,data)=>{
-            console.log("#1",err,data)
+        if(req.body.event == "Page Viewed") {
+            console.log("Page Viewed")
             dynamodb.updateItem({
                 TableName: "Analytics",
                 Key: { "url": { S: req.url.replace('/api/analytics/','') } },
-                UpdateExpression:'ADD #VALUE.#FIELD :inc',
+                UpdateExpression:'ADD #VALUE :inc',
                 ExpressionAttributeNames:{
-                    '#VALUE': new Date().getFullYear().toString(),
-                    '#FIELD': 'id1',
+                    '#VALUE': "pageViews",
                 },
                 ExpressionAttributeValues:{
                     ':inc': {"N":"1"},
     
                 },
                 ReturnValues:'UPDATED_NEW'
+            },()=>{})
+            res.status(200).json(JSON.stringify(data));
+            return;
+        }
+        if(req.body.event == "Link Clicked"){
+            console.log("Link Clicked")
+
+            //Create Year-Key if not existing
+            dynamodb.updateItem({
+                TableName: "Analytics",
+                Key: { "url": { S: req.url.replace('/api/analytics/','') } },
+                UpdateExpression: 'SET #a = :value',
+                ConditionExpression: 'attribute_not_exists(#a)',
+                ExpressionAttributeValues: {
+                    ":value":  { M: {} },
+                },
+                ExpressionAttributeNames: {
+                    '#a': new Date().getFullYear().toString()
+                }
             },(err,data)=>{
-                  console.log(err,data)
-            })
-        });
-        console.log("123")
+                console.log(err,data)
+                //Increment Year-Key by One
+                dynamodb.updateItem({
+                    TableName: "Analytics",
+                    Key: { "url": { S: req.url.replace('/api/analytics/','') } },
+                    UpdateExpression:'ADD #VALUE.#FIELD :inc',
+                    ExpressionAttributeNames:{
+                        '#VALUE': new Date().getFullYear().toString(),
+                        '#FIELD': req.body.parameters.linkId.toString(),
+                    },
+                    ExpressionAttributeValues:{
+                        ':inc': {"N":"1"},
+        
+                    },
+                    ReturnValues:'UPDATED_NEW'
+                },(err,data)=>{console.log(err,data)})
+            });
+            //Create Month-Key if not existing
+            dynamodb.updateItem({
+                TableName: "Analytics",
+                Key: { "url": { S: req.url.replace('/api/analytics/','') } },
+                UpdateExpression: 'SET #a = :value',
+                ConditionExpression: 'attribute_not_exists(#a)',
+                ExpressionAttributeValues: {
+                    ":value":  { M: {} },
+                },
+                ExpressionAttributeNames: {
+                    '#a': `${new Date().getFullYear().toString()}-${(new Date().getMonth()+1).toString()}`
+                }
+            },(err,data)=>{
+                //Increment Month-Key by One
+                dynamodb.updateItem({
+                    TableName: "Analytics",
+                    Key: { "url": { S: req.url.replace('/api/analytics/','') } },
+                    UpdateExpression:'ADD #VALUE.#FIELD :inc',
+                    ExpressionAttributeNames:{
+                        '#VALUE': `${new Date().getFullYear().toString()}-${(new Date().getMonth()+1).toString()}`,
+                        '#FIELD': req.body.parameters.linkId.toString(),
+                    },
+                    ExpressionAttributeValues:{
+                        ':inc': {"N":"1"},
+        
+                    },
+                    ReturnValues:'UPDATED_NEW'
+                },(err,data)=>{
+                })
+            });
+            //Create Day-Key if not existing
+            dynamodb.updateItem({
+                TableName: "Analytics",
+                Key: { "url": { S: req.url.replace('/api/analytics/','') } },
+                UpdateExpression: 'SET #a = :value',
+                ConditionExpression: 'attribute_not_exists(#a)',
+                ExpressionAttributeValues: {
+                    ":value":  { M: {} },
+                },
+                ExpressionAttributeNames: {
+                    '#a': `${new Date().getFullYear().toString()}-${(new Date().getMonth()+1).toString()}-${(new Date().getDate()+1).toString()}`
+                }
+            },(err,data)=>{
+                //Increment Day-Key by One
+                dynamodb.updateItem({
+                    TableName: "Analytics",
+                    Key: { "url": { S: req.url.replace('/api/analytics/','') } },
+                    UpdateExpression:'ADD #VALUE.#FIELD :inc',
+                    ExpressionAttributeNames:{
+                        '#VALUE': `${new Date().getFullYear().toString()}-${(new Date().getMonth()+1).toString()}-${(new Date().getDate()+1).toString()}`,
+                        '#FIELD': req.body.parameters.linkId.toString(),
+                    },
+                    ExpressionAttributeValues:{
+                        ':inc': {"N":"1"},
+        
+                    },
+                    ReturnValues:'UPDATED_NEW'
+                },(err,data)=>{
+                })
+            });
+        }
         res.status(200).json(JSON.stringify(data));
     });
 })
@@ -98,8 +177,6 @@ router.get('*', (req,res)=>{
     })
 });
 
-
-//Post
 router.post('/login', (req,res)=>{
     console.log(req.body.username.toLowerCase())
     dynamodb.getItem({Key:{"usernameLowerCase":{S:req.body.username.toLowerCase()}},TableName: "Users"},(err, data)=>{

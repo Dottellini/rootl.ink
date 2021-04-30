@@ -10,7 +10,7 @@
 
     <!-- Links -->
     <div id="links">
-      <div v-for="link in links" :key="link.id" :ref="'link-'+link.id" @click="clicked(link.name)">
+      <div v-for="link in links" :key="link.id" :ref="'link-'+link.id" @click="clicked(link.name, link.id)" @mouseDown.middle="clicked(link.name, link.id)">
         <Linkbox :link=link :boxColor=box_hex :textColor=text_hex :previewMode=usePhone />
         <!--<NewsletterSignup :link=link :boxColor=box_hex :textColor=text_hex />-->
       </div>
@@ -41,8 +41,18 @@ export default {
   },
 
   methods: {
-    clicked(name) {
+    clicked(name, id) {
       ga("send", "event", "UserLink", "click", name)
+      fetch('/api/analytics/timm',{
+        method: 'POST',
+        headers:{
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          event: "Link Clicked",
+          parameters: {"linkId": id}
+        }),
+      }).then((err,data)=>{console.log(err,data)});
     }
   },
 

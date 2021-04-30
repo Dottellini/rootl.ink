@@ -26,13 +26,16 @@ export default {
       mode: "cors"
     }).then(result => {});*/
 
-    console.log("Sending")
     fetch('/api/analytics/timm',{
       method: 'POST',
-      body: undefined,
-    }).then(result => {
-      console.log("Sent")
-    });
+      headers:{
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        event: "Page Viewed",
+        parameters: {}
+      }),
+    }).then((err,data)=>{console.log(err,data)});
   },
   computed: {
     user() {
