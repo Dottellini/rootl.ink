@@ -1,6 +1,6 @@
 <template>
   <div>
-    Page Views: {{JSON.parse(Analytics).Item.pageViews.N}}
+    Page Views: {{JSON.stringify(Analytics)}}
   </div>
 </template>
 
@@ -13,14 +13,17 @@
       }
     },
     created(){
-      fetch(`/analyticstimm`, {
+      fetch(`/api/analytics/get/timm`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         mode: "cors"
       }).then(response => response.json())
-        .then(data => this.Analytics = data);
+        .then(data => {
+          this.Analytics = data
+          console.log(data)
+        });
     }
   }
 </script>

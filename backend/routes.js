@@ -29,6 +29,16 @@ router.post('/auth/google/callback', passport.authenticate('google', { failureRe
 );
 ///////////////////////////////////////
 
+
+router.post('/api/analytics/get/*', (req,res)=>{
+    console.log("1#"+req.url)
+    console.log(req.url.replace('/api/analytics/get/',''))
+    dynamodb.getItem({Key:{"url":{"S": req.url.replace('/api/analytics/get/','')}},TableName: "Analytics"},(err, data)=>{
+        console.log(err,data)
+        res.status(200).json(data)
+    });
+});
+
 router.post('/api/analytics/*', (req,res)=>{
     console.log(req.body)
     //Check if Page Analytics exist
@@ -148,6 +158,7 @@ router.post('/api/analytics/*', (req,res)=>{
         res.status(200).json(JSON.stringify(data));
     });
 })
+
 
 router.get('/checkUserPage?id=*', (req, res)=>{
     let params = {
