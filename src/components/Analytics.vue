@@ -1,14 +1,22 @@
 <template>
   <div>
     Page Views: {{JSON.stringify(Analytics)}}
+    <LineChart/>
   </div>
 </template>
 
 <script>
+import LineChart from "./LineChart.vue"
   export default {
     name: "Analytics",
+    components:{LineChart},
     data(){
       return {
+      chartData: {
+        Books: 24,
+        Magazine: 30,
+        Newspapers: 10
+      },
         Analytics: Object
       }
     },
