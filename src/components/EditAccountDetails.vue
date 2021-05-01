@@ -23,7 +23,35 @@ export default {
   },
 
   methods: {
-    ConvertFileTo: function(outputMimeType, evt) {
+    ConvertFileTo: function(id, outputMimeType, evt) {
+      new Promise(res => {
+        const file = evt.target.files[0];
+        const reader = new FileReader();
+        reader.addEventListener('load', (content) => {
+          const img = new Image();
+          img.src = content.target.result.toString();
+          const canvas = document.getElementById('imageCanvas');
+          img.addEventListener('load', (e) => {
+            const ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const max_size = img.height < img.width ? img.height : img.width;
+            canvas.height = img.naturalHeight;
+            canvas.width = img.naturalWidth;
+            ctx.drawImage(img, Math.max((img.naturalWidth - max_size) / 2), Math.max((img.naturalHeight - max_size) / 2), max_size, max_size, 0, 0, img.naturalWidth, img.naturalHeight);
+            this.file = canvas.toDataURL(outputMimeType, 0.7)
+
+            let imgData = {
+              id: id,
+              img: this.file
+            }
+            this.$store.commit("addImageToEntry", imgData);
+          });
+        });
+        reader.readAsDataURL(file)
+      })
+    },
+
+    /*ConvertFileTo: function(outputMimeType, evt) {
       new Promise(res => {
         const file = evt.target.files[0];
         const reader = new FileReader();
@@ -42,7 +70,7 @@ export default {
         });
         reader.readAsDataURL(file)
       });
-    },
+    },*/
 
     upload: function () {
       if(this.file === "") { return }

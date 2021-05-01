@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <h1>{{$t('login')}}</h1>
-    <GoogleLogin></GoogleLogin>
+    <!--<GoogleLogin></GoogleLogin>-->
     <h3>{{$t('or')}}</h3>
     <form class="form">
       <input type="username" v-model="username" placeholder="Username" required>
