@@ -50,7 +50,9 @@
     "share": "Share",
     "copyRootlink": "Copy Rootlink",
     "qr": "QR-Code",
-    "or": "or"
+    "or": "or",
+    "free": "FREE",
+    "premium": "PREMIUM"
   },
   "de": {
     "homepage": {
@@ -103,6 +105,8 @@
     "share": "Teilen",
     "copyRootlink": "Rootlink kopieren",
     "qr": "QR-Code",
-    "or": "oder"
+    "or": "oder",
+    "free": "GRATIS",
+    "premium": "PREMIUM"
   }
 }

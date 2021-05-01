@@ -204,6 +204,8 @@ export default {
     --editor-items-border: none;
     --upload-background-color: #ebeffa;
     --upload-color: #3d4ebb;
+    --free-element-color: white;
+    --free-element-border-color: #181818;
   }
 
   [data-theme="darkMode"] {
@@ -218,6 +220,8 @@ export default {
     --editor-items-border: 1px solid #272727;
     --upload-background-color: #454545;
     --upload-color: white;
+    --free-element-color: #2a2a2a;
+    --free-element-border-color: #2a2a2a;
   }
 
   @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap');
