@@ -14,8 +14,6 @@ const passport = require('passport');
 require('./passport');
 
 
-//Get
-///////////////Google stuff zum Testen fick mein arschloch
 router.post('/failed', (req, res) => {
     res.send('<h1>Log in Failed :(</h1>')
 });
@@ -27,8 +25,6 @@ router.post('/auth/google/callback', passport.authenticate('google', { failureRe
         res.redirect('/');
     }
 );
-///////////////////////////////////////
-
 
 router.post('/api/analytics/get/*', (req,res)=>{
     console.log("1#"+req.url)
@@ -158,7 +154,6 @@ router.post('/api/analytics/*', (req,res)=>{
         res.status(200).json(JSON.stringify(data));
     });
 })
-
 
 router.get('/checkUserPage?id=*', (req, res)=>{
     let params = {

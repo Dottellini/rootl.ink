@@ -1,7 +1,5 @@
 <template>
   <div id="app">
-    <script type="application/javascript">var clicky_site_ids = clicky_site_ids || []; clicky_site_ids.push(101313184);</script>
-    <script type="application/javascript" async src="//static.getclicky.com/js"></script>
     <script type="application/javascript">
         (function(h,o,t,j,a,r){
             h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};

@@ -1,23 +1,31 @@
+
+
+
 <template>
   <div>
     Page Views: {{JSON.stringify(Analytics)}}
-    <LineChart/>
+    <Chart v-if="loaded" :chartOptions="chartOptions" :series="series" />
   </div>
 </template>
 
 <script>
-import LineChart from "./LineChart.vue"
+  import Chart from "./Chart.vue"
   export default {
     name: "Analytics",
-    components:{LineChart},
+    components:{Chart},
     data(){
       return {
-      chartData: {
-        Books: 24,
-        Magazine: 30,
-        Newspapers: 10
+        loaded: false,
+        CchartOptions: undefined,
+        Cseries: undefined
+      }
+    },
+    computed:{
+      chartOptions: function(){
+        return this.CchartOptions
       },
-        Analytics: Object
+      series: function(){
+        return this.Cseries
       }
     },
     created(){
@@ -29,8 +37,21 @@ import LineChart from "./LineChart.vue"
         mode: "cors"
       }).then(response => response.json())
         .then(data => {
-          this.Analytics = data
-          console.log(data)
+          this.Analytics = data          
+          this.CchartOptions={
+            chart: {
+              id: 'vuechart-example'
+            },
+            xaxis: {
+              categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998]
+            }
+          },
+          this.Cseries=[{
+            name: 'series-1',
+            data: [30, 40, 45, 50, 49, 60, 70, 91]
+          }]
+          this.loaded=true;
+
         });
     }
   }

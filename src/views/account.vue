@@ -5,6 +5,7 @@
     </Tab>
     <Tab title="Analytics" class="tab"></Tab>
       <Analytics></Analytics>
+      
   </Tabs>
 </template>
 

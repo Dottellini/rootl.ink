@@ -7,10 +7,12 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "apexcharts": "^3.26.1",
     "aws-sdk": "^2.884.0",
     "bcrypt": "^5.0.1",
     "connect-history-api-fallback": "^1.6.0",
     "cookie-session": "^1.4.0",
+    "d3": "^6.7.0",
     "dotenv": "^8.2.0",
     "jsonwebtoken": "^8.5.1",
     "mailchimp-api-v3": "^1.15.0",
@@ -21,6 +23,7 @@
     "uuid": "^8.3.2",
     "vue": "^2.6.11",
     "vue-analytics": "^5.22.1",
+    "vue-apexcharts": "^1.6.1",
     "vue-burger-menu": "^2.0.5",
     "vue-chartjs": "^3.5.1",
     "vue-google-oauth2": "^1.5.8",
