@@ -3,9 +3,9 @@
     <Tab title="Account" class="tab">
       <EditAccountDetails></EditAccountDetails>
     </Tab>
-    <Tab title="Analytics" class="tab"></Tab>
+    <Tab title="Analytics" class="tab">
       <Analytics></Analytics>
-      
+    </Tab>
   </Tabs>
 </template>
 
@@ -26,7 +26,7 @@ export default {
 
   beforeCreate() {
     if(!this.$store.state.isLoggedIn) {
-      this.$router.push({name: "Home"})
+      this.$router.push({name: "Login"})
     }
   }
 }
@@ -34,6 +34,9 @@ export default {
 
 <style scoped lang="scss">
   .tab {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
     margin: 0 3em;
   }
 </style>
