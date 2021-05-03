@@ -1,5 +1,5 @@
 <template>
-  <div class="container" >
+  <div class="container" height="100vh">
     <preview :use-phone="false"></preview>
   </div>
 </template>
@@ -61,5 +61,17 @@ export default {
 </script>
 
 <style lang="scss">
-
+body{
+  height: 100vh;
+}
+#app{
+  height: 100vh;
+}
+.content{
+  height: 100vh;
+  padding-bottom: 0;
+}
+#preview{
+  height: 100vh;
+}
 </style>

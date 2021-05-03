@@ -1,5 +1,5 @@
 <template>
-  <canvas id="canvas" width="500px" height="500px"></canvas>
+  <canvas id="canvas" ></canvas>
 </template>
 
 <script>
@@ -7,7 +7,7 @@
   export default {
     data() {
       return {
-        value: 'test',
+        value: "http://localhost/timm",
         QRCode: undefined
       }
     },
@@ -17,15 +17,18 @@
       var string
       for(var i=40;i>0;i--){
         try{
-          string = GenerateQrCode("http://localhost/timm",i);
+          string = GenerateQrCode(this.value,i);
         }catch{
-          string = GenerateQrCode("http://localhost/timm",i+1);
+          string = GenerateQrCode(this.value,i+1);
           break;
         }
       }
       var sides = Math.sqrt(string.length)
-      var width = 5
-      var ctx = document.getElementById("canvas").getContext('2d');
+      var width = 15
+      var canvas = document.getElementById("canvas")
+      canvas.width = sides * width
+      canvas.height = canvas.width
+      var ctx = canvas.getContext('2d');
       ctx.fillStyle = "#FFF";
       ctx.fillRect(0, 0, sides, sides);
       ctx.fillStyle = "#000";
