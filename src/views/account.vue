@@ -6,6 +6,8 @@
     <Tab title="Analytics" class="tab">
       <Analytics></Analytics>
     </Tab>
+      
+      
   </Tabs>
 </template>
 
