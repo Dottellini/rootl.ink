@@ -1,10 +1,10 @@
-GenerateQrCode = function(value, size){
+var GenerateQrCode = function(value, size){
     let text = value.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
     var t = size
     var e = 'H'
     var m = "Byte"
     var mb = "default"
-    document.getElementById('QrCode').innerHTML = create_qrcode(text, t, e, m, mb);
+    return create_qrcode(text, t, e, m, mb);
 }
 
 var create_qrcode = function(text, typeNumber,
@@ -489,7 +489,7 @@ var qrcode = function() {
         qrHtml += '</tbody>';
         qrHtml += '</table>';
   
-        console.log(X_QrString)
+        //console.log(X_QrString)
         return qrHtml;
       };
   
@@ -500,7 +500,7 @@ var qrcode = function() {
             X_QrString += _this.isDark(r, c)? '1' : '0';
           }
         }
-        console.log(X_QrString)
+        //console.log(X_QrString)
         return X_QrString;
   
       }
@@ -2309,3 +2309,5 @@ var qrcode = function() {
       return qrcode;
   }));
   
+
+  export default GenerateQrCode
