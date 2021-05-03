@@ -130,7 +130,7 @@ router.post('/api/analytics/*', (req,res)=>{
                     ":value":  { M: {} },
                 },
                 ExpressionAttributeNames: {
-                    '#a': `${new Date().getFullYear().toString()}-${(new Date().getMonth()+1).toString()}-${(new Date().getDate()+1).toString()}`
+                    '#a': `${new Date().getFullYear().toString()}-${(new Date().getMonth()+1).toString()}-${new Date().getDate().toString()}`
                 }
             },(err,data)=>{
                 //Increment Day-Key by One
@@ -139,7 +139,7 @@ router.post('/api/analytics/*', (req,res)=>{
                     Key: { "url": { S: req.url.replace('/api/analytics/','') } },
                     UpdateExpression:'ADD #VALUE.#FIELD :inc',
                     ExpressionAttributeNames:{
-                        '#VALUE': `${new Date().getFullYear().toString()}-${(new Date().getMonth()+1).toString()}-${(new Date().getDate()+1).toString()}`,
+                        '#VALUE': `${new Date().getFullYear().toString()}-${(new Date().getMonth()+1).toString()}-${new Date().getDate().toString()}`,
                         '#FIELD': req.body.parameters.linkId.toString(),
                     },
                     ExpressionAttributeValues:{
