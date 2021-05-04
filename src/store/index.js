@@ -6,7 +6,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    list: [],
+    list: [], // TODO: Unklar benannt! sollte vllt eher linkList oder so sein
+    socialsList: [],
     username: "USERNAME", //Used for the "User-pages" and other stuff. This username if not to be used for the logged in account as it may change
     account_username: null, //Used for logged in user
     profile_picture: "https://de.meming.world/images/de/thumb/b/bc/Mike_Wazowski-Sulley_Face_Swap.jpg/300px-Mike_Wazowski-Sulley_Face_Swap.jpg", //Used for UserPages
@@ -63,7 +64,10 @@ export default new Vuex.Store({
       let data = JSON.parse(payload)
       state.username = data.username;
       state.profile_picture = data.profilePicture;
-      state.list = data.url_list;
+      state.list = data.url_list; //TODO: url_list schlecht benannt; stattdessen einheitlich und CamelCase
+      //state.socialsList = [];
+      state.socialsList = data.socialsList;
+      console.log("SOCIALSLIST: ",state.socialsList)
       state.background_hex = data.background_hex;
       state.text_hex = data.text_hex;
       state.linkBox_hex = data.linkBox_hex;
@@ -71,11 +75,14 @@ export default new Vuex.Store({
       document.body.style.backgroundColor = state.background_hex;
     },
 
-    emptyEntry(state) {
+    emptyEntry(state, type) {
       const dt = Date.now();
       const num = Math.floor(Math.random() * 999999);
       const id = parseInt(`${dt}${num}`)
-
+      if(type=="social"){
+        state.socialsList.push({name: "", link: "", img: "", id: id})
+        return;
+      }
       state.list.push({name: "", link: "", img: "", isYoutubeVideo: false, embed: false, id: id})
     },
 
@@ -84,12 +91,26 @@ export default new Vuex.Store({
     },
 
     addImageToEntry(state, payload) {
-      let index = state.list.map(item => item.id).indexOf(payload.id);
-      state.list[index].img = payload.img;
+      if(payload.type=='social'){
+        let index = state.socialsList.map(item => item.id).indexOf(payload.imgData.id);
+        state.socialsList[index].img = payload.imgData.img;  
+        return;
+      }
+      let index = state.list.map(item => item.id).indexOf(payload.imgData.id);
+      state.list[index].img = payload.imgData.img;
     },
 
-    removeEntry(state, payload) {
-      let removeIndex = state.list.map(item => item.id).indexOf(payload);
+    removeEntry(state, payload, type) {
+      console.log("STATE: ",state)
+      console.log("PAYLOAD: ",payload)
+      console.log("TYPE: ",type)
+      if(payload.type=='social'){
+        let removeIndex = state.socialsList.map(item => item.id).indexOf(payload.id);
+        state.socialsList.splice(removeIndex, 1);
+        console.log(state.socialsList)
+        return;
+      }
+      let removeIndex = state.list.map(item => item.id).indexOf(payload.id);
       state.list.splice(removeIndex, 1);
       console.log(state.list)
     },
@@ -188,6 +209,7 @@ export default new Vuex.Store({
         profilePicture: state.account_profile_picture,
         username: state.account_username,
         url_list: state.list,
+        socialsList: state.socialsList,
         background_hex: state.background_hex,
         text_hex: state.text_hex,
         linkBox_hex: state.linkBox_hex,

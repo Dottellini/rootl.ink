@@ -3,7 +3,7 @@
     <div class="image-container">
       <div class="img-container">
         <label for="imageInput" class="image-input-label">
-          <img id="preview" :src="file" width="150" height="150">
+          <img id="picPreview" :src="file" width="150" height="150">
         </label>
         <div class="middle">
           <div class="text">
@@ -163,7 +163,7 @@ export default {
 
 .image-input-label {
   border-radius: 50%;
-  #preview {
+  #picPreview {
     border-radius: 50%;
     opacity: 1;
     display: block;

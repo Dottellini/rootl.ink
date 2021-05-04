@@ -16,6 +16,11 @@
       </div>
     </div>
 
+    <!-- Socials -->
+    <div id="socials">
+      <a :href="social.link" v-for="social in socialsList" :key="social.id"><img class="socialImg" :src="social.img"></a>
+    </div>
+
   </div>
 </template>
 
@@ -70,6 +75,10 @@ export default {
       return this.$store.state.list
     },
 
+    socialsList: function(){
+      return this.$store.state.socialsList;
+    },
+
     bg_hex: function () {
       return {backgroundColor: this.$store.state.background_hex}
     },
@@ -91,6 +100,16 @@ export default {
 
 <style scoped lang="scss">
 
+#socials{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.socialImg{
+  width: 64px;
+  height: 64px;
+}
   .bar{
     background: var(--device-border-color);
     border-bottom-left-radius: 20px;
