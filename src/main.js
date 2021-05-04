@@ -15,7 +15,7 @@ Vue.use(GAuth, {
   prompt: 'select_account'
 })
 
-//Google Analytics
+/*//Google Analytics
 Vue.use(VueGtag, {
   config: { id: "G-2ND6RJ4KKP" }
 });
@@ -23,7 +23,7 @@ Vue.use(VueGtag, {
 Vue.use(VueAnalytics, {
   id: 'G-2ND6RJ4KKP',
   router
-});
+});*/
 
 new Vue({
   router,

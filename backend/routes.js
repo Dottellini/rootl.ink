@@ -11,6 +11,7 @@ const credentials = JSON.parse(readFileSync('credentials.json'));
 aws.config.update({ "accessKeyId": credentials.aws.accessKeyId, "secretAccessKey": credentials.aws.secretAccessKey, "region": "eu-central-1" });
 const dynamodb = new aws.DynamoDB({apiVersion: '2012-08-10'});
 const passport = require('passport');
+const fetch = require('node-fetch')
 require('./passport');
 
 
@@ -27,20 +28,23 @@ router.post('/auth/google/callback', passport.authenticate('google', { failureRe
 );
 
 router.post('/api/analytics/get/*', (req,res)=>{
-    console.log("1#"+req.url)
-    console.log(req.url.replace('/api/analytics/get/',''))
     dynamodb.getItem({Key:{"url":{"S": req.url.replace('/api/analytics/get/','')}},TableName: "Analytics"},(err, data)=>{
-        console.log(err,data)
         res.status(200).json(data)
     });
 });
 
+router.post('/gethtml*',(req,res)=>{
+    console.log('/////////////////////');
+    fetch(req.url.replace('/gethtml?url=','')).then(data =>data.text())
+    .then(data=>{
+        res.send(data)
+    })
+})
+
 router.post('/api/analytics/*', (req,res)=>{
-    console.log(req.body)
     //Check if Page Analytics exist
     dynamodb.getItem({Key:{"url":{"S": req.url.replace('/api/analytics/','')}},TableName: "Analytics"},(err, data)=>{
         if(req.body.event == "Page Viewed") {
-            console.log("Page Viewed")
             dynamodb.updateItem({
                 TableName: "Analytics",
                 Key: { "url": { S: req.url.replace('/api/analytics/','') } },
@@ -58,7 +62,6 @@ router.post('/api/analytics/*', (req,res)=>{
             return;
         }
         if(req.body.event == "Link Clicked"){
-            console.log("Link Clicked")
 
             //Create Year-Key if not existing
             dynamodb.updateItem({
@@ -73,7 +76,6 @@ router.post('/api/analytics/*', (req,res)=>{
                     '#a': new Date().getFullYear().toString()
                 }
             },(err,data)=>{
-                console.log(err,data)
                 //Increment Year-Key by One
                 dynamodb.updateItem({
                     TableName: "Analytics",
@@ -88,7 +90,7 @@ router.post('/api/analytics/*', (req,res)=>{
         
                     },
                     ReturnValues:'UPDATED_NEW'
-                },(err,data)=>{console.log(err,data)})
+                },(err,data)=>{})
             });
             //Create Month-Key if not existing
             dynamodb.updateItem({
@@ -184,10 +186,7 @@ router.get('*', (req,res)=>{
 });
 
 router.post('/login', (req,res)=>{
-    console.log(req.body.username.toLowerCase())
     dynamodb.getItem({Key:{"usernameLowerCase":{S:req.body.username.toLowerCase()}},TableName: "Users"},(err, data)=>{
-        console.log("Test")
-        console.log(err, data)
         if(Object.keys(data).length == 0){
             res.cookie('accessToken', '', {
                 httpOnly: true,
@@ -239,13 +238,11 @@ router.post('/logout', (req,res)=>{
 });
 
 router.post('/confirmEmailAddress', (req, res)=>{
-    console.log("KEY:"+req.body.username.toLowerCase())
     dynamodb.getItem({Key:{"usernameLowerCase":{"S":req.body.username.toLowerCase()}},TableName: "Users"},(err, data)=>{
         if(Object.keys(data).length == 0){
             res.status(401).json({'result':'ERROR', 'message': 'Account not found'});
             return;
         }
-        console.log(data.Item.confirmationCode.S,req.body.code)
         if(data.Item.confirmationCode.S!=req.body.code){
             res.status(401).json({'result':'ERROR', 'message': 'Invalid confirmation code'});
             return;
@@ -263,7 +260,6 @@ router.post('/confirmEmailAddress', (req, res)=>{
                 ":true": {BOOL: true}
             }
         },(err, data)=>{
-                console.log(err,data)
                 res.status(200).json({'result':'OK'});
                 return;        
         });
@@ -305,7 +301,6 @@ router.post('/register', (req,res)=>{
                             },
                             TableName:"Analytics"                
                         },(err,data)=>{
-                            console.log(err,data);
                         })
                 })
                 renderFile(__dirname+'/email-templates/email-template1.ejs', {code: confirmationCode, username:req.body.username},(error, data)=>{
@@ -366,9 +361,7 @@ router.post('/createPage', (req, res)=>{
 
 router.post('/uploadProfilePicture', (req,res)=>{
     let filename;
-    console.log(res.locals.user);
     dynamodb.getItem({Key:{"usernameLowerCase":{"S": res.locals.user.username.toLowerCase()}},TableName: "Users"},(err, data)=>{
-        console.log(err, data)
         filename = res.locals.user.username.toLowerCase()+'.profilepicture.txt';
         let readable = Readable.from([JSON.stringify(req.body)])
         readable.on('error', function(err) {
@@ -393,16 +386,12 @@ router.post('/uploadProfilePicture', (req,res)=>{
 });
 
 router.post('/analytics', (req,res)=>{
-    console.log("ertguiowegirhirehg")
-    console.log(req.headers)
-    console.log(req.headers.referer.split('/')[3])
     dynamodb.updateItem({
         TableName: "Analytics",
         Key: { "url": { S: req.headers.referer.split('/')[3] } },
         ExpressionAttributeValues: { ":inc": {N: "1"} },
         UpdateExpression: "ADD pageViews :inc"
       }, (err, data)=>{
-          console.log(err,data)
       })
 })
 

@@ -65,7 +65,6 @@ export default new Vuex.Store({
       state.username = data.username;
       state.profile_picture = data.profilePicture;
       state.list = data.url_list; //TODO: url_list schlecht benannt; stattdessen einheitlich und CamelCase
-      //state.socialsList = [];
       state.socialsList = data.socialsList;
       console.log("SOCIALSLIST: ",state.socialsList)
       state.background_hex = data.background_hex;

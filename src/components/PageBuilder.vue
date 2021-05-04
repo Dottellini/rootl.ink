@@ -34,7 +34,7 @@
                   <input type="text" class="form-control" v-model="element.name" placeholder="Name" maxlength="30">
                 </div>
                 <div>
-                  <input type="text" class="form-control" v-model="element.link" @change="checkIfVideo(element.id, element.link)" placeholder="URL"/>
+                  <input type="text" class="form-control" v-model="element.link" @change="checkIfVideo(element.id, element.link); getFavicon(element.link, element.id, 'link')" placeholder="URL"/>
                 </div>
                 <div v-if="element.isYoutubeVideo">
                   <label :for="element.id + 1" class="embed">Embed Video</label>
@@ -162,11 +162,9 @@ export default {
 
   computed: {
     list() {
-      console.log("TEST2",this.$store.state.list)
       return this.$store.state.list
     },
     socialsList() {
-      console.log("TEST",this.$store.state.socialsList)
       return this.$store.state.socialsList
     }
   },
@@ -179,18 +177,41 @@ export default {
   },
 
   methods: {
+    getFavicon: function(url, id, type) {
+      fetch(`gethtml?url=${url}`,{
+        method:"POST"
+      }).then(data=>data.text()).then(data=>{
+        console.log("1#",data) //raw
+        data = data.split(/[<>]/)
+        console.log("2#",data) //splitted
+        data = data.filter((element)=>{
+          return element.match(RegExp('.{1,}apple-touch-icon.{1,}'))//"favicon" ||"msapplication-TileImage"||"og:image"||"https://stackoverflow.com/questions/21991044/how-to-get-high-resolution-website-logo-favicon-for-a-given-url"
+        })
+        console.log("3#",data) //filtered
+        data[0].split(" ").forEach(element => {
+          if(element.includes("href=")){
+            data=element.replace("href=","").replace('"','').replace('"','')
+          }
+        }); 
+        console.log("4#")
+        console.log(data) //final link
+        let imgData = {
+          id: id,
+          img: data
+        }
+        this.$store.commit("addImageToEntry", {imgData, type});
+
+      })
+
+  },
+
     checkIfVideo: function (id, url) {
-      console.log(url)
       url = url
       .replace('http://','')
       .replace('https://','')
-      console.log(url)
-      console.log(url.split('/'))
       if(url.split('/').length>1){
-        console.log(url.split('/')[0])
         //if(/http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/g.test(url)) {
         if(url.split('/')[0]== 'www.youtube.com'){
-          console.log("HÄH")
           this.$store.commit("isYoutubeVideo", {id: id, result: true});
           return;
         }
@@ -212,7 +233,6 @@ export default {
     },
 
     changeImage: function(id, outputMimeType, evt, type) {
-      console.log(id)
       new Promise(res => {
         const file = evt.target.files[0];
         const reader = new FileReader();
@@ -257,7 +277,6 @@ export default {
     },
 
     removeEntry: function (id, type) {
-      console.log("ID,TYPE: ",id,type)
       this.$store.commit("removeEntry", {id,type})
     },
 
