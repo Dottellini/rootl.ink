@@ -89,7 +89,7 @@
                   <input type="text" class="form-control" v-model="element.name" placeholder="Name" maxlength="30">
                 </div>
                 <div>
-                  <input type="text" class="form-control" v-model="element.link" @change="checkIfVideo(element.id, element.link)" placeholder="URL"/>
+                  <input type="text" class="form-control" v-model="element.link" @change="getFavicon(element.link, element.id, 'social')" placeholder="URL"/>
                 </div>
               </div>
             </div>
@@ -183,16 +183,19 @@ export default {
       }).then(data=>data.text()).then(data=>{ 
 
         let pos = data.search(RegExp('(<link rel="(icon|apple-touch-icon-precomposed|shortcut icon|shortcut-icon)")|apple-touch-icon'))
-        console.log(pos)
+        if(pos==-1){
+          let imgData = {
+            id: id,
+            img: undefined
+          }
+          this.$store.commit("addImageToEntry", {imgData, type});
+          return;
+        }
         data = data.slice(pos, pos+300)
-        console.log(data)
         data = data.split(RegExp('[<>\\s]'))
-        console.log(data)
 
         for(var i=0;i<data.length;i++){
-          console.log(data[i])
           if(data[i].includes('href=')){
-            console.log("YES")
             data = data[i].replace('href="','').replace('"','')
             if(data[data.length-1]=="/"){
               data = data.slice(0,data.length-1)
@@ -200,19 +203,15 @@ export default {
             break;
           }
         }
-        console.log("3#",data) //filtered
         if(data[0]=='/'){
           data = `https://${url.split('/')[2]}${data}`
         }
-        console.log(data)
         let imgData = {
           id: id,
           img: data
         }
         this.$store.commit("addImageToEntry", {imgData, type});
-
       })
-
   },
 
     checkIfVideo: function (id, url) {
