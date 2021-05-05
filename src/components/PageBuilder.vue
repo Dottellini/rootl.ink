@@ -180,21 +180,31 @@ export default {
     getFavicon: function(url, id, type) {
       fetch(`gethtml?url=${url}`,{
         method:"POST"
-      }).then(data=>data.text()).then(data=>{
-        console.log("1#",data) //raw
-        data = data.split(/[<>]/)
-        console.log("2#",data) //splitted
-        data = data.filter((element)=>{
-          return element.match(RegExp('.{1,}apple-touch-icon.{1,}'))//"favicon" ||"msapplication-TileImage"||"og:image"||"https://stackoverflow.com/questions/21991044/how-to-get-high-resolution-website-logo-favicon-for-a-given-url"
-        })
-        console.log("3#",data) //filtered
-        data[0].split(" ").forEach(element => {
-          if(element.includes("href=")){
-            data=element.replace("href=","").replace('"','').replace('"','')
+      }).then(data=>data.text()).then(data=>{ 
+
+        let pos = data.search(RegExp('(<link rel="(icon|apple-touch-icon-precomposed|shortcut icon|shortcut-icon)")|apple-touch-icon'))
+        console.log(pos)
+        data = data.slice(pos, pos+300)
+        console.log(data)
+        data = data.split(RegExp('[<>\\s]'))
+        console.log(data)
+
+        for(var i=0;i<data.length;i++){
+          console.log(data[i])
+          if(data[i].includes('href=')){
+            console.log("YES")
+            data = data[i].replace('href="','').replace('"','')
+            if(data[data.length-1]=="/"){
+              data = data.slice(0,data.length-1)
+            }
+            break;
           }
-        }); 
-        console.log("4#")
-        console.log(data) //final link
+        }
+        console.log("3#",data) //filtered
+        if(data[0]=='/'){
+          data = `https://${url.split('/')[2]}${data}`
+        }
+        console.log(data)
         let imgData = {
           id: id,
           img: data
