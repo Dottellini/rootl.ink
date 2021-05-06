@@ -1,17 +1,19 @@
 <template>
-  <div @click="check(link.embed)" :ref="'wrapper-1'" class="LinkBox-Wrapper" :class="{ embedded: link.embed, embedShown: embedShown, previewMode: previewMode}" :style="boxColor" viewp>
-    <div class="LinkBox">
-      <img :src=link.img
-        class="LinkImage" 
-        height="40px" 
-        width="40px" 
-        v-if="link.img !== ''">
-      <div class="LinkBoxText">
-        <a target="_blank" :style="textColor" :href="link.link">{{link.name}}</a>
+  <a :target="linkOrEmbed(link).target" rel="noopener" :style="textColor" :href="linkOrEmbed(link).href">
+    <div @click="toggleEmbed(link.embed)" :ref="'wrapper-1'" class="LinkBox-Wrapper" :class="{ embedded: link.embed, embedShown: embedShown, previewMode: previewMode}" :style="boxColor" viewp>
+      <div class="LinkBox">
+        <img :src=link.img
+          class="LinkImage"
+          height="40px"
+          width="40px"
+          v-if="link.img !== ''">
+        <div class="LinkBoxText" :style="textColor">
+          {{link.name}}
+        </div>
       </div>
+      <iframe :ref="'iframe-1'" v-if="link.embed" :src="getEmbedUrl(link.link)" width="0px" height="0px" title="YouTube video player" frameborder="0" allowfullscreen="true" :class="{embedShown: embedShown}" />
     </div>
-    <iframe :ref="'iframe-1'" v-if="link.embed" :src="getEmbedUrl(link.link)" width="0px" height="0px" title="YouTube video player" frameborder="0" allowfullscreen="true" :class="{embedShown: embedShown}" />
-  </div>
+  </a>
 </template>
 
 <script>
@@ -31,7 +33,20 @@
       this.$store.commit("changeThemeOnPreview", this.isDark)
     },
     methods: {
-      check: function (embed) {
+      linkOrEmbed: function(link){
+        console.log(link)
+        if(!link.embed){
+          return {
+            "href": link.link,
+            "target": "_blank"
+          };
+        }
+        return {
+          "href": undefined,
+          "target": undefined
+        };
+      },
+      toggleEmbed: function (embed) {
         if(embed){this.embedShown = !this.embedShown}
       },
       getEmbedUrl: function (url) {        
@@ -75,8 +90,8 @@
     border-radius: 5px;
   }
   iframe{
-    width: 0px;
-    height: 0px;
+    width: 0;
+    height: 0;
   }
 
   iframe[class=embedShown] {

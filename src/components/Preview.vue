@@ -47,7 +47,6 @@ export default {
 
   methods: {
     clicked(name, id) {
-      ga("send", "event", "UserLink", "click", name)
       fetch('/api/analytics/timm',{
         method: 'POST',
         headers:{
