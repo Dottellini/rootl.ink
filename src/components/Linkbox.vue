@@ -68,6 +68,12 @@
 </script>
 
 <style scoped lang="scss">
+  a {
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+    text-decoration: none;
+  }
+
   .LinkImage {
     min-width: 40px;
     min-height: 40px;
@@ -122,11 +128,6 @@
       border-radius: 50%;
       margin-left: 0.3em;
       float: left;
-    }
-    a {
-      font-weight: 600;
-      font-family: 'Montserrat', sans-serif;
-      text-decoration: none;
     }
   }
 </style>

@@ -3,10 +3,11 @@
 
     <!-- HEAD -->
     <div :class="{bar: usePhone}"></div>
-    <div class="url-container" :style="rootl_hex">
-      <h1>rootl.ink/</h1><h2>{{username}}</h2>
-    </div>
-    <img :src="profile_picture" width="100" height="100">
+    <div :class="{content: usePhone}">
+      <div class="url-container" :style="rootl_hex">
+        <h1>rootl.ink/</h1><h2>{{username}}</h2>
+      </div>
+      <img :src="profile_picture" width="100" height="100">
 
     <!-- Links -->
     <div id="links">
@@ -16,11 +17,11 @@
       </div>
     </div>
 
-    <!-- Socials -->
-    <div id="socials">
-      <a :href="social.link" v-for="social in socialsList" :key="social.id"><img class="socialImg" :src="social.img"></a>
+      <!-- Socials -->
+      <div id="socials">
+        <a :href="social.link" v-for="social in socialsList" :key="social.id"><img class="socialImg" :src="social.img"></a>
+      </div>
     </div>
-
   </div>
 </template>
 
@@ -79,7 +80,7 @@ export default {
     },
 
     bg_hex: function () {
-      return {backgroundColor: this.$store.state.background_hex}
+      return {background: this.$store.state.background_hex}
     },
 
     text_hex: function () {
@@ -87,7 +88,7 @@ export default {
     },
 
     box_hex: function () {
-      return {backgroundColor: this.$store.state.linkBox_hex}
+      return {background: this.$store.state.linkBox_hex}
     },
 
     rootl_hex: function () {
@@ -127,7 +128,19 @@ export default {
     border-radius: 50px;
     border-color: var(--device-border-color);
     height: 50em;
+    max-height: 600px;
     width: 25em;
+  }
+
+  .content {
+    max-height: 585px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -ms-overflow-style: none;  /* IE and Edge */
+
+    &::-webkit-scrollbar {
+      display: none; /* Hide scrollbar for Chrome, Safari and Opera */
+    }
   }
 
   .no-image{

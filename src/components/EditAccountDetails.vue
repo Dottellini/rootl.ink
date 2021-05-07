@@ -147,6 +147,7 @@ export default {
   transition: .5s ease;
   opacity: 0;
   position: absolute;
+  border-radius: 50%;
   background-color: white;
   top: 50%;
   left: 50%;

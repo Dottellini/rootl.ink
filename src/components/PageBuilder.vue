@@ -112,7 +112,9 @@
         <div class="color-container">
           <div id="background-color-picker" class="picker">
             <label for="backgroundPicker">{{$t('pageBuilder.backgroundColor')}}</label>
-            <input id="backgroundPicker" value="#FFFFFF" type="color" @input="updateBGColor($event.target.value)">
+            <div>
+              <input id="backgroundPicker" value="#FFFFFF" type="color" @input="updateBGColor($event.target.value)">
+            </div>
           </div>
           <div id="text-color-picker" class="picker">
             <label for="textPicker">{{$t('pageBuilder.textColor')}}</label>
@@ -120,12 +122,22 @@
           </div>
           <div id="box-color-picker" class="picker">
             <label for="boxPicker">{{$t('pageBuilder.LinkBackgroundColor')}}</label>
-            <input id="boxPicker" value="#000000" type="color" @input="updateBOXColor($event.target.value)">
+            <div>
+              <input id="boxPicker" value="#000000" type="color" @input="updateBOXColor($event.target.value)">
+            </div>
           </div>
           <div id="rootl-picker" class="picker">
             <label for="rootlPicker">{{$t('pageBuilder.rootlinkColor')}}</label>
             <input id="rootlPicker" value="#000000" type="color" @input="updateRLColor($event.target.value)">
           </div>
+        </div>
+      </Tab>
+      <Tab title="Gradient">
+        <div class="grad-container">
+          <h2>Background:</h2>
+          <vue-gpickr class="grad-element" v-model="gradient_bg" @input="updateBGGrad()"/>
+          <h2>LinkBox-Background:</h2>
+          <vue-gpickr class="grad-element" v-model="gradient_box" @input="updateBOXGrad()"/>
         </div>
       </Tab>
     </Tabs>
@@ -139,6 +151,7 @@
 import draggable from "vuedraggable";
 import Tab from "./TabSystem/Tab";
 import Tabs from "./TabSystem/Tabs";
+import { VueGpickr, LinearGradient } from 'vue-gpickr';
 
 export default {
   name: "simple",
@@ -148,7 +161,8 @@ export default {
   components: {
     draggable,
     Tab,
-    Tabs
+    Tabs,
+    VueGpickr
   },
 
   data() {
@@ -156,6 +170,22 @@ export default {
       editModeActive: false,
       enabled: true,
       dragging: true,
+      show_bg_grad: false,
+      show_link_grad: false,
+      gradient_bg: new LinearGradient({
+        angle: 0,
+        stops: [
+          ['#3C70A4', 0],
+          ['#FF9ED2', 1]
+        ]
+      }),
+      gradient_box: new LinearGradient({
+        angle: 120,
+        stops: [
+          ['#0359B5', 0],
+          ['#FF32CC', 1]
+        ]
+      }),
       //list: this.$store.state.list,
     };
   },
@@ -177,6 +207,9 @@ export default {
   },
 
   methods: {
+    log: function () {
+      console.log('test');
+    },
     getFavicon: function(url, id, type) {
       fetch(`gethtml?url=${url}`,{
         method:"POST"
@@ -273,17 +306,33 @@ export default {
       this.$store.commit("updateBackgroundColor", value)
     },
 
+    updateBGGrad: function () {
+      this.$store.commit('updateBackgroundColor', this.gradient_bg.toString())
+    },
+
+    //////////////
+
     updateTXTColor: function (value) {
       this.$store.commit("updateTextColor", value)
     },
+
+    //////////////
 
     updateBOXColor: function (value) {
       this.$store.commit("updateBoxColor", value)
     },
 
+    updateBOXGrad: function () {
+      this.$store.commit('updateBoxColor', this.gradient_box.toString())
+    },
+
+    //////////////
+
     updateRLColor: function (value) {
       this.$store.commit("updateRootLinkColor", value)
     },
+
+    //////////////
 
     removeEntry: function (id, type) {
       this.$store.commit("removeEntry", {id,type})
@@ -301,6 +350,17 @@ export default {
     border:none;
     background-color: var(--surface-color);
     outline: none;
+  }
+
+  .grad-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .grad-element {
+      box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 5px 0 rgba(0, 0, 0, 0.1);
+    }
   }
 
   .upload-image {

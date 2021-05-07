@@ -30,6 +30,7 @@
     "vue-burger-menu": "^2.0.5",
     "vue-chartjs": "^3.5.1",
     "vue-google-oauth2": "^1.5.8",
+    "vue-gpickr": "^0.2.7",
     "vue-gtag": "^1.12.0",
     "vue-i18n": "^8.24.3",
     "vue-qart": "^2.2.0",
