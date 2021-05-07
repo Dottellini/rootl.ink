@@ -4,24 +4,23 @@
     ID<select name="ID" size="5" id="ID" @change="convertData(Analytics)" >
       <option :value="linkID" v-for="linkID in linkIDs" :key="linkID">{{linkID}}</option>
     </select>
-
-
-
     Timeframe<select name="timeframe" size="5" id="timeframe" @change="convertData(Analytics)">
       <option value="Daily">Daily</option>
       <option value="Monthly">Monthly</option>
       <option value="Yearly">Yearly</option>
     </select>
-    <Chart v-if="loaded" :chartOptions="chartOptions" :series="series" />
+    <!--<Chart v-if="loaded" :chartOptions="chartOptions" :series="series" />-->
+    <BetterChart/>
   </div>
 </template>
 
 <script>
 import Chart from "./Chart.vue"
+import BetterChart from "./BetterChart";
 
 export default {
     name: "Analytics",
-    components:{Chart},
+    components:{BetterChart, Chart},
     data(){
       return {
         loaded: false,
@@ -45,7 +44,7 @@ export default {
       }
     },
     created(){
-      fetch(`/api/analytics/get/timm`, {
+      fetch(`/api/analytics/get/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -53,6 +52,7 @@ export default {
         mode: "cors"
       }).then(response => response.json())
         .then(data => {
+          console.log("HÄÄÄ", data)
           this.Analytics = data          
         });
 

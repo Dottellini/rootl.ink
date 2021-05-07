@@ -11,29 +11,17 @@ export default {
   components: {Preview},
 
   mounted() {
-    //ga("send", "UserPage", "mount", this.user)
-
-    /*fetch('/analytics', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        event: "Page Viewed",
-        device: navigator.userAgent,
-        country: "test"
-      }),
-      mode: "cors"
-    }).then(result => {});*/
-
+    console.log("UA", navigator.userAgent)
     fetch('/api/analytics/timm',{
       method: 'POST',
       headers:{
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        event: "Page Viewed",
-        parameters: {}
+        "event": "Page Viewed",
+        "parameters": {
+          "userAgent": navigator.userAgent
+        }
       }),
     }).then((err,data)=>{console.log(err,data)});
   },

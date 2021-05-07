@@ -68,13 +68,10 @@
 </script>
 
 <style scoped lang="scss">
-  
   .LinkImage {
     min-width: 40px;
     min-height: 40px;
   }
-
-
   .LinkBox-Wrapper {
     display: flex;
     flex-direction:column; 
@@ -93,26 +90,21 @@
     width: 0;
     height: 0;
   }
-
   iframe[class=embedShown] {
     width: 95%;
     height: 87%;
   }
-
   .LinkBox-Wrapper.embedShown {
   width: 50vw;
   height:28.125vw;
 }
-
-.previewMode{
+  .previewMode{
   width: 21em;
 }
-
-.previewMode.embedShown{
+  .previewMode.embedShown{
   width: 21em;
   height:11.8125em;
 }
-
   .LinkBox {
     display: flex;
     height: 40px;
@@ -120,11 +112,12 @@
     justify-content: flex-start;
     width: 21em;
     border-radius: 5px;
-
     .LinkBoxText {
       width: 100%;
+      font-weight: 600;
+      font-family: 'Montserrat', sans-serif;
+      text-decoration: none;
     }
-
     img {
       border-radius: 50%;
       margin-left: 0.3em;
@@ -136,5 +129,4 @@
       text-decoration: none;
     }
   }
-
 </style>
