@@ -3,24 +3,25 @@
 
     <!-- HEAD -->
     <div :class="{bar: usePhone}"></div>
-    <div class="url-container" :style="rootl_hex">
-      <h1>rootl.ink/</h1><h2>{{username}}</h2>
-    </div>
-    <img :src="profile_picture" width="100" height="100">
+    <div :class="{content: usePhone}">
+      <div class="url-container" :style="rootl_hex">
+        <h1>rootl.ink/</h1><h2>{{username}}</h2>
+      </div>
+      <img :src="profile_picture" width="100" height="100">
 
-    <!-- Links -->
-    <div id="links">
-      <div v-for="link in links" :key="link.id" :ref="'link-'+link.id" @click="clicked(link.name, link.id)" @mouseDown.middle="clicked(link.name, link.id)">
-        <Linkbox :link=link :boxColor=box_hex :textColor=text_hex :previewMode=usePhone />
-        <!--<NewsletterSignup :link=link :boxColor=box_hex :textColor=text_hex />-->
+      <!-- Links -->
+      <div id="links">
+        <div v-for="link in links" :key="link.id" :ref="'link-'+link.id" @click="clicked(link.name, link.id)" @mouseDown.middle="clicked(link.name, link.id)">
+          <Linkbox :link=link :boxColor=box_hex :textColor=text_hex :previewMode=usePhone />
+          <!--<NewsletterSignup :link=link :boxColor=box_hex :textColor=text_hex />-->
+        </div>
+      </div>
+
+      <!-- Socials -->
+      <div id="socials">
+        <a :href="social.link" v-for="social in socialsList" :key="social.id"><img class="socialImg" :src="social.img"></a>
       </div>
     </div>
-
-    <!-- Socials -->
-    <div id="socials">
-      <a :href="social.link" v-for="social in socialsList" :key="social.id"><img class="socialImg" :src="social.img"></a>
-    </div>
-
   </div>
 </template>
 
@@ -127,7 +128,19 @@ export default {
     border-radius: 50px;
     border-color: var(--device-border-color);
     height: 50em;
+    max-height: 600px;
     width: 25em;
+  }
+
+  .content {
+    max-height: 585px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    -ms-overflow-style: none;  /* IE and Edge */
+
+    &::-webkit-scrollbar {
+      display: none; /* Hide scrollbar for Chrome, Safari and Opera */
+    }
   }
 
   .no-image{
