@@ -135,9 +135,9 @@
       <Tab title="Gradient">
         <div class="grad-container">
           <h2>Background:</h2>
-          <vue-gpickr v-model="gradient_bg" @input="updateBGGrad()"/>
+          <vue-gpickr class="grad-element" v-model="gradient_bg" @input="updateBGGrad()"/>
           <h2>LinkBox-Background:</h2>
-          <vue-gpickr v-model="gradient_bg" @input="updateBGGrad()"/>
+          <vue-gpickr class="grad-element" v-model="gradient_bg" @input="updateBGGrad()"/>
         </div>
       </Tab>
     </Tabs>
@@ -357,6 +357,10 @@ export default {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+
+    .grad-element {
+      box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 5px 0 rgba(0, 0, 0, 0.1);
+    }
   }
 
   .upload-image {
