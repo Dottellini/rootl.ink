@@ -137,7 +137,7 @@
           <h2>Background:</h2>
           <vue-gpickr class="grad-element" v-model="gradient_bg" @input="updateBGGrad()"/>
           <h2>LinkBox-Background:</h2>
-          <vue-gpickr class="grad-element" v-model="gradient_bg" @input="updateBGGrad()"/>
+          <vue-gpickr class="grad-element" v-model="gradient_box" @input="updateBOXGrad()"/>
         </div>
       </Tab>
     </Tabs>
@@ -175,15 +175,15 @@ export default {
       gradient_bg: new LinearGradient({
         angle: 0,
         stops: [
-          ['#0359b5', 0],
-          ['#f6ce01', 1]
+          ['#3C70A4', 0],
+          ['#FF9ED2', 1]
         ]
       }),
       gradient_box: new LinearGradient({
-        angle: 0,
+        angle: 120,
         stops: [
-          ['#0359b5', 0],
-          ['#f6ce01', 1]
+          ['#0359B5', 0],
+          ['#FF32CC', 1]
         ]
       }),
       //list: this.$store.state.list,
@@ -323,7 +323,7 @@ export default {
     },
 
     updateBOXGrad: function () {
-      this.$store.commit('updateBackgroundColor', this.gradient_box.toString())
+      this.$store.commit('updateBoxColor', this.gradient_box.toString())
     },
 
     //////////////
