@@ -80,7 +80,7 @@ export default {
     },
 
     bg_hex: function () {
-      return {backgroundColor: this.$store.state.background_hex}
+      return {background: this.$store.state.background_hex}
     },
 
     text_hex: function () {
@@ -88,7 +88,7 @@ export default {
     },
 
     box_hex: function () {
-      return {backgroundColor: this.$store.state.linkBox_hex}
+      return {background: this.$store.state.linkBox_hex}
     },
 
     rootl_hex: function () {
