@@ -27,7 +27,7 @@ router.post('/auth/google/callback', passport.authenticate('google', { failureRe
 });
 
 router.post('/api/analytics/get/', (req,res)=>{
-    dynamodb.getItem({Key:{"url":{"S": res.locals.user.username}},TableName: "Analytics"},(err, data)=>{
+    dynamodb.getItem({Key:{"url":{"S": res.locals.user.username.toLowerCase()}},TableName: "Analytics"},(err, data)=>{
         res.status(200).json(data)
     });
 });
@@ -192,7 +192,7 @@ router.post('/login', (req,res)=>{
                 return;
             }
             const payload = {username:req.body.username};
-            const accessToken = sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10s' });
+            const accessToken = sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
             const refreshToken = sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
             dynamodb.updateItem({
                 TableName:"Users",
@@ -358,6 +358,7 @@ router.post('/uploadProfilePicture', (req,res)=>{
         });
         let uploadParams = {Bucket: 'rootlinkdata', Key: filename, Body: readable, ACL: 'public-read'};
         let s3 = new aws.S3({
+            ACL:'public-read',
             apiVersion: '2006-03-01',
             params: {Bucket: 'rootlinkdata'}
         });

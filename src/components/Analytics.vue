@@ -55,9 +55,11 @@ export default {
           mode: "cors"
         }).then(response => response.json())
             .then(data => {
-              this.LinkClicksData = this.convertLinkClicksData(data, this.linkIDs[0])
-              this.BrowsersData = this.convertBrowsersData(data)
-              this.OSData = this.convertOSData(data)
+              if(data.Item !== undefined){
+                this.LinkClicksData = this.convertLinkClicksData(data, this.linkIDs[0])
+                this.BrowsersData = this.convertBrowsersData(data)
+                this.OSData = this.convertOSData(data)
+              }
             });
       })
     },

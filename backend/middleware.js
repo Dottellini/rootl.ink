@@ -98,7 +98,7 @@ function refreshAccessToken(username, callback){
         callback(err);
       }
       let payload = {username: data.Item.username.S}
-      callback(jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '10s'}));
+      callback(jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '15m'}));
     })
   })
 }
