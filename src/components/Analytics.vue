@@ -1,32 +1,28 @@
 <template>
   <div>
-    Raw Data: {{JSON.stringify(Analytics)}}<br>
-    ID<select name="ID" size="5" id="ID" @change="convertData(Analytics)" >
-      <option :value="linkID" v-for="linkID in linkIDs" :key="linkID">{{linkID}}</option>
-    </select>
-    Timeframe<select name="timeframe" size="5" id="timeframe" @change="convertData(Analytics)">
-      <option value="Daily">Daily</option>
-      <option value="Monthly">Monthly</option>
-      <option value="Yearly">Yearly</option>
-    </select>
-    <!--<Chart v-if="loaded" :chartOptions="chartOptions" :series="series" />-->
-    <BetterChart/>
+    <UltimateChart v-if="LinkClicksData!==undefined" :yAxis="LinkClicksData.yAxis" :xAxis="LinkClicksData.xAxis" title="LinkClicks"/>
+    <br>
+    <UltimateChart v-if="BrowsersData!==undefined" :yAxis="BrowsersData.yAxis" :xAxis="BrowsersData.xAxis" title="Browsers"/>
+    <br>
+    <UltimateChart v-if="OSData!==undefined" :yAxis="OSData.yAxis" :xAxis="OSData.xAxis" title="Operating Systems"/>
   </div>
 </template>
 
 <script>
 import Chart from "./Chart.vue"
-import BetterChart from "./BetterChart";
+import UltimateChart from "./UltimateChart";
 
 export default {
     name: "Analytics",
-    components:{BetterChart, Chart},
+    components:{UltimateChart, Chart},
     data(){
       return {
-        loaded: false,
         CchartOptions: undefined,
         Cseries: undefined,
-        linkIDs: []
+        linkIDs: [],
+        LinkClicksData: undefined,
+        BrowsersData: undefined,
+        OSData: undefined
       }
     },
     mounted: function() {
@@ -38,36 +34,32 @@ export default {
       },
       series: function(){
         return this.Cseries
-      },
-      linkIDs: function(){
-
       }
     },
     created(){
-      fetch(`/api/analytics/get/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        mode: "cors"
-      }).then(response => response.json())
-        .then(data => {
-          console.log("HÄÄÄ", data)
-          this.Analytics = data          
-        });
-
       fetch("https://d26k63xuikc78y.cloudfront.net/timm.json", {
         'mode': "cors"
       })
       .then(data =>data.json())
       .then(data => {
-        console.log(data)
-        console.log(data.url_list)
         let linkIds = []
         data.url_list.forEach(element => {
           linkIds.push(element.id)
         });
         this.linkIDs = linkIds
+        fetch(`/api/analytics/get/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          mode: "cors"
+        }).then(response => response.json())
+            .then(data => {
+              console.log("Data", data)
+              this.LinkClicksData = this.convertLinkClicksData(data, this.linkIDs[0])
+              this.BrowsersData = this.convertBrowsersData(data)
+              this.OSData = this.convertOSData(data)
+            });
       })
     },
     methods:{
@@ -85,9 +77,9 @@ export default {
         }
         return [primaryList, secondaryList]
       },
-      convertData: function(data){
+      convertLinkClicksData: function(data, linkID){
         let timeframeRegex
-        let timeframe = document.getElementById('timeframe').value
+        let timeframe =  "Daily" //document.getElementById('timeframe').value
         switch(timeframe){
           case 'Daily':
             timeframeRegex = RegExp('^.{4}-.{1,2}.{1,2}$')
@@ -99,7 +91,7 @@ export default {
             timeframeRegex = RegExp('^.{4}$')
             break;
         }
-        let id = document.getElementById("ID").value
+        let id = linkID //document.getElementById("ID").value
         let xAxis = []
         let yAxis = []
         Object.keys(data.Item).forEach((k)=>{
@@ -110,15 +102,9 @@ export default {
             }
           }
         })
-
         console.log(this.sortParallel(xAxis.map(x=>Date.parse(x)),yAxis));
-
         [xAxis,yAxis] = this.sortParallel(xAxis.map(x=>Date.parse(x)),yAxis);
-
-        console.log(xAxis,yAxis);
-
         xAxis = xAxis.map(x=>{
-          console.log("XXX",new Date(x).getTime())
           x = new Date(x)
           x = x.toISOString()
           x = x.slice(0,10)
@@ -126,29 +112,46 @@ export default {
             return x.split('-')[0]
           }
           if(timeframe === 'Monthly'){
-            console.log(x,x.split('-'))
             return x.split('-')[0]+'-'+x.split('-')[1]
           }
           return x
         });
 
-        console.log(xAxis,yAxis);
-
-        this.CchartOptions={
-          title: {text: "LinkClicks"},
-          chart: {
-            id: 'LickClicks-Chart'
-          },
-          xaxis: {
-            categories: xAxis//[1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998]
-          }
+        return {
+          "yAxis": yAxis,
+          "xAxis": xAxis,
         }
-        this.Cseries=[{
-          name: 'Link1',
-          data: yAxis//[30, 40, 45, 50, 49, 60, 70, 91]
-        }]
-        this.loaded = false
-        this.loaded = true
+      },
+      convertBrowsersData: function (data){
+        console.log(data.Item.browsers.M)
+        let xAxis = []
+        let yAxis = []
+        Object.keys(data.Item.browsers.M).forEach((k)=>{
+          console.log("K",data.Item.browsers.M[k])
+          xAxis.push(k)
+          yAxis.push(data.Item.browsers.M[k].N)
+        })
+        console.log(yAxis, xAxis)
+        return {
+          "yAxis": yAxis,
+          "xAxis": xAxis
+        }
+      },
+      convertOSData: function (data) {
+        console.log(data.Item.browsers.M)
+        let xAxis = []
+        let yAxis = []
+        Object.keys(data.Item.operatingSystems.M).forEach((k)=>{
+          console.log("K",data.Item.operatingSystems.M[k])
+          xAxis.push(k)
+          yAxis.push(data.Item.operatingSystems.M[k].N)
+        })
+        console.log(yAxis, xAxis)
+        return {
+          "yAxis": yAxis,
+          "xAxis": xAxis
+        }
+
       }
     }
   }

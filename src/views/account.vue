@@ -1,13 +1,11 @@
 <template>
   <Tabs>
-    <Tab title="Account" class="tab">
-      <EditAccountDetails></EditAccountDetails>
-    </Tab>
     <Tab title="Analytics" class="tab">
       <Analytics></Analytics>
     </Tab>
-      
-      
+    <Tab title="Account" class="tab">
+      <EditAccountDetails></EditAccountDetails>
+    </Tab>
   </Tabs>
 </template>
 

@@ -24,11 +24,13 @@ import VueApexCharts from "vue-apexcharts";
 
 export default {
   name: "BetterChart",
+  props:["options","series"],
   components: {
     apexcharts: VueApexCharts,
   },
   data: function (){
     return {
+      /*
       options:{
         title: {text: "Links"},
         chart: {
@@ -69,12 +71,13 @@ export default {
         name: 'Link2',
         data: undefined
       }]
+       */
     }
   },
   methods:{
     setEvents: function (){
       let instance = this;
-      this.options.chart.events.dataPointSelection = function (event, chartContext, {seriesIndex, dataPointIndex, config}) {
+      $props.options.chart.events.dataPointSelection = function (event, chartContext, {seriesIndex, dataPointIndex, config}) {
         if(document.getElementById("secondaryChart").classList.contains("clicked")) {
           document.getElementById("secondaryChart").classList.remove("clicked")
         }else{
@@ -90,9 +93,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.series)
-    this.series[0].data[0]+=1
-
     this.setEvents()
   }
 };
