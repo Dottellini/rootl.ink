@@ -16,7 +16,7 @@ router.use(['/testLogin', '/createPage', '/uploadProfilePicture', '/api/analytic
     return;
   }
   let cookies = parseCookies(req.headers.cookie);
-  if(cookies.accessToken === undefined) {
+  if(cookies.refreshToken === undefined) {
     res.status(401).json({'result': 'ERROR', 'message': 'Not logged in'})
     return;
   }
@@ -25,18 +25,22 @@ router.use(['/testLogin', '/createPage', '/uploadProfilePicture', '/api/analytic
       console.log(err.message)
       switch(err.message) {
         case 'jwt expired':
+          console.log(cookies.accessToken)
           const payload = jwt.verify(cookies.accessToken, process.env.ACCESS_TOKEN_SECRET, {ignoreExpiration: true});
-          const refresh = refreshAccessToken(payload.username);
-          if(refresh instanceof Error){
-            res.status(401).json({'result': 'ERROR', 'message': 'Invalid token'})
-            return;
-          }
-          res.cookie('accessToken', refresh, {
-            httpOnly: true,
+          let refresh
+          refreshAccessToken(payload.username, (result)=>{
+            refresh = result
+            console.log("1",refresh)
+            if(refresh instanceof Error){
+              res.status(401).json({'result': 'ERROR', 'message': 'Invalid token'})
+              return;
+            }
+            res.cookie('accessToken', refresh, {
+              httpOnly: true,
+            });
+            res.locals.user = user;
+            next();
           });
-          res.locals.user = user;
-          console.log(user)
-          next();
           return;
         case 'jwt malformed':
           res.cookie('accessToken', '', {
@@ -54,7 +58,6 @@ router.use(['/testLogin', '/createPage', '/uploadProfilePicture', '/api/analytic
     }
     res.locals.user = user;
     console.log(user)
-
     next();
   })
 });
@@ -70,22 +73,24 @@ router.use('/logout', (req,res,next)=>{
   next()
 });
 
-function refreshAccessToken(username){
-  dynamodb.getItem({Key:{"username":{"S": username}},TableName: "Users"},(err, data)=>{
-    console.log(err,data)
-    if(Object.keys(data).length !== 0){
+function refreshAccessToken(username, callback){
+  console.log("username",username)
+  dynamodb.getItem({Key:{"usernameLowerCase":{"S": username.toLowerCase()}},TableName: "Users"},(err, data)=>{
+    console.log("ERR,DATA",err,data)
+    if(Object.keys(data).length === 0){
       let err = new Error('Account does not exist');
       err.status = 500;
-      return err;
+      callback(err);
+      return;
     }
-    jwt.verify(data.Item.refreshToken.S, process.env.ACCESS_TOKEN_SECRET, (err)=>{
+    jwt.verify(data.Item.refreshToken.S, process.env.REFRESH_TOKEN_SECRET, (err)=>{
       if(err) {
         let err = new Error('RefreshToken expired');
         err.status = 403;
-        return err;
+        callback(err);
       }
       let payload = {username: data.Item.username.S}
-      return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '15m'});
+      callback(jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '10s'}));
     })
   })
 }

@@ -193,15 +193,20 @@ router.post('/login', (req,res)=>{
                 return;
             }
             const payload = {username:req.body.username};
-            const accessToken = sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
-            const refreshToken = sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '60m' });
-            data.Item.refreshToken.S = refreshToken;
-            dynamodb.putItem({
-                Item:{
-                    "refreshToken":{S: refreshToken},
+            const accessToken = sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10s' });
+            const refreshToken = sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
+            console.log("RT",refreshToken)
+            dynamodb.updateItem({
+                TableName:"Users",
+                Key: { "usernameLowerCase": { S: req.body.username.toLowerCase() } },
+                UpdateExpression: 'SET #a = :value',
+                ExpressionAttributeValues: {
+                    ":value":  { S: refreshToken },
                 },
-                TableName:"Users"
-            },()=>{});
+                ExpressionAttributeNames: {
+                    '#a': "refreshToken"
+                }
+            },(err,data)=>{console.log("HÄJ",err,data)});
             res.cookie('accessToken', accessToken, {
                 httpOnly: true,
             });

@@ -5,7 +5,7 @@
     <div :class="{bar: usePhone}"></div>
     <div :class="{content: usePhone}">
       <div class="url-container" :style="rootl_hex">
-        <h1>rootl.ink/</h1><h2>{{username}}</h2>
+        <h2 id="title">@{{username}}</h2>
       </div>
       <img :src="profile_picture" width="100" height="100">
 
