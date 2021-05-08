@@ -84,7 +84,7 @@ function refreshAccessToken(username){
         err.status = 403;
         return err;
       }
-      let payload = {username: results[0].username}
+      let payload = {username: data.Item.username.S}
       return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '15m'});
     })
   })

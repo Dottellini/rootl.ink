@@ -44,14 +44,17 @@ router.post('/api/analytics/*', (req,res)=>{
     //Check if Page Analytics exist
     dynamodb.getItem({Key:{"url":{"S": req.url.replace('/api/analytics/','')}},TableName: "Analytics"},(err, data)=>{
         if(req.body.event === "Page Viewed") {
+            let userAgent = new UAParser(req.body.parameters.userAgent)
             dynamodb.updateItem({
                 TableName: "Analytics",
                 Key: { "url": { S: req.url.replace('/api/analytics/','') } },
-                UpdateExpression:'ADD #PAGEVIEWS :inc, #BROWSERS.#BROWSER :inc',
+                UpdateExpression:'ADD #PAGEVIEWS :inc, #BROWSERS.#BROWSER :inc, #OPERATINGSYSTEMS.#OPERATINGSYSTEM :inc',
                 ExpressionAttributeNames:{
                     '#PAGEVIEWS': "pageViews",
                     '#BROWSERS': "browsers",
-                    '#BROWSER': new UAParser(req.body.parameters.userAgent).getBrowser().name
+                    '#BROWSER': userAgent.getBrowser().name,
+                    '#OPERATINGSYSTEMS': "operatingSystems",
+                    '#OPERATINGSYSTEM': userAgent.getOS().name
                 },
                 ExpressionAttributeValues:{
                     ':inc': {"N":"1"},
@@ -76,7 +79,6 @@ router.post('/api/analytics/*', (req,res)=>{
                 }
             },()=>{
                 //Increment Year-Key by One
-                console.log("Test")
                 dynamodb.updateItem({
                     TableName: "Analytics",
                     Key: { "url": { S: req.url.replace('/api/analytics/','') } },
@@ -285,7 +287,8 @@ router.post('/register', (req,res)=>{
                             Item:{
                                 "url":{"S":req.body.username.toLowerCase()},
                                 "pageViews":{"N":"0"},
-                                "browsers":{"M":{}}
+                                "browsers":{"M":{}},
+                                "operatingSystems":{"M":{}}
                             },
                             TableName:"Analytics"
                         },(err, data)=>{console.log(err, data)})
