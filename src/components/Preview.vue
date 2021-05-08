@@ -57,7 +57,7 @@ export default {
           event: "Link Clicked",
           parameters: {"linkId": id}
         }),
-      }).then(()=>{)});
+      }).then(()=>{});
     }
   },
 
