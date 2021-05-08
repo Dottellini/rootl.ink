@@ -22,15 +22,12 @@ router.use(['/testLogin', '/createPage', '/uploadProfilePicture', '/api/analytic
   }
   jwt.verify(cookies.accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user)=>{
     if(err){
-      console.log(err.message)
       switch(err.message) {
         case 'jwt expired':
-          console.log(cookies.accessToken)
           const payload = jwt.verify(cookies.accessToken, process.env.ACCESS_TOKEN_SECRET, {ignoreExpiration: true});
           let refresh
           refreshAccessToken(payload.username, (result)=>{
             refresh = result
-            console.log("1",refresh)
             if(refresh instanceof Error){
               res.status(401).json({'result': 'ERROR', 'message': 'Invalid token'})
               return;
@@ -57,13 +54,26 @@ router.use(['/testLogin', '/createPage', '/uploadProfilePicture', '/api/analytic
       }
     }
     res.locals.user = user;
-    console.log(user)
     next();
   })
 });
 
 //Logout
 router.use('/logout', (req,res,next)=>{
+  let cookies = parseCookies(req.headers.cookie);
+  const payload = jwt.verify(cookies.accessToken, process.env.ACCESS_TOKEN_SECRET, {ignoreExpiration: true});
+
+  dynamodb.updateItem({
+    TableName:"Users",
+    Key: { "usernameLowerCase": { S: payload.username.toLowerCase() } },
+    UpdateExpression: 'SET #a = :value',
+    ExpressionAttributeValues: {
+      ":value":  { S: "" },
+    },
+    ExpressionAttributeNames: {
+      '#a': "refreshToken"
+    }
+  },()=>{});
   res.cookie('accessToken', '', {
     httpOnly: true,
   });
@@ -74,9 +84,7 @@ router.use('/logout', (req,res,next)=>{
 });
 
 function refreshAccessToken(username, callback){
-  console.log("username",username)
   dynamodb.getItem({Key:{"usernameLowerCase":{"S": username.toLowerCase()}},TableName: "Users"},(err, data)=>{
-    console.log("ERR,DATA",err,data)
     if(Object.keys(data).length === 0){
       let err = new Error('Account does not exist');
       err.status = 500;

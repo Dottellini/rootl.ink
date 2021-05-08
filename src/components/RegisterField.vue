@@ -94,7 +94,6 @@ export default {
           })
           .catch((error) => {
             this.error = "There was an error"
-            console.log(error)
           });
       }
     }

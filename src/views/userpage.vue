@@ -11,7 +11,6 @@ export default {
   components: {Preview},
 
   mounted() {
-    console.log("UA", navigator.userAgent)
     fetch('/api/analytics/timm',{
       method: 'POST',
       headers:{
@@ -23,7 +22,7 @@ export default {
           "userAgent": navigator.userAgent
         }
       }),
-    }).then((err,data)=>{console.log(err,data)});
+    }).then(()=>{});
   },
   computed: {
     user() {

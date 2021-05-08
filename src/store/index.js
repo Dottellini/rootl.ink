@@ -66,7 +66,6 @@ export default new Vuex.Store({
       state.profile_picture = data.profilePicture;
       state.list = data.url_list; //TODO: url_list schlecht benannt; stattdessen einheitlich und CamelCase
       state.socialsList = data.socialsList;
-      console.log("SOCIALSLIST: ",state.socialsList)
       state.background_hex = data.background_hex;
       state.text_hex = data.text_hex;
       state.linkBox_hex = data.linkBox_hex;
@@ -100,18 +99,13 @@ export default new Vuex.Store({
     },
 
     removeEntry(state, payload, type) {
-      console.log("STATE: ",state)
-      console.log("PAYLOAD: ",payload)
-      console.log("TYPE: ",type)
       if(payload.type=='social'){
         let removeIndex = state.socialsList.map(item => item.id).indexOf(payload.id);
         state.socialsList.splice(removeIndex, 1);
-        console.log(state.socialsList)
         return;
       }
       let removeIndex = state.list.map(item => item.id).indexOf(payload.id);
       state.list.splice(removeIndex, 1);
-      console.log(state.list)
     },
 
     addExample(state, isDark) {
@@ -190,15 +184,13 @@ export default new Vuex.Store({
         let reader = data.body.getReader();
         reader.read().then(function processText({done, value}) {
           if (done) {
-            console.log('Stream complete');
             commit("setData", string)
             return
           }
           string = new TextDecoder().decode(value)
           return reader.read().then(processText);
         })
-      }).catch((err) => {
-        console.log(err)
+      }).catch(() => {
         router.push({name: "PageNotFound"})
       })
     },
@@ -215,8 +207,6 @@ export default new Vuex.Store({
         rootLink_hex: state.rootLink_hex,
       }
 
-      console.log(data);
-
       fetch('/createPage', {
         method: 'POST',
         headers: {
@@ -224,12 +214,8 @@ export default new Vuex.Store({
         },
         body: JSON.stringify(data),
       })
-          .then(data => {
-            console.log('Success:', data);
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-          });
+      .then(() => {})
+      .catch(() => {});
     },
 
     logout({commit}) {

@@ -208,7 +208,6 @@ export default {
 
   methods: {
     log: function () {
-      console.log('test');
     },
     getFavicon: function(url, id, type) {
       fetch(`gethtml?url=${url}`,{

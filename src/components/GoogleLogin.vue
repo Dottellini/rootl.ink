@@ -14,7 +14,6 @@ export default {
           method: "POST",
           mode: "no-cors"
         }).then(result => {
-          console.log(result)
         })
       } catch (error) {
         //on fail do something

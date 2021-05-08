@@ -34,7 +34,6 @@
     },
     methods: {
       linkOrEmbed: function(link){
-        console.log(link)
         if(!link.embed){
           return {
             "href": link.link,

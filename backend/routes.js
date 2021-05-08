@@ -33,7 +33,6 @@ router.post('/api/analytics/get/', (req,res)=>{
 });
 
 router.post('/gethtml*',(req,res)=>{
-    console.log('/////////////////////');
     fetch(req.url.replace('/gethtml?url=','')).then(data =>data.text())
     .then(data=>{
         res.send(data)
@@ -61,7 +60,7 @@ router.post('/api/analytics/*', (req,res)=>{
     
                 },
                 ReturnValues:'UPDATED_NEW'
-            },(err, data)=>{console.log(err, data)})
+            },()=>{})
         }
         if(req.body.event === "Link Clicked"){
 
@@ -195,7 +194,6 @@ router.post('/login', (req,res)=>{
             const payload = {username:req.body.username};
             const accessToken = sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '10s' });
             const refreshToken = sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
-            console.log("RT",refreshToken)
             dynamodb.updateItem({
                 TableName:"Users",
                 Key: { "usernameLowerCase": { S: req.body.username.toLowerCase() } },
@@ -206,7 +204,7 @@ router.post('/login', (req,res)=>{
                 ExpressionAttributeNames: {
                     '#a': "refreshToken"
                 }
-            },(err,data)=>{console.log("HÄJ",err,data)});
+            },()=>{});
             res.cookie('accessToken', accessToken, {
                 httpOnly: true,
             });
@@ -227,7 +225,6 @@ router.post('/testLogin', (req, res)=>{
 });
 
 router.post('/logout', (req,res)=>{
-    //set refresh token in db to ""
     res.status(200).json({'result':'OK'});
 });
 
@@ -296,7 +293,7 @@ router.post('/register', (req,res)=>{
                                 "operatingSystems":{"M":{}}
                             },
                             TableName:"Analytics"
-                        },(err, data)=>{console.log(err, data)})
+                        },()=>{})
                 })
                 renderFile(__dirname+'/email-templates/email-template1.ejs', {code: confirmationCode, username:req.body.username},(error, data)=>{
                     let mailOptions = {

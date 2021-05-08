@@ -20,13 +20,8 @@ export default {
       },
       body: JSON.stringify({code: code, username:username}),
     })
-        .then(data => {
-          console.log('Success:', data);
-
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-        });
+    .then(() => {})
+    .catch(() => {});
   }
 }
 </script>

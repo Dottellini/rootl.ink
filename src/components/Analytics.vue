@@ -55,7 +55,6 @@ export default {
           mode: "cors"
         }).then(response => response.json())
             .then(data => {
-              console.log("Data", data)
               this.LinkClicksData = this.convertLinkClicksData(data, this.linkIDs[0])
               this.BrowsersData = this.convertBrowsersData(data)
               this.OSData = this.convertOSData(data)
@@ -123,30 +122,24 @@ export default {
         }
       },
       convertBrowsersData: function (data){
-        console.log(data.Item.browsers.M)
         let xAxis = []
         let yAxis = []
         Object.keys(data.Item.browsers.M).forEach((k)=>{
-          console.log("K",data.Item.browsers.M[k])
           xAxis.push(k)
           yAxis.push(data.Item.browsers.M[k].N)
         })
-        console.log(yAxis, xAxis)
         return {
           "yAxis": yAxis,
           "xAxis": xAxis
         }
       },
       convertOSData: function (data) {
-        console.log(data.Item.browsers.M)
         let xAxis = []
         let yAxis = []
         Object.keys(data.Item.operatingSystems.M).forEach((k)=>{
-          console.log("K",data.Item.operatingSystems.M[k])
           xAxis.push(k)
           yAxis.push(data.Item.operatingSystems.M[k].N)
         })
-        console.log(yAxis, xAxis)
         return {
           "yAxis": yAxis,
           "xAxis": xAxis
