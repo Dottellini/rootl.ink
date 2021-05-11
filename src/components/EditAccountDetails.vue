@@ -16,7 +16,9 @@
       <input id="imageInput" type="file" name="avatar" @change="ConvertFileTo('image/jpeg', $event)" hidden>
     </div>
     <button type="button" class="upload-Button" @click="upload">{{$t('upload')}}</button>
-    <input id="username" type="text">
+    <input id="username" type="text" placeholder="USERNAME">
+    <input id="mail" type="text" placeholder="E-MAIL">
+    <input id="password" type="text" placeholder="Confirm with Password">
     <button class="save-button">{{$t('save')}}</button>
     <canvas id="imageCanvas" hidden></canvas>
   </div>
