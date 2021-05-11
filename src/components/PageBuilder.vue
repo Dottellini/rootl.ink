@@ -247,11 +247,32 @@ export default {
   },
 
     checkIfVideo: function (id, url) {
-      url = url
+      //CHECK YOUTUBE VIDEO
+      if(/http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/g.test(url)) {
+        this.$store.commit("isYoutubeVideo", {id: id, result: true});
+        return;
+      }
+
+      //CHECK VIMEO
+      if(/http(?:s?):\/\/(www\.)?vimeo\.com\/(\d+)/g.test(url)) {
+        this.$store.commit("isYoutubeVideo", {id: id, result: true});
+        return;
+      }
+
+      //CHECK TWITCH PROFILE, VIDEO OR CLIP
+      //PROFILE: /http(?:s?):\/\/(?:www\.)twitch.tv\/(\w+)/g
+      //CLIP: /http(?:s?):\/\/(?:www\.)twitch.tv\/(\w+\/clip/\S+)/g
+      //VIDEO: /http(?:s?):\/\/(?:www\.)twitch.tv\/(videos\/\d+)/g
+      //ALL: /http(?:s?):\/\/(?:www\.)twitch.tv\/(\S+)/g
+      if(/http(?:s?):\/\/(?:www\.)twitch.tv\/(\S+)/g.test(url)) {
+        this.$store.commit("isYoutubeVideo", {id: id, result: true});
+        return;
+      }
+      this.$store.commit("isYoutubeVideo", {id: id, result: false});
+      /*url = url
       .replace('http://','')
       .replace('https://','')
       if(url.split('/').length>1){
-        //if(/http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/g.test(url)) {
         if(url.split('/')[0]== 'www.youtube.com'){
           this.$store.commit("isYoutubeVideo", {id: id, result: true});
           return;
@@ -264,9 +285,7 @@ export default {
           this.$store.commit("isYoutubeVideo", {id: id, result: true});
           return;
         }
-      }
-      this.$store.commit("isYoutubeVideo", {id: id, result: false});
-      return;
+      }*/
     },
 
     submit: function () {
