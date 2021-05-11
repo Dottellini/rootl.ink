@@ -1,7 +1,7 @@
-var GenerateQrCode = function(value, size){
+var GenerateQrCode = function(value, size = 4, errorCorrection = "H"){
     let text = value.replace(/^[\s\u3000]+|[\s\u3000]+$/g, '');
     var t = size
-    var e = 'H'
+    var e = errorCorrection
     var m = "Byte"
     var mb = "default"
     return create_qrcode(text, t, e, m, mb);
@@ -352,6 +352,9 @@ var qrcode = function() {
             + '>'
             + totalDataCount * 8
             + ')';
+        } else{
+          //console.log('Used Space:',buffer.getLengthInBits())
+          //console.log('Available Space:', totalDataCount*8)
         }
   
         // end code
