@@ -36,6 +36,7 @@
       "text": "Check your E-Mail to confirm your registration"
     },
     "NoAccount": "Don't have an account?",
+    "passwordForgotten": "Forgot your password?",
     "alreadyAccount": "Already have an account?",
     "goHome": "Go back Home",
     "upload": "Upload",
@@ -44,6 +45,7 @@
     "login": "Login",
     "logout": "Logout",
     "register": "Register",
+    "resetPassword": "Reset",
     "signUp": "Sign Up",
     "submit": "Submit",
     "hide": "Hide",
@@ -91,6 +93,7 @@
       "text": "Überprüfe deine E-Mails, um die Registrierung zu bestätigen"
     },
     "NoAccount": "Noch kein Konto?",
+    "passwordForgotten": "Passwort vergessen?",
     "alreadyAccount": "Bereits ein Konto?",
     "goHome": "Zurück zur Startseite",
     "upload": "Hochladen",
@@ -99,6 +102,7 @@
     "login": "Anmelden",
     "logout": "Abmelden",
     "register": "Registrieren",
+    "resetPassword": " Zurücksetzen",
     "signUp": "Registrieren",
     "submit": "Einreichen",
     "hide": "Verstecken",

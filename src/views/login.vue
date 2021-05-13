@@ -2,6 +2,7 @@
   <div class="container">
     <LoginField class="login"></LoginField>
     <p>{{$t('NoAccount')}} <router-link to="/register">{{$t('register')}}!</router-link></p>
+    <p>{{$t('passwordForgotten')}} <router-link to="/reset-password">{{$t('resetPassword')}}!</router-link></p>
   </div>
 </template>
 

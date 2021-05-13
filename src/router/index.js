@@ -13,6 +13,7 @@ import QR from '../views/qr'
 import About from '../views/about'
 import Service from '../views/service'
 import Help from '../views/help'
+import ResetPassword from '../views/resetpassword';
 
 Vue.use(VueRouter)
 
@@ -21,6 +22,11 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home,
+  },
+  {
+    path: '/reset-password',
+    name: 'Reset Password',
+    component: ResetPassword,
   },
   {
     path: '/about',

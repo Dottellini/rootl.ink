@@ -6,7 +6,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    list: [], // TODO: Unklar benannt! sollte vllt eher linkList oder so sein
+    list: [],
     socialsList: [],
     username: "USERNAME", //Used for the "User-pages" and other stuff. This username if not to be used for the logged in account as it may change
     account_username: null, //Used for logged in user

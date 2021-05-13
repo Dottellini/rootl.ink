@@ -9,7 +9,7 @@
   "dependencies": {
     "apexcharts": "^3.26.1",
     "aws-sdk": "^2.884.0",
-    "bcrypt": "^5.0.1",
+    "bcryptjs": "^2.4.3",
     "connect-history-api-fallback": "^1.6.0",
     "cookie-session": "^1.4.0",
     "d3": "^6.7.0",
@@ -22,6 +22,7 @@
     "nodemailer": "^6.5.0",
     "passport": "^0.4.1",
     "passport-google-oauth20": "^2.0.0",
+    "qrcode": "^1.4.4",
     "ua-parser-js": "^0.7.28",
     "uuid": "^8.3.2",
     "vue": "^2.6.11",

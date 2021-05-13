@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { Readable } = require('stream')
-const {compare, hash} = require('bcrypt');
+const {compare, hash} = require('bcryptjs');
 const {sign} = require('jsonwebtoken');
 const {v4} = require('uuid');
 const {renderFile} = require('ejs');
@@ -19,6 +19,99 @@ require('./passport');
 router.post('/failed', (req, res) => {
     res.send('<h1>Log in Failed :(</h1>')
 });
+
+router.post('/resetPassword', (req,res)=>{
+    console.log(req.body)
+    dynamodb.getItem({Key:{"usernameLowerCase":{"S": req.body.username.toLowerCase()}},TableName: "Users"},(err, data)=>{
+        console.log("2",err,data)
+        if(data === {}){
+            console.log(":(")
+            res.status(418).json({})
+            return
+        }
+        if(typeof data.Item.passwordResetCode === 'undefined'){
+            console.log(":(")
+            res.status(418).json({})
+            return
+        }
+        if(data.Item.passwordResetCodeExpiry.N < new Date().getTime()/1000){
+            console.log(":(")
+            res.status(418).json({})
+            return
+        }
+        if(req.body.resetCode === data.Item.passwordResetCode.S){
+            console.log(":)")
+            hash(req.body.newPassword, 10, function(error, hash) {
+                console.log(error, hash)
+                dynamodb.updateItem({
+                    TableName: "Users",
+                    Key: { "usernameLowerCase": { S: req.body.username.toLowerCase() } },
+                    UpdateExpression: 'SET #a = :value , #b = :secondValue , #c = :thirdValue',
+                    ExpressionAttributeValues: {
+                        ":value":  { S:hash },
+                        ":secondValue":  { S:"" },
+                        ":thirdValue":  { S:"" }
+                    },
+                    ExpressionAttributeNames: {
+                        '#a': "passwordHash",
+                        '#b': "passwordResetCode",
+                        '#c': "passwordResetCodeExpiry"
+                    }
+                },(err,data)=>{console.log(err,data)})
+            })
+
+
+            res.status(200).json({})
+        } else {
+            console.log(":(")
+            res.status(418).json({})
+        }
+    })
+})
+
+router.post('/requestPasswordReset', (req,res)=>{
+    console.log(req.body)
+    const code = v4()
+    renderFile(__dirname+'/email-templates/email-template2.ejs', {code: code},(error, data)=> {
+        let mailOptions = {
+            from: 'rootlink.test123@gmail.com',
+            to: req.body.email,
+            subject: 'Reset Password - Rootl.ink',
+            text: data,
+            html: data
+        };
+        let emailSender = createTransport({
+            service: 'gmail',
+            auth: {
+                user: 'rootlink.test123@gmail.com',
+                pass: '%pFJM,hwr_b,uyv#,F?+66Hb'
+            }
+        });
+        emailSender.sendMail(mailOptions, function (error) {
+            if (error) {
+                res.status(500).json({'result': 'ERROR', 'message': 'Cant send reset email'});
+                return;
+            }
+            res.status(200).json({'result': 'OK'});
+        });
+    })
+
+    dynamodb.updateItem({
+        TableName: "Users",
+        Key: { "usernameLowerCase": { S: req.body.username.toLowerCase() } },
+        UpdateExpression: 'SET #a = :value , #b = :secondValue',
+        ExpressionAttributeValues: {
+            ":value":  { S:code },
+            ":secondValue":  { N:(new Date().getTime()/1000+900).toString()},
+        },
+        ExpressionAttributeNames: {
+            '#a': "passwordResetCode",
+            '#b': "passwordResetCodeExpiry"
+        }
+    },(err,data)=>{
+        console.log("1",err,data)
+    })
+})
 
 router.post('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
