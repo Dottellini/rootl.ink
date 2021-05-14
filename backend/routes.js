@@ -84,7 +84,7 @@ router.post('/requestPasswordReset', (req,res)=>{
             service: 'gmail',
             auth: {
                 user: 'rootlink.test123@gmail.com',
-                pass: '%pFJM,hwr_b,uyv#,F?+66Hb'
+                pass: 'W6Jg4ZCzUswdAiXKckUJfVT3FzyK4cHtvHQEUu'
             }
         });
         emailSender.sendMail(mailOptions, function (error) {
@@ -400,7 +400,7 @@ router.post('/register', (req,res)=>{
                         service: 'gmail',
                         auth: {
                         user: 'rootlink.test123@gmail.com',
-                        pass: '%pFJM,hwr_b,uyv#,F?+66Hb'
+                        pass: 'W6Jg4ZCzUswdAiXKckUJfVT3FzyK4cHtvHQEUu'
                         }
                     });                
                     emailSender.sendMail(mailOptions, function(error){
