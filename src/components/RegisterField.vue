@@ -93,6 +93,7 @@ export default {
             })
           })
           .catch((error) => {
+            console.log(error)
             this.error = "There was an error"
           });
       }

@@ -6,7 +6,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    list: [],
+    linkList: [],
     socialsList: [],
     username: "USERNAME", //Used for the "User-pages" and other stuff. This username if not to be used for the logged in account as it may change
     account_username: null, //Used for logged in user
@@ -21,8 +21,8 @@ export default new Vuex.Store({
   },
   mutations: {
     isYoutubeVideo(state, payload) {
-      let index = state.list.map(item => item.id).indexOf(payload.id);
-      state.list[index].isYoutubeVideo = payload.result;
+      let index = state.linkList.map(item => item.id).indexOf(payload.id);
+      state.linkList[index].isYoutubeVideo = payload.result;
     },
 
     login(state, payload) {
@@ -64,7 +64,7 @@ export default new Vuex.Store({
       let data = JSON.parse(payload)
       state.username = data.username;
       state.profile_picture = data.profilePicture;
-      state.list = data.url_list; //TODO: url_list schlecht benannt; stattdessen einheitlich und CamelCase
+      state.linkList = data.urlList;
       state.socialsList = data.socialsList;
       state.background_hex = data.background_hex;
       state.text_hex = data.text_hex;
@@ -81,7 +81,7 @@ export default new Vuex.Store({
         state.socialsList.push({name: "", link: "", img: "", id: id})
         return;
       }
-      state.list.push({name: "", link: "", img: "", isYoutubeVideo: false, embed: false, id: id})
+      state.linkList.push({name: "", link: "", img: "", isYoutubeVideo: false, embed: false, id: id})
     },
 
     checkMobile(state, payload) {
@@ -94,8 +94,8 @@ export default new Vuex.Store({
         state.socialsList[index].img = payload.imgData.img;  
         return;
       }
-      let index = state.list.map(item => item.id).indexOf(payload.imgData.id);
-      state.list[index].img = payload.imgData.img;
+      let index = state.linkList.map(item => item.id).indexOf(payload.imgData.id);
+      state.linkList[index].img = payload.imgData.img;
     },
 
     removeEntry(state, payload, type) {
@@ -104,12 +104,12 @@ export default new Vuex.Store({
         state.socialsList.splice(removeIndex, 1);
         return;
       }
-      let removeIndex = state.list.map(item => item.id).indexOf(payload.id);
-      state.list.splice(removeIndex, 1);
+      let removeIndex = state.linkList.map(item => item.id).indexOf(payload.id);
+      state.linkList.splice(removeIndex, 1);
     },
 
     addExample(state, isDark) {
-      state.list = [{name: "Youtube", link: "https://www.youtube.com/watch?v=2INpDCWOy0Q", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/YouTube_social_white_squircle_%282017%29.svg/1200px-YouTube_social_white_squircle_%282017%29.svg.png", isYoutubeVideo:true, embed: true, id: 1},
+      state.linkList = [{name: "Youtube", link: "https://www.youtube.com/watch?v=2INpDCWOy0Q", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/YouTube_social_white_squircle_%282017%29.svg/1200px-YouTube_social_white_squircle_%282017%29.svg.png", isYoutubeVideo:true, embed: true, id: 1},
                     {name: "Instagram", link: "https://instagram.com", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/1200px-Instagram_logo_2016.svg.png", isYoutubeVideo:false, embed: false, id: 2},
                     {name: "Twitter", link: "https://twitter.com", img: "https://image.flaticon.com/icons/png/512/124/124021.png", isYoutubeVideo:false, embed: false, id: 3},
                     {name: "TikTok", link: "https://tiktok.com", img: "https://cdn.worldvectorlogo.com/logos/tiktok-logo-2--1.svg", isYoutubeVideo:false, embed: false, id: 4}];
@@ -199,7 +199,7 @@ export default new Vuex.Store({
       const data = {
         profilePicture: state.account_profile_picture,
         username: state.account_username,
-        url_list: state.list,
+        urlList: state.linkList,
         socialsList: state.socialsList,
         background_hex: state.background_hex,
         text_hex: state.text_hex,
