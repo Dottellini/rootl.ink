@@ -1,13 +1,17 @@
 <template>
   <div>
-    Email<input v-model="email"><button @click="getCode">Send</button><br>
-    Username<input v-model="username"><br>
+    <div id="step1" v-if="step === 0">
+      <input v-model="email" placeholder="E-Mail"><br>
+      <button @click="getCode">Send</button>
+    </div>
 
-    <h1>Check your mailbox to reset your password</h1><br>
-    ResetCode<input v-model="resetCode"><br>
-    NewPassword<input v-model="newPassword"><br>
-    Username<input v-model="username"><br>
-    <button @click="submit">Submit</button>
+    <div id="step2" v-if="step === 1">
+      <h1>Check your mailbox to receive the Reset Code</h1><br>
+      <input v-model="username" placeholder="Username"><br>
+      <input v-model="resetCode" placeholder="ResetCode"><br>
+      <input v-model="newPassword" placeholder="New Password"><br>
+      <button @click="submit">Submit</button>
+    </div>
   </div>
 </template>
 
@@ -19,7 +23,8 @@ export default {
       resetCode: undefined,
       newPassword: undefined,
       username: undefined,
-      email: undefined
+      email: undefined,
+      step: 0,
     }
   },
   methods: {
@@ -38,10 +43,12 @@ export default {
       fetch('/requestPasswordReset',{
         method:'POST',
         headers: {'Content-Type': 'application/json'},
-        body:JSON.stringify({
+        body: JSON.stringify({
           "email": this.email,
           "username": this.username
         })
+      }).then( () => {
+        this.step = 1;
       })
     }
   }

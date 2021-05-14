@@ -89,6 +89,7 @@ router.post('/requestPasswordReset', (req,res)=>{
         });
         emailSender.sendMail(mailOptions, function (error) {
             if (error) {
+                console.log(error)
                 res.status(500).json({'result': 'ERROR', 'message': 'Cant send reset email'});
                 return;
             }
