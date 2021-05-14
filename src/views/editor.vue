@@ -23,7 +23,7 @@ export default {
   },
 
   created() {
-    this.$store.dispatch("fetchUserData", this.$store.state.account_username)
+    this.$store.dispatch("fetchUserData", {username: this.$store.state.account_username, origin: this.$router.currentRoute})
     this.$store.commit('changeUsername', this.$store.state.account_username)
   },
 

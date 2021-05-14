@@ -34,8 +34,10 @@ export default {
   }
 
   p {
+    font-family: 'Montserrat', sans-serif;
     color: var(--text-color);
     a {
+      font-family: 'Montserrat', sans-serif;
       color: var(--text-color);
     }
   }

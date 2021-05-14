@@ -77,11 +77,12 @@ export default new Vuex.Store({
       const dt = Date.now();
       const num = Math.floor(Math.random() * 999999);
       const id = parseInt(`${dt}${num}`)
-      if(type=="social"){
+      if(type==="social"){
         state.socialsList.push({name: "", link: "", img: "", id: id})
         return;
       }
       state.linkList.push({name: "", link: "", img: "", isYoutubeVideo: false, embed: false, id: id})
+      console.log(state.linkList)
     },
 
     checkMobile(state, payload) {
@@ -170,16 +171,21 @@ export default new Vuex.Store({
 
     },
 
-    async fetchUserData({commit}, username) {
+    async fetchUserData({commit}, payload) {
       let string;
-      await fetch(`https://d26k63xuikc78y.cloudfront.net/${username.toLowerCase()}.json`, {
+      await fetch(`https://d26k63xuikc78y.cloudfront.net/${payload.username.toLowerCase()}.json`, {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST',
         'mode': "cors"
       }).then(data => {
         if(data.status === 403) {
-          router.push({name: "PageNotFound"})
-          return;
+          if(payload.origin.path === "/editor") {
+            console.log("yay");
+            return;
+          } else {
+            router.push({name: "PageNotFound"})
+            return;
+          }
         }
         let reader = data.body.getReader();
         reader.read().then(function processText({done, value}) {

@@ -192,7 +192,7 @@ export default {
 
   computed: {
     list() {
-      return this.$store.state.list
+      return this.$store.state.linkList
     },
     socialsList() {
       return this.$store.state.socialsList

@@ -72,7 +72,7 @@ export default {
     },
 
     links: function () {
-      return this.$store.state.list
+      return this.$store.state.linkList
     },
 
     socialsList: function(){

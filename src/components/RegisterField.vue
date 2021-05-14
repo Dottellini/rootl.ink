@@ -107,6 +107,10 @@ export default {
     color: var(--text-color)
   }
 
+  p {
+    font-family: 'Montserrat', sans-serif;
+  }
+
   .error {
     color: red;
   }
