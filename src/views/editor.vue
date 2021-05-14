@@ -23,6 +23,7 @@ export default {
   },
 
   created() {
+    this.$store.dispatch("fetchUserData", this.$store.state.account_username)
     this.$store.commit('changeUsername', this.$store.state.account_username)
   },
 
