@@ -8,7 +8,7 @@
       <div class="line"></div>
       <div class="input">
         <p class="text">rootl.ink/</p>
-        <input type="text" class="input"
+        <input type="text" class="input-field"
                maxlength="30"
                @input="updateText"
                v-model="username"
@@ -128,7 +128,7 @@ export default {
     cursor: pointer;
     text-decoration: none;
     outline: none;
-    border: none;
+    border: 1px solid var(--background-color);
     font-family: 'Montserrat', sans-serif;
     font-weight: 700;
     font-size: 1.5em;
@@ -177,10 +177,11 @@ export default {
       font-weight: 700;
     }
 
-    .input {
+    .input-field {
+      font-size: 30px;
       background-color: var(--background-color);
       color: var(--text-color);
-      width: 9em;
+      width: 8em;
       height: 1em;
       outline: none;
       border: none;
@@ -191,6 +192,8 @@ export default {
 
     @media screen and (max-width: 768px) {
       font-size: 23px;
+      margin-top: 10px;
+      margin-bottom: 10px;
     }
   }
 </style>

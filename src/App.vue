@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div class="content">
+    <div class="app-content">
       <div id="header" class="header" v-if="!isUserPage">
         <div id="logo">
           <router-link id="homeroute" to="/"><h1>rootl.ink</h1></router-link>
@@ -312,8 +312,8 @@ export default {
     }
   }
 
-  .content {
-    padding-bottom: 3.5em;
+  .app-content {
+    padding-bottom: 9em;
   }
 
   .mobile-navbar {
