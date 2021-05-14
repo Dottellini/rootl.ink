@@ -43,7 +43,8 @@ export default {
       .then(data =>data.json())
       .then(data => {
         let linkIds = []
-        data.url_list.forEach(element => {
+        console.log(data)
+        data.urlList.forEach(element => {
           linkIds.push(element.id)
         });
         this.linkIDs = linkIds
