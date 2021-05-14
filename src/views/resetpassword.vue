@@ -2,7 +2,7 @@
   <div>
     <div class="container" id="container1">
       <form class="form">
-        Email or Username <input v-model="emailOrUsername" placeholder="Username"><br>
+        Email or Username <input v-model="emailOrUsername" placeholder="E-Mail or Username"><br>
         <button @click="getCode" type="button">Send Reset Code</button>
       </form>
     </div>
