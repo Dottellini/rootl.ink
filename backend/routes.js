@@ -73,6 +73,7 @@ router.post('/requestPasswordReset', (req,res)=>{
     console.log(req.body)
     const code = v4()
     renderFile(__dirname+'/email-templates/email-template2.ejs', {code: code},(error, data)=> {
+        console.log(error, data)
         let mailOptions = {
             from: 'rootlink.test123@gmail.com',
             to: req.body.email,
@@ -89,6 +90,7 @@ router.post('/requestPasswordReset', (req,res)=>{
         });
         emailSender.sendMail(mailOptions, function (error) {
             if (error) {
+                console.log(error)
                 res.status(500).json({'result': 'ERROR', 'message': 'Cant send reset email'});
                 return;
             }
