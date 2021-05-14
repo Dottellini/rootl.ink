@@ -16,7 +16,7 @@ export default new Vuex.Store({
     text_hex: "#FFFFFF",
     linkBox_hex: "#000000",
     rootLink_hex: "#000000",
-    isLoggedIn: true,
+    isLoggedIn: false,
     isMobile: false,
   },
   mutations: {

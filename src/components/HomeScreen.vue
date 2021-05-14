@@ -82,7 +82,7 @@ export default {
   }
 
   .content {
-    height: 150vh;
+    height: auto;
     color: var(--text-color);
     display: flex;
     flex-direction: column;
