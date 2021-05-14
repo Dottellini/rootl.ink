@@ -2,16 +2,17 @@
   <div>
     <div class="container" id="container1">
       <form class="form">
-        Email or Username <input v-model="emailOrUsername" placeholder="E-Mail or Username"><br>
+        Email<input v-model="email" placeholder="Email"><br>
+        Username<input v-model="username" placeholder="Username"><br>
         <button @click="getCode" type="button">Send Reset Code</button>
       </form>
     </div>
 
     <div class="container" id="container2" :class="{active: active}">
       <form class="form">
-        ResetCode<input v-model="resetCode"><br><br>
-        NewPassword<input v-model="newPassword"><br>
-        <button @click="submit">Submit</button>
+        Reset Code<input v-model="resetCode" placeholder="Reset Code"><br>
+        New Password<input v-model="newPassword" placeholder="New Password"><br>
+        <button @click="submit" type="button">Submit</button>
       </form>
     </div>
   </div>
@@ -25,7 +26,8 @@ export default {
       active: false,
       resetCode: undefined,
       newPassword: undefined,
-      emailOrUsername: undefined
+      email: undefined,
+      username: undefined
     }
   },
   methods: {
@@ -52,7 +54,8 @@ export default {
           'Content-Type': 'application/json'
         },
         body:JSON.stringify({
-          username: this.username
+          username: this.username,
+          email: this.email
         })
       })
     }
@@ -77,7 +80,7 @@ h1 {
 }
 
 #container1{
-  height: 125px;
+  height: 250px;
 }
 
 #container2{
