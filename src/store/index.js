@@ -35,11 +35,16 @@ export default new Vuex.Store({
       state.username = payload;
     },
 
+    changeProfilePicture(state, payload) {
+      state.profile_picture = payload;
+    },
+
     logout(state, payload) {
       state.isLoggedIn = false;
       state.account_username = null;
       state.account_profile_picture = "";
       localStorage.setItem('username', null)
+      localStorage.setItem('account_profilepicture', null)
     },
 
     changeThemeOnPreview(state, isDark) {
@@ -82,7 +87,6 @@ export default new Vuex.Store({
         return;
       }
       state.linkList.push({name: "", link: "", img: "", isYoutubeVideo: false, embed: false, id: id})
-      console.log(state.linkList)
     },
 
     checkMobile(state, payload) {
@@ -100,7 +104,7 @@ export default new Vuex.Store({
     },
 
     removeEntry(state, payload, type) {
-      if(payload.type=='social'){
+      if(payload.type==='social'){
         let removeIndex = state.socialsList.map(item => item.id).indexOf(payload.id);
         state.socialsList.splice(removeIndex, 1);
         return;
@@ -180,7 +184,6 @@ export default new Vuex.Store({
       }).then(data => {
         if(data.status === 403) {
           if(payload.origin.path === "/editor") {
-            console.log("yay");
             return;
           } else {
             router.push({name: "PageNotFound"})

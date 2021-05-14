@@ -3,15 +3,15 @@
     <div class="image-container">
       <div class="img-container">
         <label for="imageInput" class="image-input-label">
-          <img id="picPreview" :src="file" width="150" height="150">
-        </label>
-        <div class="middle">
-          <div class="text">
-            <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
-              <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
-            </svg>
+            <img id="picPreview" :src="file" width="150" height="150">
+          <div class="middle">
+            <div class="text">
+              <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16">
+                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+              </svg>
+            </div>
           </div>
-        </div>
+        </label>
       </div>
       <input id="imageInput" type="file" name="avatar" @change="ConvertFileTo('image/jpeg', $event)" hidden>
     </div>
@@ -40,7 +40,7 @@ export default {
   },
 
   methods: {
-    ConvertFileTo: function(id, outputMimeType, evt) {
+    ConvertFileTo: function(outputMimeType, evt) {
       new Promise(res => {
         const file = evt.target.files[0];
         const reader = new FileReader();
@@ -128,10 +128,12 @@ export default {
   }
   
   &:hover .image-input-label{
+    cursor: pointer;
     opacity: 0.3;
   }
 
   &:hover .middle {
+    cursor: pointer;
     opacity: 0.5;
   }
 }
