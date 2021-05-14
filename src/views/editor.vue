@@ -22,7 +22,7 @@ export default {
     }
   },
 
-  created() {
+  mounted() {
     this.$store.dispatch("fetchUserData", {username: this.$store.state.account_username, origin: this.$router.currentRoute})
     this.$store.commit('changeProfilePicture', this.$store.state.account_profile_picture)
     this.$store.commit('changeUsername', this.$store.state.account_username)

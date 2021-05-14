@@ -16,7 +16,7 @@ export default new Vuex.Store({
     text_hex: "#FFFFFF",
     linkBox_hex: "#000000",
     rootLink_hex: "#000000",
-    isLoggedIn: true, //Muss auf false gesetzt werden!!!!!!
+    isLoggedIn: false, //Muss auf false gesetzt werden!!!!!!
     isMobile: false,
   },
   mutations: {
@@ -178,7 +178,7 @@ export default new Vuex.Store({
     async fetchUserData({commit}, payload) {
       let string;
       console.log(payload)
-      await fetch(`https://d26k63xuikc78y.cloudfront.net/${payload.toLowerCase()}.json`, {
+      await fetch(`https://d26k63xuikc78y.cloudfront.net/${payload.username.toLowerCase()}.json`, {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST',
         'mode': "cors"
