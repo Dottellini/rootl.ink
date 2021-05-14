@@ -141,9 +141,11 @@
         </div>
       </Tab>
     </Tabs>
-    <hr>
-    <button @click="submit" class="save-button">{{$t('save')}}</button>
-    <canvas id="imageCanvas" hidden></canvas>
+    <div id="footer">
+      <hr>
+      <button @click="submit" class="save-button">{{$t('save')}}</button>
+      <canvas id="imageCanvas" hidden></canvas>
+    </div>
   </div>
 </template>
 
@@ -364,6 +366,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
+  body {
+    overflow: hidden;
+  }
+
   Input[type="color"] {
     border:none;
     background-color: var(--surface-color);
@@ -409,6 +416,9 @@ export default {
   }
 
   .container {
+
+    width: calc(100vw - 410px);
+    height: calc(100vh - 120px);
     color: var(--text-color);
     background-color: var(--surface-color);
   }
