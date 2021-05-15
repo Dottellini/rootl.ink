@@ -36,7 +36,8 @@
             </div>
             <div v-if="isLoggedIn">
               <div class="account-container">
-                <img class="profile-picture" :src="account_profile_picture" width="100" height="100">
+                <img class="profile-picture" v-if="account_profile_picture!==''" :src="+account_profile_picture" width="100" height="100">
+                <img v-if="account_profile_picture===''" :src="'https://identicon-api.herokuapp.com/'+account_username+'}/100?format=png'"  width="100px" height="100px" alt="">
                 <div class="hello-msg">{{$t('app.greeting')}} {{account_username}}</div>
               </div>
               <router-link to="/account">{{$t('app.account')}}</router-link>
@@ -93,6 +94,7 @@ import LanguageDrop from "./components/LanguageDrop";
 import i18n from "./i18n";
 import { Slide } from "vue-burger-menu"
 
+
 export default {
   components: {
     Slide,
@@ -128,9 +130,8 @@ export default {
       return this.$route.name === "Userpage";
     }
   },
-
-  created() {
-    this.$store.commit("checkMobile", window.screen.width);
+created() {
+  this.$store.commit("checkMobile", window.screen.width);
   },
 
   mounted() {

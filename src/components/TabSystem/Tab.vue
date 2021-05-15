@@ -1,5 +1,5 @@
 <template>
-  <div v-show='isActive'>
+  <div v-show='isActive' id="Tab">
     <slot></slot>
   </div>
 </template>
@@ -22,5 +22,7 @@ export default {
 </script>
 
 <style scoped>
-
+#Tab{
+  flex: 2;
+}
 </style>

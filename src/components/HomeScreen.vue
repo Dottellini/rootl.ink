@@ -12,14 +12,16 @@
                maxlength="30"
                @input="updateText"
                v-model="username"
-               v-on:keydown.delete.once="clearInput"
-               @input.once="scrollBottom">
+               @keydown.delete.once="clearInput"
+               @click="clearInput"
+               @input.once="scrollBottom"
+               placeholder="Username">
       </div>
       <transition name="bounce">
         <div v-show="username.length > 0 && showButton" class="line"></div>
       </transition>
       <transition name="bounce">
-        <router-link to="/register" v-show="username.length > 0 && showButton" class="register">{{$t('homepage.start_creating')}}</router-link>
+        <a href="register"><button v-show="username.length > 0 && showButton" class="register">{{$t('homepage.start_creating')}}</button></a>
       </transition>
     </div>
   </div>
@@ -33,7 +35,7 @@ export default {
   components: {Preview},
   data() {
     return {
-      username: "USERNAME",
+      username: "",
       showButton: false,
       isMobile: this.$store.state.isMobile
     }
@@ -49,8 +51,7 @@ export default {
     },
 
     clearInput: function () {
-      this.username = "";
-      this.showButton = true;
+        this.showButton = true;
     },
 
     updateText: function () {

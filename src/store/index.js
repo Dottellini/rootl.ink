@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import router from "../router/index"
+const Identicon = require('identicon.js')
 
 Vue.use(Vuex)
 
@@ -11,7 +12,6 @@ export default new Vuex.Store({
     username: "USERNAME", //Used for the "User-pages" and other stuff. This username if not to be used for the logged in account as it may change
     account_username: null, //Used for logged in user
     profile_picture: "https://de.meming.world/images/de/thumb/b/bc/Mike_Wazowski-Sulley_Face_Swap.jpg/300px-Mike_Wazowski-Sulley_Face_Swap.jpg", //Used for UserPages
-    account_profile_picture: "https://pbs.twimg.com/profile_images/949787136030539782/LnRrYf6e.jpg", //Used for logged in user
     background_hex: "#FFFFFF",
     text_hex: "#FFFFFF",
     linkBox_hex: "#000000",
@@ -28,7 +28,7 @@ export default new Vuex.Store({
     login(state, payload) {
       state.isLoggedIn = true;
       state.account_username = payload;
-      state.account_profile_picture = `d26k63xuikc78y.cloudfront.net/${state.account_username.toLowerCase()}.profilepicture.txt`;
+      state.account_profile_picture = '';
     },
 
     changeUsername(state, payload) {

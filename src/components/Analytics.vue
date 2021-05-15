@@ -9,12 +9,11 @@
 </template>
 
 <script>
-import Chart from "./Chart.vue"
 import UltimateChart from "./UltimateChart";
 
 export default {
     name: "Analytics",
-    components:{UltimateChart, Chart},
+    components:{UltimateChart},
     data(){
       return {
         CchartOptions: undefined,

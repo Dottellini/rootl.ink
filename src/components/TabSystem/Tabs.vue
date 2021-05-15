@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="Tabs">
     <ul class='tabs__header'>
       <li v-for='(tab, index) in tabs'
           :key='tab.title'
@@ -8,7 +8,7 @@
         {{ tab.title }}
       </li>
     </ul>
-    <slot></slot>
+    <slot id="slot"></slot>
   </div>
 </template>
 
@@ -45,6 +45,11 @@ export default {
 </script>
 
 <style scoped lang="scss">
+  #Tabs{
+    display: flex;
+    flex-direction: column;
+  }
+
   ul.tabs__header {
     font-family: 'Montserrat', sans-serif;
     color: var(--text-color);

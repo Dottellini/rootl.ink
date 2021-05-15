@@ -1,12 +1,12 @@
 <template >
   <div class="flex-container">
-    <PageBuilder class="flex-child" />
+    <PageBuilder class="flex-child" width="73vw" height="88vh"/>
     <Preview :use-phone="true" id="Preview"/>
   </div>
 </template>
 
 <script>
-import PageBuilder from "../components/PageBuilder";
+import PageBuilder from "../components/NewPageBuilder";
 import Preview from "../components/Preview.vue";
 
 export default {
@@ -57,7 +57,7 @@ export default {
 
   .flex-child {
     margin-top:15px;
-    padding: 1em;
+    padding: 5px;
     border-radius: 25px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   }
