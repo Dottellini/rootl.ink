@@ -466,7 +466,7 @@ Input[type="color"] {
   border:none;
   background-color: var(--surface-color);
   outline: none;
-  cursor: pointer;
+  cursor: pointer; //test
 }
 
 .grad-container {
