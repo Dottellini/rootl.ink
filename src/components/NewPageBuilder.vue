@@ -3,9 +3,9 @@
     <Tabs id="Tabs" style="height: 100%">
       <Tab title="Content">
         <div class="ContentWrapper">
-          <Sidebar  @click="toggleElement" width="20%" links="Rootlinks,Social Icons,Widgets,Coming Soon" highlightedAtLoad="Rootlinks"/>
+          <Sidebar  @click="toggleElement" class="text sidebar" width="20%" links="Rootlinks,Social Icons,Widgets,Coming Soon" highlightedAtLoad="Rootlinks"/>
           <div :class="{hidden: hidden.Rootlinks}" style="width: 80%">
-            <h2>Rootlinks:</h2>
+            <h2 class="text">Rootlinks:</h2>
             <draggable :list="list" :disabled="!enabled" :animation="200" handle=".handle" class="list-group" ghost-class="ghost" drag-class="drag" chosen-class="chosen" fallbackClass="sortable-fallback" @start="dragging = true">
               <div class="list-group-item" v-for="element in list" :key="element.id">
                 <div class="horizontal-container">
@@ -48,7 +48,7 @@
             <button @click="addField('link')" class="Add-Button">Add Link</button>
           </div>
           <div :class="{hidden: hidden['Social Icons']}" style="width: 80%">
-            <h2>Social Icons:</h2>
+            <h2 class="text">Social Icons:</h2>
               <draggable :socialsList="socialsList"
                          :disabled="!enabled"
                          :animation="200"
@@ -92,33 +92,33 @@
                   </button>
                 </div>
               </draggable>
-            <button @click="addField('social')" class="Add-Button">Add Social Icon</button>
+            <button @click="addField('social')" class="Add-Button text">Add Social Icon</button>
           </div>
-          <div :class="{hidden: hidden.Widgets}">
+          <div class="text" :class="{hidden: hidden.Widgets}">
             Widgets
           </div>
         </div>
       </Tab>
       <Tab title="Style">
         <div class="ContentWrapper">
-          <Sidebar  @click="toggleElement" width="20%" links="Background,Links" highlightedAtLoad="Background"/>
+          <Sidebar  @click="toggleElement" class="text sidebar" width="20%" links="Background,Links" highlightedAtLoad="Background"/>
           <div :class="{hidden: hidden.Background}" style="width: 80%; align-content: center">
-            <h2>Background:</h2>
+            <h2 class="text">Background:</h2>
             <div class="typeSelector">
-              <div class="typeSelectorItem first" :class="{active:activeTypeSelectorItem.Background === 0}" @click="activeTypeSelectorItem.Background=0">
+              <div class="typeSelectorItem first text" :class="{active:activeTypeSelectorItem.Background === 0}" @click="activeTypeSelectorItem.Background=0">
                 Single Color
               </div>
               <div class="vl"/>
-              <div class="typeSelectorItem" :class="{active:activeTypeSelectorItem.Background === 1}" @click="activeTypeSelectorItem.Background=1">
+              <div class="typeSelectorItem text" :class="{active:activeTypeSelectorItem.Background === 1}" @click="activeTypeSelectorItem.Background=1">
                 Gradient
               </div>
               <div class="vl"/>
-              <div class="typeSelectorItem last" :class="{active:activeTypeSelectorItem.Background === 2}" @click="activeTypeSelectorItem.Background=2">
+              <div class="typeSelectorItem last text" :class="{active:activeTypeSelectorItem.Background === 2}" @click="activeTypeSelectorItem.Background=2">
                 Picture
               </div>
             </div>
             <div id="background-color-picker" class="picker" :class="{hidden:activeTypeSelectorItem.Background !== 0}">
-              <label for="backgroundPicker">{{$t('pageBuilder.backgroundColor')}}</label>
+              <label for="backgroundPicker" class="text">{{$t('pageBuilder.backgroundColor')}}</label>
               <div>
                 <input id="backgroundPicker" value="#FFFFFF" type="color" @input="updateBGColor($event.target.value)" width="1000px">
               </div>
@@ -143,7 +143,7 @@
               </div>
             </div>
             <div id="background-color-picker" class="picker" :class="{hidden:activeTypeSelectorItem.Links !== 0}">
-              <label for="backgroundPicker">{{$t('pageBuilder.backgroundColor')}}</label>
+              <label for="backgroundPicker" class="text">{{$t('pageBuilder.backgroundColor')}}</label>
               <div>
                 <input id="backgroundPicker" value="#FFFFFF" type="color" @input="updateBGColor($event.target.value)" width="1000px">
               </div>
@@ -389,6 +389,10 @@ export default {
 
 <style scoped lang="scss">
 
+.text {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--text-color);
+}
 
 .typeSelector{
   display: flex;
@@ -425,6 +429,7 @@ export default {
   }
   .typeSelectorItem:hover{
     background-color: #00cfcf;
+    cursor: pointer;
   }
 }
 
@@ -461,6 +466,7 @@ Input[type="color"] {
   border:none;
   background-color: var(--surface-color);
   outline: none;
+  cursor: pointer;
 }
 
 .grad-container {

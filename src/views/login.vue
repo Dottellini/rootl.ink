@@ -14,6 +14,10 @@ export default {
     LoginField,
   },
 
+  created() {
+    console.log("created!")
+  },
+
   beforeCreate() {
     if(this.$store.state.isLoggedIn) {
       this.$router.push({name: "Home"})

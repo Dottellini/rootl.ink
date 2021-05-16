@@ -478,6 +478,7 @@ created() {
     .account-container {
       display: flex;
       justify-content: center;
+      align-items: center;
       flex-direction: column;
       font-weight: 400;
       border-bottom: 1px solid var(--text-unimportant-color);

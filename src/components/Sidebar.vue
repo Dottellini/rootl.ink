@@ -48,12 +48,13 @@ export default {
     border: 1px solid #AAA;
     line-height: 50px;
     text-align: center;
-
-
+    color: var(--text-color);
     font-family: "Montserrat", sans-serif;
     margin: 0 auto;
-  }
-  .SidebarItem:hover{
-    background-color: #EEE;
+
+    &:hover {
+      cursor: pointer;
+      background-color: var(--hover-color);
+    }
   }
 </style>
