@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import router from "../router/index"
-const Identicon = require('identicon.js')
 
 Vue.use(Vuex)
 
@@ -16,7 +15,7 @@ export default new Vuex.Store({
     text_hex: "#FFFFFF",
     linkBox_hex: "#000000",
     rootLink_hex: "#000000",
-    isLoggedIn: false, //Muss auf false gesetzt werden!!!!!!
+    isLoggedIn: true, //Muss auf false gesetzt werden!!!!!!
     isMobile: false,
   },
   mutations: {
@@ -96,7 +95,7 @@ export default new Vuex.Store({
     addImageToEntry(state, payload) {
       if(payload.type=='social'){
         let index = state.socialsList.map(item => item.id).indexOf(payload.imgData.id);
-        state.socialsList[index].img = payload.imgData.img;  
+        state.socialsList[index].img = payload.imgData.img;
         return;
       }
       let index = state.linkList.map(item => item.id).indexOf(payload.imgData.id);

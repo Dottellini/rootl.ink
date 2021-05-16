@@ -16,7 +16,6 @@
         <!--<NewsletterSignup :link=link :boxColor=box_hex :textColor=text_hex />-->
       </div>
     </div>
-
       <!-- Socials -->
       <div id="socials">
         <a :href="social.link" v-for="social in socialsList" :key="social.id"><img class="socialImg" :src="social.img"></a>

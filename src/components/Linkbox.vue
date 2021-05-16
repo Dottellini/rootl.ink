@@ -1,19 +1,19 @@
 <template>
-  <a :target="linkOrEmbed(link).target" rel="noopener" :style="textColor" :href="linkOrEmbed(link).href">
-    <div @click="toggleEmbed(link.embed)" :ref="'wrapper-1'" class="LinkBox-Wrapper" :class="{ embedded: link.embed, embedShown: embedShown, previewMode: previewMode}" :style="boxColor" viewp>
-      <div class="LinkBox">
-        <img :src=link.img
-          class="LinkImage"
-          height="40px"
-          width="40px"
-          v-if="link.img !== ''">
-        <div class="LinkBoxText" :style="textColor">
-          {{link.name}}
+  <a :target="linkOrEmbed(link).target" rel="noopener" :style="textColor" :href="linkOrEmbed(link).href" >
+      <div @click="toggleEmbed(link.embed)" :ref="'wrapper-1'" class="LinkBox-Wrapper" :class="{ embedded: link.embed, embedShown: embedShown, previewMode: previewMode, highlight: link.highlight}" :style="boxColor">
+        <div class="LinkBox">
+          <img :src=link.img
+               class="LinkImage"
+               height="40px"
+               width="40px"
+               v-if="link.img !== ''">
+          <div class="LinkBoxText" :style="textColor">
+            {{link.name}}
+          </div>
         </div>
+        <iframe :ref="'iframe-1'" v-if="link.embed" :src="getEmbedUrl(link.link)" width="0px" height="0px" title="YouTube video player" frameborder="0" allowfullscreen="true" :class="{embedShown: embedShown}" />
       </div>
-      <iframe :ref="'iframe-1'" v-if="link.embed" :src="getEmbedUrl(link.link)" width="0px" height="0px" title="YouTube video player" frameborder="0" allowfullscreen="true" :class="{embedShown: embedShown}" />
-    </div>
-  </a>
+    </a>
 </template>
 
 <script>
@@ -90,6 +90,33 @@
     margin: 1em auto;
     padding: 0.3em 0;
     border-radius: 5px;
+  }
+
+  .highlight{
+    animation: pulse 4s infinite;
+  }
+
+
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+    }
+
+    35% {
+      transform: scale(1.05);
+      box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+    }
+
+    50% {
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    }
+
+    100%{
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+    }
   }
   iframe{
     width: 0;

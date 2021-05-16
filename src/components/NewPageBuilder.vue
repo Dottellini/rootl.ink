@@ -30,6 +30,8 @@
                     <div>
                       <input type="text" class="form-control" v-model="element.link" @change="checkIfVideo(element.id, element.link); getFavicon(element.link, element.id, 'link')" placeholder="URL"/>
                     </div>
+                    <label :for="element.id + 1" class="embed">Highlight</label>
+                    <input :id="element.id + 1" type="checkbox" v-model="element.highlight">
                     <div v-if="element.isYoutubeVideo">
                       <label :for="element.id + 1" class="embed">Embed Video</label>
                       <input :id="element.id + 1" type="checkbox" v-model="element.embed">
@@ -142,10 +144,10 @@
                 Picture
               </div>
             </div>
-            <div id="background-color-picker" class="picker" :class="{hidden:activeTypeSelectorItem.Links !== 0}">
-              <label for="backgroundPicker" class="text">{{$t('pageBuilder.backgroundColor')}}</label>
+            <div id="link-color-picker" class="picker" :class="{hidden:activeTypeSelectorItem.Links !== 0}">
+              <label for="backgroundPicker" class="text">{{$t('pageBuilder.LinkBackgroundColor')}}</label>
               <div>
-                <input id="backgroundPicker" value="#FFFFFF" type="color" @input="updateBGColor($event.target.value)" width="1000px">
+                <input id="linkPicker" value="#FFFFFF" type="color" @input="updateBOXColor($event.target.value)" width="1000px">
               </div>
             </div>
             <div :class="{hidden:activeTypeSelectorItem.Links !== 1}">
@@ -239,7 +241,7 @@ export default {
       }).then(data=>data.text()).then(data=>{
 
         let pos = data.search(RegExp('(<link rel="(icon|apple-touch-icon-precomposed|shortcut icon|shortcut-icon)")|apple-touch-icon'))
-        if(pos==-1){
+        if(pos===-1){
           let imgData = {
             id: id,
             img: undefined
@@ -250,16 +252,16 @@ export default {
         data = data.slice(pos, pos+300)
         data = data.split(RegExp('[<>\\s]'))
 
-        for(var i=0;i<data.length;i++){
+        for(let i=0;i<data.length;i++){
           if(data[i].includes('href=')){
             data = data[i].replace('href="','').replace('"','')
-            if(data[data.length-1]=="/"){
+            if(data[data.length-1]==="/"){
               data = data.slice(0,data.length-1)
             }
             break;
           }
         }
-        if(data[0]=='/'){
+        if(data[0]==='/'){
           data = `https://${url.split('/')[2]}${data}`
         }
         let imgData = {
@@ -282,7 +284,6 @@ export default {
         this.$store.commit("isYoutubeVideo", {id: id, result: true});
         return;
       }
-
       //CHECK TWITCH PROFILE, VIDEO OR CLIP
       //PROFILE: /http(?:s?):\/\/(?:www\.)twitch.tv\/(\w+)/g
       //CLIP: /http(?:s?):\/\/(?:www\.)twitch.tv\/(\w+\/clip/\S+)/g
@@ -293,29 +294,10 @@ export default {
         return;
       }
       this.$store.commit("isYoutubeVideo", {id: id, result: false});
-      /*url = url
-      .replace('http://','')
-      .replace('https://','')
-      if(url.split('/').length>1){
-        if(url.split('/')[0]== 'www.youtube.com'){
-          this.$store.commit("isYoutubeVideo", {id: id, result: true});
-          return;
-        }
-        if(url.split('/')[0]== 'vimeo.com'){
-          this.$store.commit("isYoutubeVideo", {id: id, result: true});
-          return;
-        }
-        if(url.split('/')[0]=='www.twitch.tv'){
-          this.$store.commit("isYoutubeVideo", {id: id, result: true});
-          return;
-        }
-      }*/
     },
-
     submit: function () {
       this.$store.dispatch("savePage", this.$store.state)
     },
-
     changeImage: function(id, outputMimeType, evt, type) {
       new Promise(res => {
         const file = evt.target.files[0];
@@ -343,43 +325,27 @@ export default {
         reader.readAsDataURL(file)
       })
     },
-
     updateBGColor: function(value) {
       this.$store.commit("updateBackgroundColor", value)
     },
-
     updateBGGrad: function () {
       this.$store.commit('updateBackgroundColor', this.gradient_bg.toString())
     },
-
-    //////////////
-
     updateTXTColor: function (value) {
       this.$store.commit("updateTextColor", value)
     },
-
-    //////////////
-
     updateBOXColor: function (value) {
       this.$store.commit("updateBoxColor", value)
     },
-
     updateBOXGrad: function () {
       this.$store.commit('updateBoxColor', this.gradient_box.toString())
     },
-
-    //////////////
-
     updateRLColor: function (value) {
       this.$store.commit("updateRootLinkColor", value)
     },
-
-    //////////////
-
     removeEntry: function (id, type) {
       this.$store.commit("removeEntry", {id,type})
     },
-
     addField: function(type) {
       this.$store.commit("emptyEntry", type)
     }
