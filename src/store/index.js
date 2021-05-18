@@ -93,13 +93,23 @@ export default new Vuex.Store({
     },
 
     addImageToEntry(state, payload) {
-      if(payload.type=='social'){
+      if(payload.type==='social'){
         let index = state.socialsList.map(item => item.id).indexOf(payload.imgData.id);
         state.socialsList[index].img = payload.imgData.img;
         return;
       }
       let index = state.linkList.map(item => item.id).indexOf(payload.imgData.id);
       state.linkList[index].img = payload.imgData.img;
+    },
+
+    removeImageFromEntry(state, payload) {
+      if(payload.type==='social'){
+        let index = state.socialsList.map(item => item.id).indexOf(payload);
+        state.socialsList[index].img = null;
+        return;
+      }
+      let index = state.linkList.map(item => item.id).indexOf(payload);
+      state.linkList[index].img = null;
     },
 
     removeEntry(state, payload, type) {
