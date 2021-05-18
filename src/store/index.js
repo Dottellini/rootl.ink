@@ -105,11 +105,11 @@ export default new Vuex.Store({
     removeImageFromEntry(state, payload) {
       if(payload.type==='social'){
         let index = state.socialsList.map(item => item.id).indexOf(payload);
-        state.socialsList[index].img = null;
+        state.socialsList[index].img = '';
         return;
       }
       let index = state.linkList.map(item => item.id).indexOf(payload);
-      state.linkList[index].img = null;
+      state.linkList[index].img = '';
     },
 
     removeEntry(state, payload, type) {
