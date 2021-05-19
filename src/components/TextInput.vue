@@ -1,6 +1,6 @@
 <template>
   <div class="textInput">
-    <label>{{text}}</label>
+    <label>{{title}}</label>
     <input id="textInput" type="text" :placeholder="placeholder" :value="value" @input="$emit('input', $event.target.value)" />
   </div>
 
@@ -11,9 +11,10 @@ export default {
   name: "TextInput",
   data(){
     return{
+
     }
   },
-  props:['placeholder', 'text'],
+  props:['placeholder', 'title', 'value'],
 }
 </script>
 
