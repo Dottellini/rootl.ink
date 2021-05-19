@@ -14,6 +14,7 @@ import About from '../views/about'
 import Service from '../views/service'
 import Help from '../views/help'
 import ResetPassword from '../views/resetpassword';
+import test from "@/views/test";
 
 Vue.use(VueRouter)
 
@@ -22,6 +23,11 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Home,
+  },
+  {
+    path: '/test',
+    name: 'Test',
+    component: test,
   },
   {
     path: '/reset-password',

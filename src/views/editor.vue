@@ -1,12 +1,13 @@
-<template >
-  <div class="flex-container">
-    <PageBuilder class="flex-child" width="73vw" height="88vh"/>
-    <Preview :use-phone="true" id="Preview"/>
+<template>
+  <div>
+    <PageBuilder class="flex-child" width="73vw" height="88vh">
+      <Preview :use-phone="true" id="Preview"/>
+    </PageBuilder>
   </div>
 </template>
 
 <script>
-import PageBuilder from "../components/NewPageBuilder";
+import PageBuilder from "../components/NewNewPageBuilder";
 import Preview from "../components/Preview.vue";
 
 export default {

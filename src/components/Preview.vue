@@ -13,7 +13,6 @@
     <div id="links">
       <div v-for="link in links" :key="link.id" :ref="'link-'+link.id" @click="clicked(link.name, link.id)"  @click.middle="clicked(link.name, link.id)">
         <Linkbox :link=link :boxColor=box_hex :textColor=text_hex :previewMode=usePhone />
-        <!--<NewsletterSignup :link=link :boxColor=box_hex :textColor=text_hex />-->
       </div>
     </div>
       <!-- Socials -->
@@ -26,11 +25,10 @@
 
 <script>
 import Linkbox from "../components/Linkbox";
-import NewsletterSignup from './NewsletterSignup.vue';
 
 export default {
   name: "Preview",
-  components: {Linkbox, NewsletterSignup},
+  components: {Linkbox},
   props: ["usePhone"],
 
   data() {
@@ -128,6 +126,7 @@ export default {
     border-color: var(--device-border-color);
     height: 50em;
     max-height: 600px;
+    min-width: 25em;
     width: 25em;
   }
 

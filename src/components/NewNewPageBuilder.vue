@@ -1,0 +1,629 @@
+<template>
+  <div id="pageBuilder">
+    <canvas id="imageCanvas" style="display:none;"></canvas>
+    <Sidebar @itemClick="tabChange"/>
+    <div id="editArea">
+      <div id="Rootlinks" :class="{hidden: !(activeTab==='Rootlinks')}">
+        <h2 class="text">Rootlinks:</h2>
+        <draggable :list="list" :disabled="!enabled" :animation="200" handle=".handle" class="list-group" ghost-class="ghost" drag-class="drag" chosen-class="chosen" fallbackClass="sortable-fallback" @start="dragging = true">
+          <div class="list-group-item" v-for="element in list" :key="element.id">
+            <div class="horizontal-container">
+              <div class="handle">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grip-vertical" viewBox="0 0 16 16" path="">
+                  <path d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                </svg>
+              </div>
+              <div>
+                <label :for="element.id" class="-">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-upload" viewBox="0 0 16 16">
+                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                    <path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/>
+                  </svg>
+                </label>
+              </div>
+              <div>
+                <div>
+                  <input type="text" class="form-control" v-model="element.name" placeholder="Name" maxlength="30">
+                </div>
+                <div>
+                  Test
+                  <input type="text" class="form-control" v-model="element.link" @change="checkIfVideo(element.id, element.link); getFavicon(element.link, element.id, 'link')" placeholder="URL"/>
+                </div>
+              </div>
+            </div>
+            <button class="delete-button" @click="removeEntry(element.id, 'link')">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+              </svg>
+            </button>
+          </div>
+        </draggable>
+        <draggable :list="list" :disabled="!enabled" :animation="200" handle=".handle" class="list-group" ghost-class="ghost" drag-class="drag" chosen-class="chosen" fallbackClass="sortable-fallback" @start="dragging = true">
+          <div class="list-group-item" v-for="element in list" :key="element.id">
+            <div class="handle">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grip-vertical" viewBox="0 0 16 16" path="">
+                <path d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+              </svg>
+            </div>
+            <img class="iconImg" :src="file[element.id]" alt="">
+            <div class="list-group-item-description">
+              <p class="linkTitle" >{{element.name}}</p>
+              <p class="linkDescription">{{element.link}}</p>
+            </div>
+              <svg  xmlns="http://www.w3.org/2000/svg" width="1000" height="18" fill="none" viewBox="0 0 10 18" @click="toggleSettingsModal(element)">
+                <path stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M1 1l8 8-8 8"/>
+              </svg>
+            <!-- The Modal -->
+            <div id="myModal" class="modal" :class="{hidden: modalHidden}">
+              <!-- Modal content -->
+              <div class="modal-content">
+                <div id="titleUrlSettings">
+                  <h2>Content</h2>
+                  <div>
+                    <label>Title</label>
+                    <TextInput text="Title" placeholder="My Awesome Link" v-model="element.name"></TextInput>
+                  </div>
+                  <div>
+                    <TextInput text="Url" placeholder="https://www.example.com" v-model="element.link"></TextInput>
+                  </div>
+                  <div>
+                    <CheckBox text="Embed Video" class="CheckBox"></CheckBox>
+                  </div>
+                </div>
+                <div id="iconAndSave">
+                  <div id="iconSettings">
+                    <h2>Icon</h2>
+                    <CustomButton type="button" @click="getFavicon(element.link, element.id)">Get Website Icon</CustomButton>
+                    <CustomButton type="fileSelector" :bindId="element.id" @fileSelected="changeImage">Upload Own Icon</CustomButton>
+                  </div>
+                  <CustomButton id="saveButton" type="button" @click="toggleSettingsModal(element)">Save</CustomButton>
+                  <CustomButton id="deleteButton" type="button">Delete Link</CustomButton>
+                </div>
+                <span class="close" @click="toggleSettingsModal(element)">&times;</span>
+              </div>
+            </div>
+          </div>
+        </draggable>
+        <button @click="addField('link')" class="Add-Button">Add Link</button>
+      </div>
+      <div id="SocialIcons" :class="{hidden: activeTab !== 'Social Icons'}">
+        Social Icons
+      </div>
+    </div>
+    <slot id="Preview"></slot>
+  </div>
+</template>
+
+<script>
+import Sidebar from "@/components/Sidebar";
+import draggable from "vuedraggable";
+import { VueGpickr, LinearGradient } from 'vue-gpickr';
+import CheckBox from "@/components/CheckBox";
+import TextInput from "@/components/TextInput";
+import CustomButton from "@/components/CustomButton";
+
+export default {
+  name: "PageBuilder",
+  components: {CustomButton, TextInput, CheckBox, Sidebar, draggable, VueGpickr},
+  data(){
+    return{
+      modalHidden: true,
+      activeTab: 'Rootlinks',
+      file: {},
+
+      //OLD
+      activeTypeSelectorItem: {
+        Background:0,
+        Links:0
+      },
+      highlighted: "Rootlinks",
+      editModeActive: false,
+      enabled: true,
+      dragging: true,
+      show_bg_grad: false,
+      show_link_grad: false,
+      gradient_bg: new LinearGradient({
+        angle: 0,
+        stops: [
+          ['#3C70A4', 0],
+          ['#FF9ED2', 1]
+        ]
+      }),
+      gradient_box: new LinearGradient({
+        angle: 120,
+        stops: [
+          ['#0359B5', 0],
+          ['#FF32CC', 1]
+        ]
+      }),
+    }
+  },
+  methods:{
+    toggleSettingsModal(linkItem){ console.log("toggled");this.modalHidden = !this.modalHidden},
+    tabChange(item){this.activeTab = item.title},
+    toggleElement(element){
+      for (const [key] of Object.entries(this.hidden)) {
+        this.hidden[key]=true
+      }
+      this.hidden[element]=!this.hidden[element];
+    },
+    getFavicon: function(url, id) {
+      fetch(`gethtml?url=${url}`,{
+        method:"POST"
+      }).then(htmlData=>htmlData.text()).then(htmlString=>{
+        let foundIconPosition = htmlString.search(RegExp('(<link rel="(icon|apple-touch-icon-precomposed|shortcut icon|shortcut-icon)")|apple-touch-icon'))
+        if(foundIconPosition===-1){
+          let imgData = {
+            id: id,
+            img: undefined
+          }
+          this.$store.commit("addImageToEntry", {imgData, type: 'link'});
+          return;
+        }
+        htmlString = htmlString.slice(foundIconPosition, foundIconPosition+300)
+        htmlString = htmlString.split(RegExp('[<>\\s]'))
+
+        for(let i=0;i<htmlString.length;i++){
+          if(htmlString[i].includes('href=')){
+            htmlString = htmlString[i].replace('href="','').replace('"','')
+            if(htmlString[htmlString.length-1]==="/"){
+              htmlString = htmlString.slice(0,htmlString.length-1)
+            }
+            break;
+          }
+        }
+        if(htmlString[0]==='/'){
+          htmlString = `https://${url.split('/')[2]}${htmlString}`
+        }
+
+        let imgData = {
+          id: id,
+          img: htmlString
+        }
+        this.$store.commit("addImageToEntry", {imgData, type: 'link'});
+        this.file[id] = htmlString
+      })
+    },
+    checkIfVideo: function (id, url) {
+      if(/http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?|http(?:s?):\/\/(www\.)?vimeo\.com\/(\d+)|http(?:s?):\/\/(?:www\.)twitch.tv\/(\S+)/g.test(url)){
+        this.$store.commit("isYoutubeVideo", {id: id, result: true});
+        return
+      }
+      this.$store.commit("isYoutubeVideo", {id: id, result: false});
+    },
+    submitPage: function () {
+      this.$store.dispatch("savePage", this.$store.state)
+    },
+    changeImage(eventParams){
+      new Promise(res => {
+        let file = eventParams.evt.target.files[0];
+        const reader = new FileReader();
+        reader.addEventListener('load', (content) => {
+          const img = new Image();
+          img.src = content.target.result.toString();
+          const canvas = document.getElementById('imageCanvas');
+          img.addEventListener('load', (e) => {
+            const ctx = canvas.getContext("2d");
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const max_size = img.height < img.width ? img.height : img.width;
+            canvas.height = img.naturalHeight;
+            canvas.width = img.naturalWidth;
+            ctx.drawImage(img, Math.max((img.naturalWidth - max_size) / 2), Math.max((img.naturalHeight - max_size) / 2), max_size, max_size, 0, 0, img.naturalWidth, img.naturalHeight);
+            this.file[eventParams.id] = canvas.toDataURL(eventParams.outputMimeType, 0.7)
+
+            let imgData = {
+              id: eventParams.id,
+              img: this.file[eventParams.id]
+            }
+
+            console.log(imgData)
+            this.$store.commit("addImageToEntry", {imgData, type: 'link'});
+          });
+        });
+        reader.readAsDataURL(file)
+      })
+    },
+    updateColor(type, value){
+      this.$store.commit(type, value)
+
+    },
+    /*
+    updateBGColor: function(value) {
+      this.$store.commit("updateBackgroundColor", value)
+    },
+    updateBGGrad: function () {
+      this.$store.commit('updateBackgroundColor', this.gradient_bg.toString())
+    },
+    updateTXTColor: function (value) {
+      this.$store.commit("updateTextColor", value)
+    },
+    updateBOXColor: function (value) {
+      this.$store.commit("updateBoxColor", value)
+    },
+    updateBOXGrad: function () {
+      this.$store.commit('updateBoxColor', this.gradient_box.toString())
+    },
+    updateRLColor: function (value) {
+      this.$store.commit("updateRootLinkColor", value)
+    },
+    */
+    removeEntry: function (id, type) {
+      this.$store.commit("removeEntry", {id,type})
+    },
+    addField: function(type) {
+      this.$store.commit("emptyEntry", type)
+    }
+  },
+  computed:{
+    list() {
+      console.log(this.$store.state.linkList)
+      return this.$store.state.linkList
+    },
+    socialsList() {
+      return this.$store.state.socialsList
+    }
+  },
+  beforeCreate() {
+    document.documentElement.style.overflow = 'hidden'
+  },
+  destroyed() {
+    document.documentElement.style.overflow = 'auto';
+  }
+}
+</script>
+
+<style scoped>
+
+.CheckBox{
+  font-family: Montserrat, sans-serif;
+  font-weight: 500;
+}
+
+
+/* The Modal (background) */
+.modal {
+  display: flex;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0,0.4);
+  margin: 0;
+  align-items: center;
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 5% auto 5% auto; /* 15% from the top and centered */
+  padding: 10px;
+  border: 1px solid #888;
+  border-radius: 10px;
+  width: 800px; /* Could be more or less, depending on screen size */
+  height: 400px;
+  display: flex;
+  flex-direction: row;
+  justify-content: stretch;
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#iconAndSave{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#saveButton{
+  vertical-align: bottom;
+}
+
+#titleUrlSettings{
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  background-color: #e6ffe7;
+}
+
+#iconSettings{
+  flex-grow: 1;
+  background-color: #ffd8d8;
+}
+
+.list-group-item-description{
+  width: 10000px;
+}
+
+.linkTitle{
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  margin: 10px 10px 10px 10px;
+  text-align: left;
+}
+.linkDescription{
+  font-family: Montserrat, sans-serif;
+  margin: 10px 10px 10px 10px;
+  text-align: left;
+}
+
+label{
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.2em;
+  font-weight: 500;
+
+}
+
+input{
+  outline: none;
+  color: var(--text-color);
+  font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.2em;
+  margin: 0.5em 0;
+  padding: 0.1em 1em;
+  border-radius: 50px;
+  background-color: var(--background-color);
+  border: 1px solid var(--text-color);
+}
+
+.hidden{
+  display: none;
+}
+
+.no-scroll{
+  overflow-y: hidden !important;
+}
+
+#pageBuilder{
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  border-radius: 0;
+  padding: 0;
+  margin: auto;
+}
+
+#editArea{
+  width: 10000px;
+  height: 10000px;
+  background-color: #fff;
+}
+
+.iconImg{
+  margin: 0 0 0 0;
+  width: 64px;
+  min-width: 64px;
+  height: 64px;
+  border-radius: 32px;
+}
+
+.list-group-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 400px;
+  margin: 10px auto;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+  border: var(--editor-items-border);
+}
+</style>
+
+<style scoped lang="scss">
+
+.text {
+  font-family: 'Montserrat', sans-serif;
+  color: var(--text-color);
+}
+
+.typeSelector{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin:10px auto;
+  width:400px;
+  height: 20px;
+  border: 1px solid black;
+  border-radius: 10px;
+
+  .typeSelectorItem{
+    flex-grow: 9999999;
+  }
+
+  .typeSelectorItem.last{
+    border-radius: 0 9px 9px 0;
+  }
+
+  .typeSelectorItem.first{
+    border-radius: 9px 0 0 9px;
+  }
+
+  .typeSelectorItem.active{
+    background-color: #009a9a;
+
+  }
+  .typeSelectorItem:hover{
+    background-color: #00cfcf;
+    cursor: pointer;
+  }
+}
+
+.Add-Button{
+  background-color: var(--background-color);
+  border: 1px solid var(--text-color);
+  border-radius: 50px;
+  padding: 6px 12px 6px 12px;
+  font-size: 1em;
+}
+
+.Add-Button:hover{
+  background-color: black;
+  color: white;
+}
+.ContentWrapper{
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: stretch;
+  flex-direction: row;
+}
+
+Input[type="color"] {
+  border:none;
+  background-color: var(--surface-color);
+  outline: none;
+  cursor: pointer; //test
+}
+
+.grad-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .grad-element {
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 5px 0 rgba(0, 0, 0, 0.1);
+  }
+}
+
+.upload-image {
+  background: var(--upload-background-color);
+  color: var(--upload-color);
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.embed {
+  color: var(--text-color);
+  font-size: 16px;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.color-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 2em;
+  font-family: 'Montserrat', sans-serif;
+
+  .picker {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+.container {
+
+  width: calc(100vw - 410px);
+  height: calc(100vh - 120px);
+  color: var(--text-color);
+  background-color: var(--surface-color);
+}
+
+  .horizontal-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    div {
+      margin: 0 0.3em;
+    }
+
+    .handle {
+      margin: 0;
+      padding: 15% 0;
+      cursor: grab;
+    }
+  }
+
+.save-button {
+  outline: none;
+  border: 1px solid #536cc0;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--background-color);
+  background-color: #536cc0;
+  border-radius: 50px;
+  padding: 0.2em 1.2em;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--background-color);
+    color: #536cc0;
+    border: 1px solid #536cc0;
+  }
+}
+
+.delete-button {
+  padding: 0.3em 0.7em;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  border-radius: 10px;
+  background-color: #e74c3c;
+  color: white;
+}
+
+.submit-button {
+  background: #536cc0;
+  color: white;
+  border-radius: 25px;
+  outline: none;
+  border: none;
+  padding: 10px 15px ;
+}
+
+.plus-button {
+  margin-top: 1em;
+  cursor: pointer;
+  border: none;
+  border-radius: 50%;
+  color: #03dac5;
+  background: none;
+  outline: none;
+}
+
+.form-control{
+  background-color: var(--surface-color);
+  color: var(--text-color);
+  outline: none;
+  margin: 10px 0;
+  border: none;
+  border-bottom: 2px solid #536cc0;
+}
+
+
+.chosen {
+  opacity: 1;
+}
+.ghost {
+  opacity: 100;
+  background: var(--ghost-color);
+}
+.drag {
+  opacity: 0;
+}
+
+</style>

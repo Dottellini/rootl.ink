@@ -180,6 +180,8 @@ created() {
 </script>
 
 <style lang="scss">
+
+
   :root {
     --background-color: white;
     --surface-color: white;
@@ -244,6 +246,7 @@ created() {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-align: center;
+
   }
 
   .hello-msg {
