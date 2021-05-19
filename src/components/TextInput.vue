@@ -1,7 +1,7 @@
 <template>
   <div class="textInput">
     <label>{{text}}</label>
-    <input id="textInput" type="text" :placeholder="placeholder" v-bind:value="value" v-on:input="$emit('input', $event.target.value)">
+    <input id="textInput" type="text" :placeholder="placeholder" :value="value" @input="$emit('input', $event.target.value)" />
   </div>
 
 </template>
@@ -9,6 +9,10 @@
 <script>
 export default {
   name: "TextInput",
+  data(){
+    return{
+    }
+  },
   props:['placeholder', 'text'],
 }
 </script>

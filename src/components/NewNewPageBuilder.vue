@@ -42,11 +42,11 @@
         <draggable :list="list" :disabled="!enabled" :animation="200" handle=".handle" class="list-group" ghost-class="ghost" drag-class="drag" chosen-class="chosen" fallbackClass="sortable-fallback" @start="dragging = true">
           <div class="list-group-item" v-for="element in list" :key="element.id">
             <div class="handle">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grip-vertical" viewBox="0 0 16 16" path="">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grip-vertical" viewBox="0 0 16 16">
                 <path d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
               </svg>
             </div>
-            <img class="iconImg" :src="file[element.id]" alt="">
+            <img class="iconImg" :src="file[element.id]" alt="" :class="{hidden: file[element.id]===undefined}">
             <div class="list-group-item-description">
               <p class="linkTitle" >{{element.name}}</p>
               <p class="linkDescription">{{element.link}}</p>
@@ -55,7 +55,7 @@
                 <path stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M1 1l8 8-8 8"/>
               </svg>
             <!-- The Modal -->
-            <div id="myModal" class="modal" :class="{hidden: modalHidden}">
+            <div id="myModal" class="modal" :class="{hidden: modalHidden}" @click="modalClick($event, element)">
               <!-- Modal content -->
               <div class="modal-content">
                 <div id="titleUrlSettings">
@@ -111,6 +111,7 @@ export default {
       modalHidden: true,
       activeTab: 'Rootlinks',
       file: {},
+      currentSettings: undefined,
 
       //OLD
       activeTypeSelectorItem: {
@@ -140,7 +141,16 @@ export default {
     }
   },
   methods:{
-    toggleSettingsModal(linkItem){ console.log("toggled");this.modalHidden = !this.modalHidden},
+    modalClick(evt, linkItem){
+      console.log(evt)
+      if(evt.target.outerHTML.includes('class="modal"')){
+        this.toggleSettingsModal(linkItem)
+      }
+    },
+    toggleSettingsModal(linkItem){
+      this.currentSettings = linkItem
+      console.log(this.currentSettings)
+      this.modalHidden = !this.modalHidden},
     tabChange(item){this.activeTab = item.title},
     toggleElement(element){
       for (const [key] of Object.entries(this.hidden)) {
@@ -317,6 +327,7 @@ export default {
   float: right;
   font-size: 28px;
   font-weight: bold;
+  max-height:25px;
 }
 
 .close:hover,
@@ -421,6 +432,7 @@ input{
   justify-content: space-between;
   align-items: center;
   max-width: 400px;
+  height: 84px;
   margin: 10px auto;
   padding: 10px;
   border-radius: 10px;
