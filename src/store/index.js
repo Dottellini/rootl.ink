@@ -55,7 +55,7 @@ export default new Vuex.Store({
           state.text_hex = "#FFFFFF";
         }
       } else if(!isDark){
-        if(state.background_hex === "#121212" && state.text_hex === "#FFFFFF" && state.linkBox_hex === "#1d1d1d" && state.rootLink_hex === "#FFFFFF") {
+        if(state.background_hex === "#181818" && state.text_hex === "#FFFFFF" && state.linkBox_hex === "#1d1d1d" && state.rootLink_hex === "#FFFFFF") {
           state.background_hex = "#FFFFFF";
           state.linkBox_hex = "#000000";
           state.rootLink_hex = "#000000";
