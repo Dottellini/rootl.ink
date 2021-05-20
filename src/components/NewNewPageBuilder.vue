@@ -17,36 +17,41 @@
               <p class="linkTitle" >{{element.name}}</p>
               <p class="linkDescription">{{element.link}}</p>
             </div>
-              <svg  xmlns="http://www.w3.org/2000/svg" width="1000" height="18" fill="none" viewBox="0 0 10 18" @click="toggleSettingsModal(element)">
+              <svg  xmlns="http://www.w3.org/2000/svg" width="1000" height="18" fill="none" viewBox="0 0 10 18" @click="toggleSettingsModal('link',element)">
                 <path stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M1 1l8 8-8 8"/>
               </svg>
             <!-- The Modal -->
-            <div id="myModal" class="modal" :class="{hidden: modalHidden}" @click="modalClick($event, element)">
+            <div class="modal" :class="{hidden: modalHidden.link}" @click="modalClick($event, element)">
               <!-- Modal content -->
-              <div class="modal-content">
-                <div id="titleUrlSettings">
-                  <h2>Content</h2>
-                  <div>
-                    <label>Title</label>
-                    <TextInput title="Title" :value="currentSettings.name" placeholder="My Awesome Link" v-model="currentSettings.name"></TextInput>
+              <div class="modalContent">
+                <div class="verticalContainer">
+                  <div class="horizontalContainer">
+                    <div class="titleUrlSettings">
+                      <h2>Content</h2>
+                      <div>
+                        <label>Title</label>
+                        <TextInput title="Title" :value="currentSettings.name" placeholder="My Awesome Link" v-model="currentSettings.name"></TextInput>
+                      </div>
+                      <div>
+                        <TextInput title="Url" :value="currentSettings.link" placeholder="https://www.example.com" v-model="currentSettings.link"></TextInput>
+                      </div>
+                      <div>
+                        <CheckBox text="Embed Video" class="CheckBox"></CheckBox>
+                      </div>
+                    </div>
+                    <div class="iconSettings">
+                        <h2>Icon</h2>
+                        <CustomButton type="button" @click="getFavicon(element.link, element.id)">Get Website Icon</CustomButton>
+                        <CustomButton type="fileSelector" :bindId="element.id" @fileSelected="changeImage">Upload Own Icon</CustomButton>
+                    </div>
+                    <span class="close" @click="toggleSettingsModal('link',element)">&times;</span>
+
                   </div>
-                  <div>
-                    <TextInput title="Url" :value="currentSettings.link" placeholder="https://www.example.com" v-model="currentSettings.link"></TextInput>
-                  </div>
-                  <div>
-                    <CheckBox text="Embed Video" class="CheckBox"></CheckBox>
+                  <div class="horizontalContainer last">
+                    <CustomButton type="button" @click="removeEntry('link') ;toggleSettingsModal('link',element)">Delete Link</CustomButton>
+                    <CustomButton type="button" @click="toggleSettingsModal('link',element)">Save</CustomButton>
                   </div>
                 </div>
-                <div id="iconAndSave">
-                  <div id="iconSettings">
-                    <h2>Icon</h2>
-                    <CustomButton type="button" @click="getFavicon(element.link, element.id)">Get Website Icon</CustomButton>
-                    <CustomButton type="fileSelector" :bindId="element.id" @fileSelected="changeImage">Upload Own Icon</CustomButton>
-                  </div>
-                  <CustomButton id="saveButton" type="button" @click="toggleSettingsModal(element)">Save</CustomButton>
-                  <CustomButton id="deleteButton" type="button" @click="removeEntry('link') ;toggleSettingsModal(element)">Delete Link</CustomButton>
-                </div>
-                <span class="close" @click="toggleSettingsModal(element)">&times;</span>
               </div>
             </div>
           </div>
@@ -54,7 +59,45 @@
         <button @click="addField('link')" class="Add-Button">Add Link</button>
       </div>
       <div id="SocialIcons" :class="{hidden: activeTab !== 'Social Icons'}">
-        Social Icons
+        <h2 class="text">Social Media Icons:</h2>
+        <draggable :list="socialsList" :disabled="!enabled" :animation="200" handle=".handle" class="list-group" ghost-class="ghost" drag-class="drag" chosen-class="chosen" fallbackClass="sortable-fallback" @start="dragging = true">
+          <div class="list-group-item" v-for="element in socialsList" :key="element.id">
+            <div class="handle">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grip-vertical" viewBox="0 0 16 16">
+                <path d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+              </svg>
+            </div>
+            <img class="iconImg" :src="file[element.id]" alt="" :class="{hidden: file[element.id]===undefined}">
+            <div class="list-group-item-description">
+              <p class="linkTitle" >{{element.name}}</p>
+              <p class="linkDescription">{{element.link}}</p>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="18" fill="none" viewBox="0 0 10 18" @click="toggleSettingsModal('social',element)">
+              <path stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M1 1l8 8-8 8"/>
+            </svg>
+            <!-- The Modal -->
+            <div class="modal" :class="{hidden: modalHidden.social}" @click="modalClick($event, element)">
+              <!-- Modal content -->
+              <div class="modalContent">
+                <div class="modalContainer">
+                  <div class="platformSelector">
+                    <p class="platformSelector">Select Your Platform:</p>
+                    <Dropdown Options="{title: 'YouTube', img:'https://upload.wikimedia.org/wikipedia/commons/4/42/YouTube_icon_%282013-2017%29.png'},
+                    {title: 'Facebook', img:'https://cdn.icon-icons.com/icons2/2108/PNG/512/facebook_icon_130940.png'},
+                    {title: 'Instagram', img:'https://icoff.ee/fa/wp-content/uploads/2019/06/instagram-logo.png'}"/>
+                  </div>
+                  <div class="handleInput">
+                    <p class="handleInput">Your handle:</p>
+                    <TextInput placeholder="@username || youtube.com/c/username"></TextInput>
+                  </div>
+                  <CustomButton type="button" @click="removeEntry('social') ;toggleSettingsModal('social',element)">Delete Link</CustomButton>
+                  <CustomButton type="button" @click="toggleSettingsModal('social',element)">Save</CustomButton>
+                </div>
+              </div>
+            </div>
+          </div>
+        </draggable>
+        <button @click="addField('social')" class="Add-Button">Add Link</button>
       </div>
     </div>
     <slot id="Preview"></slot>
@@ -68,13 +111,17 @@ import { VueGpickr, LinearGradient } from 'vue-gpickr';
 import CheckBox from "@/components/CheckBox";
 import TextInput from "@/components/TextInput";
 import CustomButton from "@/components/CustomButton";
+import Dropdown from "@/components/Dropdown";
 
 export default {
   name: "PageBuilder",
-  components: {CustomButton, TextInput, CheckBox, Sidebar, draggable, VueGpickr},
+  components: {Dropdown, CustomButton, TextInput, CheckBox, Sidebar, draggable, VueGpickr},
   data(){
     return{
-      modalHidden: true,
+      modalHidden: {
+        link: true,
+        social: true
+      },
       activeTab: 'Rootlinks',
       file: {},
       currentSettings: {},
@@ -109,12 +156,12 @@ export default {
   methods:{
     modalClick(evt, linkItem){
       if(evt.target.outerHTML.includes('class="modal"')){
-        this.toggleSettingsModal(linkItem)
+        this.toggleSettingsModal(undefined, linkItem)
       }
     },
-    toggleSettingsModal(linkItem){
+    toggleSettingsModal(linkType, linkItem){
       this.currentSettings = linkItem
-      this.modalHidden = !this.modalHidden},
+      this.modalHidden[linkType] = !this.modalHidden[linkType]},
     tabChange(item){this.activeTab = item.title},
     getFavicon: function(url, id) {
       fetch(`gethtml?url=${url}`,{
@@ -242,6 +289,32 @@ export default {
 
 <style scoped>
 
+p.platformSelector{
+  line-height: 35px;
+  margin-right: 10px;
+}
+
+p.handleInput{
+  line-height: 49px;
+  margin: 0 10px 0 0;
+}
+
+.platformSelector, .handleInput{
+  margin:0 auto 0 auto;
+  display: flex;
+  flex-direction: row;
+}
+
+.dropdown{
+  margin: 0 auto 0 auto;
+}
+
+.modalContainer{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 .CheckBox{
   font-family: Montserrat, sans-serif;
   font-weight: 500;
@@ -265,7 +338,7 @@ export default {
 }
 
 /* Modal Content/Box */
-.modal-content {
+.modalContent {
   background-color: #fefefe;
   margin: 5% auto 5% auto; /* 15% from the top and centered */
   padding: 10px;
@@ -294,26 +367,36 @@ export default {
   cursor: pointer;
 }
 
-#iconAndSave{
+.verticalContainer{
+  width: 100%;
   display: flex;
+  justify-content:space-between;
   flex-direction: column;
-  height: 100%;
 }
 
-#saveButton{
-  vertical-align: bottom;
-}
-
-#titleUrlSettings{
+.horizontalContainer{
   display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  background-color: #e6ffe7;
+  flex-direction: row;
+  height: 10000px;
+
 }
 
-#iconSettings{
-  flex-grow: 1;
-  background-color: #ffd8d8;
+.horizontalContainer.last{
+  border-top: 1px solid black;
+  justify-content: space-around;
+  min-height: 35px;
+  max-height: 35px;
+  display: flex;
+  flex-direction: row;
+}
+
+.iconSettings{
+  border-left: 1px solid black;
+  width: 1000px;
+}
+
+.titleUrlSettings{
+  width: 1000px;
 }
 
 .list-group-item-description{

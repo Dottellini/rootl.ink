@@ -123,7 +123,7 @@ export default new Vuex.Store({
     },
 
     addExample(state, isDark) {
-      state.linkList = [{name: "Youtube", link: "https://www.youtube.com/watch?v=2INpDCWOy0Q", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/YouTube_social_white_squircle_%282017%29.svg/1200px-YouTube_social_white_squircle_%282017%29.svg.png", isYoutubeVideo:true, embed: true, id: 1},
+      state.linkList = [{name: "Youtube", link: "https://www.youtube.com", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/YouTube_social_white_squircle_%282017%29.svg/1200px-YouTube_social_white_squircle_%282017%29.svg.png", isYoutubeVideo:true, embed: false, id: 1},
                     {name: "Instagram", link: "https://instagram.com", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/1200px-Instagram_logo_2016.svg.png", isYoutubeVideo:false, embed: false, id: 2},
                     {name: "Twitter", link: "https://twitter.com", img: "https://image.flaticon.com/icons/png/512/124/124021.png", isYoutubeVideo:false, embed: false, id: 3},
                     {name: "TikTok", link: "https://tiktok.com", img: "https://cdn.worldvectorlogo.com/logos/tiktok-logo-2--1.svg", isYoutubeVideo:false, embed: false, id: 4}];

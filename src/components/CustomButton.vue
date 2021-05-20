@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="customButton">
     <button v-if="type!=='fileSelector'" @click="$emit('click')">
       <slot id="text">
         {{text}}
@@ -22,7 +22,7 @@ export default {
     }
   },
   name: "CustomButton",
-  props:["text", "type", "bindId"],
+  props:["text", "type", "bindId", "width"],
   methods:{
     openFileSelector(evt){
       if(evt.target.outerHTML.includes('class="fileSelector"')){
@@ -36,6 +36,11 @@ export default {
 </script>
 
 <style scoped>
+
+.customButton{
+  display: flex;
+  justify-content: space-around;
+}
 button, .fileSelector{
   background-color: var(--background-color);
   border: 1px solid var(--text-color);
@@ -45,6 +50,9 @@ button, .fileSelector{
   margin: 2px;
 }
 
+.fileSelector{
+  width: 150px;
+}
 
 button:hover, .fileSelector:hover{
   background-color: #ccc;
