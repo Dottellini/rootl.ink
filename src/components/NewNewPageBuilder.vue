@@ -339,10 +339,10 @@ p.handleInput{
 
 /* Modal Content/Box */
 .modalContent {
-  background-color: #fefefe;
+  color: var(--text-color);
+  background-color: var(--background-color);
   margin: 5% auto 5% auto; /* 15% from the top and centered */
   padding: 10px;
-  border: 1px solid #888;
   border-radius: 10px;
   width: 800px; /* Could be more or less, depending on screen size */
   height: 400px;
@@ -362,7 +362,7 @@ p.handleInput{
 
 .close:hover,
 .close:focus {
-  color: black;
+  color: var(--text-color);
   text-decoration: none;
   cursor: pointer;
 }
@@ -382,7 +382,7 @@ p.handleInput{
 }
 
 .horizontalContainer.last{
-  border-top: 1px solid black;
+  border-top: 1px solid var(--border-color);
   justify-content: space-around;
   min-height: 35px;
   max-height: 35px;
@@ -391,7 +391,7 @@ p.handleInput{
 }
 
 .iconSettings{
-  border-left: 1px solid black;
+  border-left: 1px solid var(--border-color);
   width: 1000px;
 }
 
@@ -456,7 +456,7 @@ input{
 #editArea{
   width: 10000px;
   height: 10000px;
-  background-color: #fff;
+  background-color: var(--background-color);
 }
 
 .iconImg{
@@ -521,17 +521,20 @@ input{
 }
 
 .Add-Button{
+  color: var(--text-color);
   background-color: var(--background-color);
-  border: 1px solid var(--text-color);
+  border: 1px solid var(--border-color);
   border-radius: 50px;
   padding: 6px 12px 6px 12px;
   font-size: 1em;
+
+  &:hover{
+    cursor: pointer;
+    background-color: var(--background-color);
+    color: var(--text-color);
+  }
 }
 
-.Add-Button:hover{
-  background-color: black;
-  color: white;
-}
 .ContentWrapper{
   position: relative;
   height: 100%;

@@ -196,6 +196,7 @@ created() {
     --upload-color: #3d4ebb;
     --free-element-color: white;
     --free-element-border-color: #181818;
+    --border-color: #868686;
   }
 
   [data-theme="darkMode"] {
@@ -212,6 +213,7 @@ created() {
     --upload-color: white;
     --free-element-color: #2a2a2a;
     --free-element-border-color: #2a2a2a;
+    --border-color: #636363;
   }
 
   @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap');
