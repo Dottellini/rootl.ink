@@ -44,7 +44,7 @@
                     <CustomButton type="fileSelector" :bindId="element.id" @fileSelected="changeImage">Upload Own Icon</CustomButton>
                   </div>
                   <CustomButton id="saveButton" type="button" @click="toggleSettingsModal(element)">Save</CustomButton>
-                  <CustomButton id="deleteButton" type="button">Delete Link</CustomButton>
+                  <CustomButton id="deleteButton" type="button" @click="removeEntry('link') ;toggleSettingsModal(element)">Delete Link</CustomButton>
                 </div>
                 <span class="close" @click="toggleSettingsModal(element)">&times;</span>
               </div>
@@ -108,22 +108,14 @@ export default {
   },
   methods:{
     modalClick(evt, linkItem){
-      console.log(evt, linkItem)
       if(evt.target.outerHTML.includes('class="modal"')){
         this.toggleSettingsModal(linkItem)
       }
     },
     toggleSettingsModal(linkItem){
       this.currentSettings = linkItem
-      console.log(this.currentSettings)
       this.modalHidden = !this.modalHidden},
     tabChange(item){this.activeTab = item.title},
-    toggleElement(element){
-      for (const [key] of Object.entries(this.hidden)) {
-        this.hidden[key]=true
-      }
-      this.hidden[element]=!this.hidden[element];
-    },
     getFavicon: function(url, id) {
       fetch(`gethtml?url=${url}`,{
         method:"POST"
@@ -172,7 +164,6 @@ export default {
       this.$store.dispatch("savePage", this.$store.state)
     },
     changeImage(eventParams){
-      console.log("EVTP", eventParams)
       new Promise(res => {
         let file = eventParams.evt.target.files[0];
         const reader = new FileReader();
@@ -194,7 +185,6 @@ export default {
               img: this.file[this.currentSettings.id]
             }
 
-            console.log(imgData)
             this.$store.commit("addImageToEntry", {imgData, type: 'link'});
           });
         });
@@ -225,7 +215,8 @@ export default {
       this.$store.commit("updateRootLinkColor", value)
     },
     */
-    removeEntry: function (id, type) {
+    removeEntry: function (type) {
+      let id = this.currentSettings.id
       this.$store.commit("removeEntry", {id,type})
     },
     addField: function(type) {
@@ -234,7 +225,6 @@ export default {
   },
   computed:{
     list() {
-      console.log(this.$store.state.linkList)
       return this.$store.state.linkList
     },
     socialsList() {
