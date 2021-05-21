@@ -104,8 +104,12 @@
       <div id="color" :class="{hidden: activeTab !== 'Colors'}">
         <input type="checkbox" id="modeSelector" v-model="advancedMode">
         <label for="modeSelector">Advanced</label>
-        <div v-if="!advancedMode"></div>
-        <div v-if="advancedMode"></div>
+        <div v-if="!advancedMode">
+          <color-picker-basic></color-picker-basic>
+        </div>
+        <div v-if="advancedMode">
+          <color-picker-advanced></color-picker-advanced>
+        </div>
       </div>
     </div>
     <slot id="Preview"></slot>
@@ -120,10 +124,17 @@ import CheckBox from "@/components/CheckBox";
 import TextInput from "@/components/TextInput";
 import CustomButton from "@/components/CustomButton";
 import Dropdown from "@/components/Dropdown";
+import HorizontalChooser from "./HorizontalChooser";
+import ColorPickerBasic from "./ColorPickerBasic";
+import ColorPickerAdvanced from "./ColorPickerAdvanced";
+
 
 export default {
   name: "PageBuilder",
-  components: {Dropdown, CustomButton, TextInput, CheckBox, Sidebar, draggable, VueGpickr},
+  components: {
+    ColorPickerAdvanced,
+    ColorPickerBasic,
+    HorizontalChooser, Dropdown, CustomButton, TextInput, CheckBox, Sidebar, draggable, VueGpickr},
   data(){
     return{
       modalHidden: {
@@ -298,7 +309,7 @@ export default {
 
 <style scoped>
 
-label {
+label, h2 {
   color: var(--text-color);
 }
 

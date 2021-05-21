@@ -13,10 +13,6 @@
     </div>
   </div>-->
 
-
-
-
-
   <div class="horizontalChooser" :style="horizontalChooserStyle">
     <div v-for="option in options" class="horizontalChooserOption" :class="{active: activeOption=== option, last: option === options[options.length-1], first: option === options[0]}" @click="setActiveOption(option); $emit('optionSelection',option)">
       {{option}}
@@ -53,6 +49,8 @@ export default {
 <style scoped>
 
 .horizontalChooser{
+  font-family: 'Montserrat', sans-serif;
+  color: var(--text-color);
   margin: 100px;
   border: 1px solid black;
   border-radius: 20px;
@@ -71,7 +69,9 @@ export default {
 }
 
 .horizontalChooserOption:hover, .horizontalChooserOption.active{
+  cursor: pointer;
   background-color: lightblue;
+  color: black;
 }
 
 .horizontalChooserOption:not(.last){
