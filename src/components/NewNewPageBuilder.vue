@@ -3,9 +3,9 @@
     <canvas id="imageCanvas" style="display:none;"></canvas>
     <Sidebar @itemClick="tabChange"/>
     <div id="editArea">
-      <div id="Rootlinks" :class="{hidden: !(activeTab==='Rootlinks')}">
+      <div id="Rootlinks" :class="{hidden: activeTab!=='Rootlinks'}">
         <h2 class="text">Rootlinks:</h2>
-        <draggable :list="list" :disabled="!enabled" :animation="200" handle=".handle" class="list-group" ghost-class="ghost" drag-class="drag" chosen-class="chosen" fallbackClass="sortable-fallback" @start="dragging = true">
+        <draggable :list="list" :disabled="!enabled" :animation="100" handle=".handle" class="list-group" ghost-class="ghost" drag-class="drag" chosen-class="chosen" fallbackClass="sortable-fallback" @start="dragging = true">
           <div class="list-group-item" v-for="element in list" :key="element.id">
             <div class="handle">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grip-vertical" viewBox="0 0 16 16">
@@ -15,7 +15,7 @@
             <img class="iconImg" :src="file[element.id]" alt="" :class="{hidden: file[element.id]===undefined}">
             <div class="list-group-item-description">
               <p class="linkTitle" >{{element.title}}</p>
-              <p class="linkDescription">{{element.url}}</p>
+              <p class="linkUrl">{{element.url}}</p>
             </div>
             <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="16" fill="currentColor" class="bi bi-box-arrow-right modalArrow" viewBox="0 0 16 16" @click="toggleSettingsModal('link',element)">
               <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
@@ -62,7 +62,7 @@
       </div>
       <div id="SocialIcons" :class="{hidden: activeTab !== 'Social Icons'}">
         <h2 class="text">Social Media Icons:</h2>
-        <draggable :list="socialsList" :disabled="!enabled" :animation="200" handle=".handle" class="list-group" ghost-class="ghost" drag-class="drag" chosen-class="chosen" fallbackClass="sortable-fallback" @start="dragging = true">
+        <draggable :list="socialsList" :disabled="!enabled" :animation="100" handle=".handle" class="list-group" ghost-class="ghost" drag-class="drag" chosen-class="chosen" fallbackClass="sortable-fallback" @start="dragging = true">
           <div class="list-group-item" v-for="element in socialsList" :key="element.id">
             <div class="handle">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grip-vertical" viewBox="0 0 16 16">
@@ -72,7 +72,7 @@
             <img class="iconImg" :src="file[element.id]" alt="" :class="{hidden: file[element.id]===undefined}">
             <div class="list-group-item-description">
               <p class="linkTitle" >{{element.title}}</p>
-              <p class="linkDescription">{{element.link}}</p>
+              <p class="linkUrl">{{element.link}}</p>
             </div>
             <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="18" fill="none" viewBox="0 0 10 18" @click="toggleSettingsModal('social',element)">
               <path stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M1 1l8 8-8 8"/>
@@ -109,6 +109,90 @@
         </div>
         <div v-if="advancedMode">
           <color-picker-advanced></color-picker-advanced>
+        </div>
+      </div>
+      <div id="Widgets" :class="{hidden: activeTab !== 'Widgets'}">
+        <div id="widgetsContainer">
+          <div class="availableWidgets">
+            <h2>Available Widgets</h2>
+            <div class="widgetList">
+              <div class="container1" id="videoEmbedContainer">
+                <div class="widgetContainer" >
+                  <div class="title">
+                    <p>Embedded Video or Stream</p>
+                    <svg width="25" height="25" viewBox="0 0 25 25" fill="none"><g clip-path="url(#clip0)"><path d="M24.2306 5.82018C24.0929 5.31144 23.8244 4.84764 23.4517 4.47496C23.079 4.10228 22.6152 3.83372 22.1065 3.69602C20.245 3.18823 12.7478 3.18823 12.7478 3.18823C12.7478 3.18823 5.25193 3.20349 3.38954 3.71177C2.88073 3.84933 2.41686 4.11784 2.04416 4.49054C1.67146 4.86324 1.40294 5.32712 1.26538 5.83593C0.701992 9.14493 0.483524 14.1874 1.28064 17.3645C1.41842 17.8732 1.68701 18.337 2.05968 18.7097C2.43234 19.0823 2.8961 19.3509 3.4048 19.4887C5.26719 19.9965 12.766 19.9965 12.766 19.9965C12.766 19.9965 20.2618 19.9965 22.1242 19.4887C22.6329 19.351 23.0967 19.0825 23.4694 18.7098C23.8421 18.3371 24.1106 17.8733 24.2483 17.3645C24.8403 14.0506 25.0233 9.0111 24.2306 5.82018Z" fill="#FF0000"></path><path d="M10.3633 15.1943L16.5817 11.5925L10.3633 7.99072V15.1943Z" fill="white"></path></g><defs><clipPath id="clip0"><rect width="24" height="24" fill="white" transform="translate(0.76001 0.0766602)"></rect></clipPath></defs></svg>
+                  </div>
+                </div>
+                <div class="addWidgetButton" id="videoEmbedButton">
+                  <div class="bar"/><div class="button" @click="addWidget('videoEmbed')">+</div>
+                </div>
+              </div>
+              <div class="container1" id="fileUploadContainer">
+                <div class="widgetContainer">
+                  <div class="title">
+                    <p>File Upload</p>
+                    <img width="25px" src="https://image.flaticon.com/icons/png/512/337/337946.png" alt="https://image.flaticon.com/icons/png/512/337/337946.png" class="transparent">
+                  </div>
+                </div>
+                <div class="addWidgetButton" id="fileUploadButton">
+                  <div class="bar"/><div class="button" @click="addWidget('fileUpload')">+</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="usedWidgets">
+            <h2>Rootlinks</h2>
+            <draggable :list="list" :disabled="!enabled" :animation="100" handle=".handle" class="list-group" ghost-class="ghost" drag-class="drag" chosen-class="chosen" fallbackClass="sortable-fallback" @start="dragging = true">
+              <div class="list-group-item" v-for="element in list" :key="element.id">
+                <div class="handle">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grip-vertical" viewBox="0 0 16 16">
+                    <path d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                  </svg>
+                </div>
+                <img class="iconImg" :src="file[element.id]" alt="" :class="{hidden: file[element.id]===undefined}">
+                <div class="list-group-item-description">
+                  <p class="linkTitle" >{{element.name}}</p>
+                  <p class="linkUrl">{{element.link}}</p>
+                </div>
+                <svg  xmlns="http://www.w3.org/2000/svg" width="1000" height="18" fill="none" viewBox="0 0 10 18" @click="toggleSettingsModal('link',element)">
+                  <path stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M1 1l8 8-8 8"/>
+                </svg>
+                <!-- The Modal -->
+                <div class="modal" :class="{hidden: modalHidden.link}" @click="modalClick($event, element)">
+                  <!-- Modal content -->
+                  <div class="modalContent">
+                    <div class="verticalContainer">
+                      <div class="horizontalContainer">
+                        <div class="titleUrlSettings">
+                          <h2>Content</h2>
+                          <div>
+                            <label>Title</label>
+                            <TextInput title="Title" :value="currentSettings.name" placeholder="My Awesome Link" v-model="currentSettings.name"></TextInput>
+                          </div>
+                          <div>
+                            <TextInput title="Url" :value="currentSettings.link" placeholder="https://www.example.com" v-model="currentSettings.link"></TextInput>
+                          </div>
+                          <div>
+                            <CheckBox text="Embed Video" class="CheckBox"></CheckBox>
+                          </div>
+                        </div>
+                        <div class="iconSettings">
+                          <h2>Icon</h2>
+                          <CustomButton type="button" @click="getFavicon(element.link, element.id)">Get Website Icon</CustomButton>
+                          <CustomButton type="fileSelector" :bindId="element.id" @fileSelected="changeImage">Upload Own Icon</CustomButton>
+                        </div>
+                        <span class="close" @click="toggleSettingsModal('link',element)">&times;</span>
+                      </div>
+                      <div class="horizontalContainer last">
+                        <CustomButton type="button" @click="removeEntry('link') ;toggleSettingsModal('link',element)">Delete Link</CustomButton>
+                        <CustomButton type="button" @click="toggleSettingsModal('link',element)">Save</CustomButton>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </draggable>
+          </div>
         </div>
       </div>
     </div>
@@ -174,6 +258,19 @@ export default {
     }
   },
   methods:{
+    addWidget(widget){
+       console.log(this.list)
+       this.list.push({
+         icon:"",
+         id: "toDo",
+         title: widget,
+         type: "widget",
+         url: "",
+         widgetParameters:{
+           type: widget
+         }
+       })
+    },
     modalClick(evt, linkItem){
       if(evt.target.outerHTML.includes('class="modal"')){
         this.toggleSettingsModal(undefined, linkItem)
@@ -308,6 +405,85 @@ export default {
 </script>
 
 <style scoped>
+.title{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-left:0px;
+  justify-content: space-between;
+  z-index: -10;
+}
+
+.widgetContainer{
+  border: 1px solid black;
+  margin: 10px auto;
+  padding: 5px;
+  border-radius: 10px;
+  box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+  border: var(--editor-items-border);
+  height: 50px;
+  z-index: 10;
+  background-color: white;
+  width: 264px;
+}
+
+#widgetsContainer{
+  justify-content: space-around;
+  align-items: stretch;
+  display: flex;
+  flex-direction: row;
+}
+
+.widgetList{
+  margin-left: -15px;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  min-width: 314px;
+  align-items: flex-start;
+}
+.container1{
+  margin-top: 20px;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+}
+
+
+#fileUploadContainer:hover > #fileUploadButton{
+  margin-left: 0;
+}
+
+#videoEmbedContainer:hover > #videoEmbedButton{
+  margin-left: 0;
+}
+
+.addWidgetButton{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left:-51px;
+  transition: margin-left 0.2s;
+}
+
+
+
+.addWidgetButton .bar{
+  width: 15px;
+  height: 5px;
+  background-color: lightblue;
+}
+
+.addWidgetButton .button{
+  width: 36px;
+  height: 36px;
+  border-radius: 18px;
+  background-color: lightblue;
+  line-height: 36px;
+  font-family: Montserrat, sans-serif;
+  font-size: 2.2em;
+  color: #3d6876;
+}
 
 label, h2 {
   color: var(--text-color);
@@ -325,6 +501,14 @@ p.platformSelector{
 p.handleInput{
   line-height: 49px;
   margin: 0 10px 0 0;
+}
+
+
+
+.widgetContainer p{
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 550;
+  margin-right: 10px;
 }
 
 .platformSelector, .handleInput{
@@ -442,7 +626,7 @@ p.handleInput{
   margin: 10px 10px 10px 10px;
   text-align: left;
 }
-.linkDescription{
+.linkUrl{
   font-family: Montserrat, sans-serif;
   margin: 10px 10px 10px 10px;
   text-align: left;
@@ -488,7 +672,7 @@ input{
 }
 
 #editArea{
-  /*width: 10000px;*/
+  width: 10000px;
   height: 10000px;
   background-color: var(--background-color);
 }
@@ -623,13 +807,13 @@ Input[type="color"] {
   }
 }
 
+/*
 .container {
-
   width: calc(100vw - 410px);
   height: calc(100vh - 120px);
   color: var(--text-color);
   background-color: var(--surface-color);
-}
+}*/
 
   .horizontal-container {
     display: flex;

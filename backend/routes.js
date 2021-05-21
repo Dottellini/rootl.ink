@@ -128,9 +128,12 @@ router.post('/api/analytics/get/', (req,res)=>{
 });
 
 router.post('/gethtml*',(req,res)=>{
+    console.log('URL',req.url)
     fetch(req.url.replace('/gethtml?url=','')).then(data =>data.text())
     .then(data=>{
         res.send(data)
+    }).catch(err=>{
+        console.log("ERROR:",err)
     })
 })
 
