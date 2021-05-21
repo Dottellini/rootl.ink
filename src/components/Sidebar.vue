@@ -10,7 +10,7 @@
         <div class="dropdownItems" v-if="typeof textBarItem === 'object'">
           <div class="dropdownTitle" @click="toggleDropdown(textBarItem.textBarItem)">
             <svg class="ddSvg" :class="{rotated: !dropdownHidden[textBarItem.textBarItem]}">
-              <path d="m 0 0 l 0 12 l 8 -6 z" fill="white" stroke="white"/>
+              <path d="m 0 0 l 0 12 l 8 -6 z" fill="currentColor" stroke="currentColor"/>
             </svg>
             <div class="dropdownTitleText">{{textBarItem.textBarItem}}</div>
           </div>
@@ -56,7 +56,7 @@ export default {
           textBarItems: [
         {
           textBarItem:"Colors",
-          dropdownItems:["Background","Links","iwas anderes"]
+          dropdownItems:["Background","Links"]
         },
         {
           textBarItem:"Highlighting",
@@ -96,8 +96,8 @@ export default {
   display: flex;
   flex-direction: row;
   width: 300px;
-  background-color: #30324A;
-  color: #89C8D9;
+  background-color: var(--sidebar-background-lighter);
+  color: var(--inner-sidebar-text-inactive);
   border: 1px solid black;
   margin-right: 0;
   font-family: Montserrat, sans-serif;
@@ -111,39 +111,46 @@ export default {
 #iconBar{
   min-width: 100px;
   flex: 0 0 100px;
-  background-color: #1D1E2C;
-  color: #42858C;
+  background-color: var(--sidebar-background-darker);
+  color: var(--outer-sidebar-text-inactive);
   font-family: Montserrat, sans-serif;
   font-weight: 600;
 }
 
 .textBarItem {
+  cursor: pointer;
   border-bottom: 1px solid black;
   line-height: 35px;
 }
 
 .textBarItem.hoverActive:hover{
-  background-color: #383B56
+  background-color: var(--sidebar-background-hover);
+  color: var(--sidebar-text-active);
 }
 
 .textBarItemTitle:hover{
-  background-color: #383B56
+  background-color: var(--sidebar-background-hover);
+  color: var(--sidebar-text-active);
 }
 .textBarItemTitle.active{
-  background-color: #383B56
+  background-color: var(--sidebar-background-hover);
+  color: var(--sidebar-text-active);
 }
 
 .iconItem{
+  cursor: pointer;
   border-bottom: 1px solid black;
   height: 35px;
   line-height: 35px;
 }
 .iconItem:hover{
-  background-color: #282A3E;
+  background-color: var(--sidebar-background-hover);
+  color: var(--sidebar-text-active);
  }
 
 .iconItem.active{
-  background-color: #282A3E;
+  background-color: var(--sidebar-background-hover);
+  color: var(--sidebar-text-active);
 }
 
 .rotated{
@@ -159,10 +166,12 @@ export default {
 }
 
 .dropdownItem:hover{
-  background-color: #383B56;
+  background-color: var(--sidebar-background-hover);
+  color: var(--sidebar-text-active);
 }
 .dropdownItem.active{
-  background-color: #383B56;
+  background-color: var(--sidebar-background-hover);
+  color: var(--sidebar-text-active);
 }
 
 .hidden{
@@ -179,6 +188,6 @@ export default {
 
 .dropdownTitleText{
   flex-grow: 0;
-  width: 0px;
+  width: 0;
 }
 </style>

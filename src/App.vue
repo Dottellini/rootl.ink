@@ -197,6 +197,12 @@ created() {
     --free-element-color: white;
     --free-element-border-color: #181818;
     --border-color: #868686;
+    --sidebar-background-darker: #2f49d0;
+    --sidebar-background-lighter: #f1f1f3;
+    --sidebar-background-hover: #435bd5;
+    --sidebar-text-active: #ffffff;
+    --outer-sidebar-text-inactive: #d6dbf5;
+    --inner-sidebar-text-inactive: #0f0f0f;
   }
 
   [data-theme="darkMode"] {
@@ -214,6 +220,12 @@ created() {
     --free-element-color: #2a2a2a;
     --free-element-border-color: #2a2a2a;
     --border-color: #636363;
+    --sidebar-background-darker: #19171d;
+    --sidebar-background-lighter: #1f1d24;
+    --sidebar-background-hover: #2c649e;
+    --sidebar-text-active: #e8e8e8;
+    --outer-sidebar-text-inactive: #807f82;
+    --inner-sidebar-text-inactive: #807f82;
   }
 
   @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap');

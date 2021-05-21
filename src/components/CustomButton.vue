@@ -41,8 +41,16 @@ export default {
   display: flex;
   justify-content: space-around;
 }
+
+button {
+  color: var(--text-color);
+  font-family: 'Montserrat', sans-serif;
+}
+
 button, .fileSelector{
   background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: 'Montserrat', sans-serif;
   border: 1px solid var(--text-color);
   border-radius: 50px;
   padding: 6px 12px 6px 12px;

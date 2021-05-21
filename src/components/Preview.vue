@@ -128,6 +128,8 @@ export default {
     max-height: 600px;
     min-width: 25em;
     width: 25em;
+    max-width: 25em;
+    margin-right: 10px;
   }
 
   .content {
