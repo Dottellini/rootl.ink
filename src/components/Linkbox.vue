@@ -36,7 +36,7 @@
       linkOrEmbed: function(link){
         if(!link.embed){
           return {
-            "href": link.link,
+            "href": link.url,
             "target": "_blank"
           };
         }
