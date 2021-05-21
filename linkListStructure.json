@@ -1,0 +1,11 @@
+{
+  "id": Integer,
+  "icon": base64 | url,
+  "title": String,
+  "url": String
+  "type": "Rootlink" | "Widget",
+  "widgetParameters": undefinded | {
+    "type": "videoEmbed" | "fileUpload",
+    ...
+  }
+}
