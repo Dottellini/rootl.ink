@@ -17,14 +17,12 @@
               <p class="linkTitle" >{{element.title}}</p>
               <p class="linkUrl">{{element.url}}</p>
             </div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="16" fill="currentColor" class="bi bi-box-arrow-right modalArrow" viewBox="0 0 16 16" @click="toggleSettingsModal('link',element)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="16" fill="currentColor" class="bi bi-box-arrow-right modalArrow" viewBox="0 0 16 16" @click="toggleSettingsModal('rootlink',element)">
               <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
               <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
             </svg>
 
-            <!-- The Modal -->
-            <div class="modal" :class="{hidden: modalHidden.link}" @click="modalClick($event, element)">
-              <!-- Modal content -->
+            <div class="modal" :class="{hidden: modalHidden.rootlink}" @click="modalClick($event, element)">
               <div class="modalContent">
                 <div class="verticalContainer">
                   <div class="horizontalContainer">
@@ -32,10 +30,10 @@
                       <h2>Content</h2>
                       <div>
                         <label>Title</label>
-                        <TextInput title="Title" :value="currentSettings.name" placeholder="My Awesome Link" v-model="currentSettings.name"></TextInput>
+                        <TextInput title="Title" :value="currentSettings.title" placeholder="My Awesome Link" v-model="currentSettings.title"></TextInput>
                       </div>
                       <div>
-                        <TextInput title="Url" :value="currentSettings.link" placeholder="https://www.example.com" v-model="currentSettings.link"></TextInput>
+                        <TextInput title="Url" :value="currentSettings.url" placeholder="https://www.example.com" v-model="currentSettings.url"></TextInput>
                       </div>
                       <div>
                         <CheckBox text="Embed Video" class="CheckBox"></CheckBox>
@@ -46,19 +44,19 @@
                         <CustomButton type="button" @click="getFavicon(element.url, element.id)">Get Website Icon</CustomButton>
                         <CustomButton type="fileSelector" :bindId="element.id" @fileSelected="changeImage">Upload Own Icon</CustomButton>
                     </div>
-                    <span class="close" @click="toggleSettingsModal('link',element)">&times;</span>
+                    <span class="close" @click="toggleSettingsModal('rootlink',element)">&times;</span>
 
                   </div>
                   <div class="horizontalContainer last">
-                    <CustomButton type="button" @click="removeEntry('link') ;toggleSettingsModal('link',element)">Delete Link</CustomButton>
-                    <CustomButton type="button" @click="toggleSettingsModal('link',element)">Save</CustomButton>
+                    <CustomButton type="button" @click="removeEntry('rootlink') ;toggleSettingsModal('rootlink',element)">Delete Link</CustomButton>
+                    <CustomButton type="button" @click="toggleSettingsModal('rootlink',element)">Save</CustomButton>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </draggable>
-        <button @click="addField('link')" class="Add-Button">Add Link</button>
+        <button @click="addField('rootlink', undefined); toggleSettingsModal('rootlink', list[list.length-1])" class="Add-Button">Add Link</button>
       </div>
       <div id="SocialIcons" :class="{hidden: activeTab !== 'Social Icons'}">
         <h2 class="text">Social Media Icons:</h2>
@@ -77,9 +75,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="18" fill="none" viewBox="0 0 10 18" @click="toggleSettingsModal('social',element)">
               <path stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M1 1l8 8-8 8"/>
             </svg>
-            <!-- The Modal -->
             <div class="modal" :class="{hidden: modalHidden.social}" @click="modalClick($event, element)">
-              <!-- Modal content -->
               <div class="modalContent">
                 <div class="modalContainer">
                   <div class="platformSelector">
@@ -99,7 +95,7 @@
             </div>
           </div>
         </draggable>
-        <button @click="addField('social')" class="Add-Button">Add Link</button>
+        <button @click="addField('social', undefined)" class="Add-Button">Add Link</button>
       </div>
       <div id="color" :class="{hidden: activeTab !== 'Colors'}">
         <input type="checkbox" id="modeSelector" v-model="advancedMode">
@@ -124,7 +120,7 @@
                   </div>
                 </div>
                 <div class="addWidgetButton" id="videoEmbedButton">
-                  <div class="bar"/><div class="button" @click="addWidget('videoEmbed')">+</div>
+                  <div class="bar"/><div class="button" @click="addField('widget', 'videoEmbed'); toggleSettingsModal('widget', list[list.length-1])">+</div>
                 </div>
               </div>
               <div class="container1" id="fileUploadContainer">
@@ -135,7 +131,7 @@
                   </div>
                 </div>
                 <div class="addWidgetButton" id="fileUploadButton">
-                  <div class="bar"/><div class="button" @click="addWidget('fileUpload')">+</div>
+                  <div class="bar"/><div class="button" @click="addField('widget', 'fileUpload'); toggleSettingsModal('widget', list[list.length-1])">+</div>
                 </div>
               </div>
             </div>
@@ -151,43 +147,16 @@
                 </div>
                 <img class="iconImg" :src="file[element.id]" alt="" :class="{hidden: file[element.id]===undefined}">
                 <div class="list-group-item-description">
-                  <p class="linkTitle" >{{element.name}}</p>
-                  <p class="linkUrl">{{element.link}}</p>
+                  <p class="linkTitle" >{{element.title}}</p>
+                  <p class="linkUrl">{{element.url}}</p>
                 </div>
-                <svg  xmlns="http://www.w3.org/2000/svg" width="1000" height="18" fill="none" viewBox="0 0 10 18" @click="toggleSettingsModal('link',element)">
-                  <path stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M1 1l8 8-8 8"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="16" fill="currentColor" class="bi bi-box-arrow-right modalArrow" viewBox="0 0 16 16" @click="toggleSettingsModal('widget',element)">
+                  <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
+                  <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
                 </svg>
-                <!-- The Modal -->
-                <div class="modal" :class="{hidden: modalHidden.link}" @click="modalClick($event, element)">
-                  <!-- Modal content -->
+
+                <div class="modal" :class="{hidden: modalHidden.widget}" @click="modalClick($event, element)">
                   <div class="modalContent">
-                    <div class="verticalContainer">
-                      <div class="horizontalContainer">
-                        <div class="titleUrlSettings">
-                          <h2>Content</h2>
-                          <div>
-                            <label>Title</label>
-                            <TextInput title="Title" :value="currentSettings.name" placeholder="My Awesome Link" v-model="currentSettings.name"></TextInput>
-                          </div>
-                          <div>
-                            <TextInput title="Url" :value="currentSettings.link" placeholder="https://www.example.com" v-model="currentSettings.link"></TextInput>
-                          </div>
-                          <div>
-                            <CheckBox text="Embed Video" class="CheckBox"></CheckBox>
-                          </div>
-                        </div>
-                        <div class="iconSettings">
-                          <h2>Icon</h2>
-                          <CustomButton type="button" @click="getFavicon(element.link, element.id)">Get Website Icon</CustomButton>
-                          <CustomButton type="fileSelector" :bindId="element.id" @fileSelected="changeImage">Upload Own Icon</CustomButton>
-                        </div>
-                        <span class="close" @click="toggleSettingsModal('link',element)">&times;</span>
-                      </div>
-                      <div class="horizontalContainer last">
-                        <CustomButton type="button" @click="removeEntry('link') ;toggleSettingsModal('link',element)">Delete Link</CustomButton>
-                        <CustomButton type="button" @click="toggleSettingsModal('link',element)">Save</CustomButton>
-                      </div>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -222,8 +191,9 @@ export default {
   data(){
     return{
       modalHidden: {
-        link: true,
-        social: true
+        rootlink: true,
+        social: true,
+        widget: true,
       },
       advancedMode: false,
       activeTab: 'Rootlinks',
@@ -258,27 +228,26 @@ export default {
     }
   },
   methods:{
-    addWidget(widget){
-       console.log(this.list)
-       this.list.push({
-         icon:"",
-         id: "toDo",
-         title: widget,
-         type: "widget",
-         url: "",
-         widgetParameters:{
-           type: widget
-         }
-       })
-    },
     modalClick(evt, linkItem){
+      //modal-background clicked
+      console.log("A")
       if(evt.target.outerHTML.includes('class="modal"')){
+        console.log("B")
         this.toggleSettingsModal(undefined, linkItem)
       }
     },
     toggleSettingsModal(linkType, linkItem){
       this.currentSettings = linkItem
-      this.modalHidden[linkType] = !this.modalHidden[linkType]},
+      if(linkType === undefined)
+      {
+        let instance = this
+        Object.keys(this.modalHidden).forEach(function(k){
+          instance.modalHidden[k] = true;
+        });
+        return
+      }
+      this.modalHidden[linkType] = !this.modalHidden[linkType]
+    },
     tabChange(item){this.activeTab = item.title},
     getFavicon: function(url, id) {
       fetch(`gethtml?url=${url}`,{
@@ -290,7 +259,7 @@ export default {
             id: id,
             img: undefined
           }
-          this.$store.commit("addImageToEntry", {imgData, type: 'link'});
+          this.$store.commit("addImageToEntry", {imgData, type: 'rootlink'});
           return;
         }
         htmlString = htmlString.slice(foundIconPosition, foundIconPosition+300)
@@ -383,8 +352,8 @@ export default {
       let id = this.currentSettings.id
       this.$store.commit("removeEntry", {id,type})
     },
-    addField: function(type) {
-      this.$store.commit("emptyEntry", type)
+    addField: function(type, widgetType) {
+      this.$store.commit("emptyEntry", type, widgetType)
     }
   },
   computed:{
@@ -541,7 +510,7 @@ p.handleInput{
 .modal {
   display: flex;
   position: fixed;
-  z-index: 1;
+  z-index: 10;
   left: 0;
   top: 0;
   width: 100%;

@@ -77,7 +77,7 @@ export default new Vuex.Store({
       document.body.style.backgroundColor = state.background_hex;
     },
 
-    emptyEntry(state, type) {
+    emptyEntry(state, type, widgetType) {
       const dt = Date.now();
       const num = Math.floor(Math.random() * 999999);
       const id = parseInt(`${dt}${num}`)
@@ -92,7 +92,7 @@ export default new Vuex.Store({
         icon: "",
         type: type,
         widgetParameter: {
-          type: "TODO" //TODO: Add widget type
+          type: widgetType
         }
       })
     },
