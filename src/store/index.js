@@ -19,7 +19,7 @@ export default new Vuex.Store({
     isMobile: false,
   },
   mutations: {
-    isYoutubeVideo(state, payload) {
+    isYoutubeVideo(state, payload) { //TODO: Was ist jetzt hiermit? Muss das weg?
       let index = state.linkList.map(item => item.id).indexOf(payload.id);
       state.linkList[index].isYoutubeVideo = payload.result;
     },
@@ -82,10 +82,19 @@ export default new Vuex.Store({
       const num = Math.floor(Math.random() * 999999);
       const id = parseInt(`${dt}${num}`)
       if(type==="social"){
-        state.socialsList.push({name: "", link: "", img: "", id: id})
+        state.socialsList.push({title: "", url: "", icon: "", id: id})
         return;
       }
-      state.linkList.push({name: "", link: "", img: "", isYoutubeVideo: false, embed: false, id: id})
+      state.linkList.push({
+        id: id,
+        title: "",
+        url: "",
+        icon: "",
+        type: type,
+        widgetParameter: {
+          type: "TODO" //TODO: Add widget type
+        }
+      })
     },
 
     checkMobile(state, payload) {
@@ -95,21 +104,21 @@ export default new Vuex.Store({
     addImageToEntry(state, payload) {
       if(payload.type==='social'){
         let index = state.socialsList.map(item => item.id).indexOf(payload.imgData.id);
-        state.socialsList[index].img = payload.imgData.img;
+        state.socialsList[index].url = payload.imgData.img;
         return;
       }
       let index = state.linkList.map(item => item.id).indexOf(payload.imgData.id);
-      state.linkList[index].img = payload.imgData.img;
+      state.linkList[index].url = payload.imgData.img;
     },
 
     removeImageFromEntry(state, payload) {
       if(payload.type==='social'){
         let index = state.socialsList.map(item => item.id).indexOf(payload);
-        state.socialsList[index].img = '';
+        state.socialsList[index].url = '';
         return;
       }
       let index = state.linkList.map(item => item.id).indexOf(payload);
-      state.linkList[index].img = '';
+      state.linkList[index].url = '';
     },
 
     removeEntry(state, payload, type) {
@@ -123,10 +132,10 @@ export default new Vuex.Store({
     },
 
     addExample(state, isDark) {
-      state.linkList = [{name: "Youtube", link: "https://www.youtube.com", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/YouTube_social_white_squircle_%282017%29.svg/1200px-YouTube_social_white_squircle_%282017%29.svg.png", isYoutubeVideo:true, embed: false, id: 1},
-                    {name: "Instagram", link: "https://instagram.com", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/1200px-Instagram_logo_2016.svg.png", isYoutubeVideo:false, embed: false, id: 2},
-                    {name: "Twitter", link: "https://twitter.com", img: "https://image.flaticon.com/icons/png/512/124/124021.png", isYoutubeVideo:false, embed: false, id: 3},
-                    {name: "TikTok", link: "https://tiktok.com", img: "https://cdn.worldvectorlogo.com/logos/tiktok-logo-2--1.svg", isYoutubeVideo:false, embed: false, id: 4}];
+      state.linkList = [{title: "Youtube", url: "https://www.youtube.com", icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/YouTube_social_white_squircle_%282017%29.svg/1200px-YouTube_social_white_squircle_%282017%29.svg.png", id: 1, type: "rootlink", widgetParameter: {type: "TODO"}},
+                    {title: "Instagram", url: "https://instagram.com", icon: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/1200px-Instagram_logo_2016.svg.png", id: 2, type: "rootlink", widgetParameter: {type: "TODO"}},
+                    {title: "Twitter", url: "https://twitter.com", icon: "https://image.flaticon.com/icons/png/512/124/124021.png", id: 3, type: "rootlink", widgetParameter: {type: "TODO"}},
+                    {title: "TikTok", url: "https://tiktok.com", icon: "https://cdn.worldvectorlogo.com/logos/tiktok-logo-2--1.svg", id: 4, type: "rootlink", widgetParameter: {type: "TODO"}}];
       if(isDark) {
         if(state.background_hex === "#FFFFFF" && state.text_hex === "#FFFFFF" && state.linkBox_hex === "#000000" && state.rootLink_hex === "#000000") {
           state.background_hex = "#181818";

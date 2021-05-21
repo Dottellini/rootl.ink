@@ -53,16 +53,8 @@ export default {
         },
         {
           iconBarItem:"Style",
-          textBarItems: [
-        {
-          textBarItem:"Colors",
-          dropdownItems:["Background","Links"]
-        },
-        {
-          textBarItem:"Highlighting",
-          dropdownItems:["Setting1","Setting2","Setting3"]
-        },
-        "Style 3"]}
+          textBarItems: ["Colors", "Highlights"]
+        }
       ]
 
       this.dropdownHidden={

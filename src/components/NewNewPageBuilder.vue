@@ -14,8 +14,8 @@
             </div>
             <img class="iconImg" :src="file[element.id]" alt="" :class="{hidden: file[element.id]===undefined}">
             <div class="list-group-item-description">
-              <p class="linkTitle" >{{element.name}}</p>
-              <p class="linkDescription">{{element.link}}</p>
+              <p class="linkTitle" >{{element.title}}</p>
+              <p class="linkDescription">{{element.url}}</p>
             </div>
             <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="16" fill="currentColor" class="bi bi-box-arrow-right modalArrow" viewBox="0 0 16 16" @click="toggleSettingsModal('link',element)">
               <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
@@ -43,7 +43,7 @@
                     </div>
                     <div class="iconSettings">
                         <h2>Icon</h2>
-                        <CustomButton type="button" @click="getFavicon(element.link, element.id)">Get Website Icon</CustomButton>
+                        <CustomButton type="button" @click="getFavicon(element.url, element.id)">Get Website Icon</CustomButton>
                         <CustomButton type="fileSelector" :bindId="element.id" @fileSelected="changeImage">Upload Own Icon</CustomButton>
                     </div>
                     <span class="close" @click="toggleSettingsModal('link',element)">&times;</span>
@@ -71,7 +71,7 @@
             </div>
             <img class="iconImg" :src="file[element.id]" alt="" :class="{hidden: file[element.id]===undefined}">
             <div class="list-group-item-description">
-              <p class="linkTitle" >{{element.name}}</p>
+              <p class="linkTitle" >{{element.title}}</p>
               <p class="linkDescription">{{element.link}}</p>
             </div>
             <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="18" fill="none" viewBox="0 0 10 18" @click="toggleSettingsModal('social',element)">
@@ -101,6 +101,12 @@
         </draggable>
         <button @click="addField('social')" class="Add-Button">Add Link</button>
       </div>
+      <div id="color" :class="{hidden: activeTab !== 'Colors'}">
+        <input type="checkbox" id="modeSelector" v-model="advancedMode">
+        <label for="modeSelector">Advanced</label>
+        <div v-if="!advancedMode"></div>
+        <div v-if="advancedMode"></div>
+      </div>
     </div>
     <slot id="Preview"></slot>
   </div>
@@ -124,6 +130,7 @@ export default {
         link: true,
         social: true
       },
+      advancedMode: false,
       activeTab: 'Rootlinks',
       file: {},
       currentSettings: {},
@@ -198,7 +205,7 @@ export default {
           id: id,
           img: htmlString
         }
-        this.$store.commit("addImageToEntry", {imgData, type: 'link'});
+        this.$store.commit("addImageToEntry", {imgData, type: 'rootlink'});
         this.file[id] = htmlString
       })
     },
@@ -234,7 +241,7 @@ export default {
               img: this.file[this.currentSettings.id]
             }
 
-            this.$store.commit("addImageToEntry", {imgData, type: 'link'});
+            this.$store.commit("addImageToEntry", {imgData, type: 'rootlink'});
           });
         });
         reader.readAsDataURL(file)
@@ -290,6 +297,14 @@ export default {
 </script>
 
 <style scoped>
+
+label {
+  color: var(--text-color);
+}
+
+input[type=checkbox] {
+  margin: .4rem;
+}
 
 p.platformSelector{
   line-height: 35px;

@@ -11,13 +11,13 @@
 
     <!-- Links -->
     <div id="links">
-      <div v-for="link in links" :key="link.id" :ref="'link-'+link.id" @click="clicked(link.name, link.id)"  @click.middle="clicked(link.name, link.id)">
+      <div v-for="link in links" :key="link.id" :ref="'link-'+link.id" @click="clicked(link.title, link.id)"  @click.middle="clicked(link.title, link.id)">
         <Linkbox :link=link :boxColor=box_hex :textColor=text_hex :previewMode=usePhone />
       </div>
     </div>
       <!-- Socials -->
       <div id="socials">
-        <a :href="social.link" v-for="social in socialsList" :key="social.id"><img class="socialImg" :src="social.img"></a>
+        <a :href="social.url" v-for="social in socialsList" :key="social.id"><img class="socialImg" :src="social.icon"></a>
       </div>
     </div>
   </div>

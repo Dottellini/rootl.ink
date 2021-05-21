@@ -2,16 +2,16 @@
   <a :target="linkOrEmbed(link).target" rel="noopener" :style="textColor" :href="linkOrEmbed(link).href" >
       <div @click="toggleEmbed(link.embed)" :ref="'wrapper-1'" class="LinkBox-Wrapper" :class="{ embedded: link.embed, embedShown: embedShown, previewMode: previewMode, highlight: link.highlight}" :style="boxColor">
         <div class="LinkBox">
-          <img :src=link.img
+          <img :src=link.icon
                class="LinkImage"
                height="40px"
                width="40px"
-               v-if="link.img !== ''">
+               v-if="link.icon !== ''">
           <div class="LinkBoxText" :style="textColor">
-            {{link.name}}
+            {{link.title}}
           </div>
         </div>
-        <iframe :ref="'iframe-1'" v-if="link.embed" :src="getEmbedUrl(link.link)" width="0px" height="0px" title="YouTube video player" frameborder="0" allowfullscreen="true" :class="{embedShown: embedShown}" />
+        <iframe :ref="'iframe-1'" v-if="link.embed" :src="getEmbedUrl(link.url)" width="0px" height="0px" title="YouTube video player" frameborder="0" allowfullscreen="true" :class="{embedShown: embedShown}" />
       </div>
     </a>
 </template>
