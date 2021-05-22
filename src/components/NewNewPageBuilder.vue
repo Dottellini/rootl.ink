@@ -298,6 +298,7 @@ export default {
       this.$store.dispatch("savePage", this.$store.state)
     },
     changeImage(eventParams){
+      console.log("cur",this.currentSettings)
       new Promise(res => {
         let file = eventParams.evt.target.files[0];
         const reader = new FileReader();
@@ -315,7 +316,7 @@ export default {
             this.file[this.currentSettings.id] = canvas.toDataURL(this.currentSettings.id.outputMimeType, 0.7)
 
             let imgData = {
-              id: eventParams.id,
+              id: this.currentSettings.id,
               img: this.file[this.currentSettings.id]
             }
 
