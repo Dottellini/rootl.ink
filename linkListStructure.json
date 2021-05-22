@@ -4,7 +4,7 @@
   "title": String,
   "url": String
   "type": "Rootlink" | "Widget",
-  "widgetParameters": undefinded | {
+  "widgetParameter": undefinded | {
     "type": "videoEmbed" | "fileUpload",
     ...
   }

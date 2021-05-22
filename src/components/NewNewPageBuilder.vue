@@ -54,9 +54,7 @@
                 <div class="modalContainer">
                   <div class="platformSelector">
                     <p class="platformSelector">Select Your Platform:</p>
-                    <Dropdown Options="{title: 'YouTube', img:'https://upload.wikimedia.org/wikipedia/commons/4/42/YouTube_icon_%282013-2017%29.png'},
-                    {title: 'Facebook', img:'https://cdn.icon-icons.com/icons2/2108/PNG/512/facebook_icon_130940.png'},
-                    {title: 'Instagram', img:'https://icoff.ee/fa/wp-content/uploads/2019/06/instagram-logo.png'}"/>
+                    <Dropdown :Options="dropdownOptions"/>
                   </div>
                   <div class="handleInput">
                     <p class="handleInput">Your handle:</p>
@@ -83,6 +81,14 @@
         </div>
       </div>
       <div id="Widgets" :class="{hidden: activeTab !== 'Widgets'}">
+        <VideoEmbedModal
+            :title="currentSettings.title"
+            :url="currentSettings.url" :id="currentSettings.id"
+            :shown="!modalHidden.videoEmbed"
+            @close="modalClick($event, currentSettings)"
+            @remove="removeEntry('widget')"
+        ></VideoEmbedModal>
+
         <div id="widgetsContainer">
           <div class="availableWidgets">
             <h2>Available Widgets</h2>
@@ -95,7 +101,7 @@
                   </div>
                 </div>
                 <div class="addWidgetButton" id="videoEmbedButton">
-                  <div class="bar"/><div class="button" @click="addField('widget', 'videoEmbed'); toggleSettingsModal('widget', list[list.length-1])">+</div>
+                  <div class="bar"/><div class="button" @click="addField('widget', 'videoEmbed'); toggleSettingsModal('videoEmbed', list[list.length-1])">+</div>
                 </div>
               </div>
               <div class="container1" id="fileUploadContainer">
@@ -106,7 +112,7 @@
                   </div>
                 </div>
                 <div class="addWidgetButton" id="fileUploadButton">
-                  <div class="bar"/><div class="button" @click="addField('widget', 'fileUpload'); toggleSettingsModal('widget', list[list.length-1])">+</div>
+                  <div class="bar"/><div class="button" @click="addField('widget', 'fileUpload'); toggleSettingsModal('fileUpload', list[list.length-1])">+</div>
                 </div>
               </div>
             </div>
@@ -125,15 +131,10 @@
                   <p class="linkTitle" >{{element.title}}</p>
                   <p class="linkUrl">{{element.url}}</p>
                 </div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="16" fill="currentColor" class="bi bi-box-arrow-right modalArrow" viewBox="0 0 16 16" @click="toggleSettingsModal('widget',element)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="16" fill="currentColor" class="bi bi-box-arrow-right modalArrow" viewBox="0 0 16 16" @click="toggleSettingsModal(element.widgetParameter.title,element)">
                   <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
                   <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
                 </svg>
-
-                <div class="modal" :class="{hidden: modalHidden.widget}" @click="modalClick($event, element)">
-                  <div class="modalContent">
-                  </div>
-                </div>
               </div>
             </draggable>
           </div>
@@ -156,21 +157,21 @@ import HorizontalChooser from "./Utilities/HorizontalChooser";
 import ColorPickerBasic from "./ColorPickerBasic";
 import ColorPickerAdvanced from "./ColorPickerAdvanced";
 import RootlinksModal from "@/components/EditorModals/RootlinksModal";
+import VideoEmbedModal from "@/components/EditorModals/VideoEmbedModal";
 
 
 export default {
   name: "PageBuilder",
-  components: {
-    RootlinksModal,
-    ColorPickerAdvanced,
-    ColorPickerBasic,
-    HorizontalChooser, Dropdown, CustomButton, TextInput, CheckBox, Sidebar, draggable, VueGpickr},
+  components: {RootlinksModal, ColorPickerAdvanced, ColorPickerBasic, HorizontalChooser, Dropdown, CustomButton, TextInput, CheckBox, Sidebar, draggable, VueGpickr, VideoEmbedModal},
   data(){
     return{
+      dropdownOptions:[{title: 'YouTube', img:'https://upload.wikimedia.org/wikipedia/commons/4/42/YouTube_icon_%282013-2017%29.png'},
+        {title: 'Facebook', img:'https://cdn.icon-icons.com/icons2/2108/PNG/512/facebook_icon_130940.png'},
+        {title: 'Instagram', img:'https://icoff.ee/fa/wp-content/uploads/2019/06/instagram-logo.png'}],
       modalHidden: {
         rootlink: true,
         social: true,
-        widget: true,
+        videoEmbed: true,
       },
       advancedMode: false,
       activeTab: 'Rootlinks',
@@ -217,6 +218,7 @@ export default {
     },
     toggleSettingsModal(linkType, linkItem){
       this.currentSettings = linkItem
+      console.log(linkType)
       if(linkType === undefined)
       {
         let instance = this
@@ -225,7 +227,11 @@ export default {
         });
         return
       }
+      console.log(linkType)
+      console.log(this.modalHidden)
       this.modalHidden[linkType] = !this.modalHidden[linkType]
+      console.log(this.modalHidden)
+
     },
     tabChange(item){this.activeTab = item.title},
     checkIfVideo: function (id, url) {
@@ -347,7 +353,7 @@ export default {
   box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
   border: var(--editor-items-border);
   height: 50px;
-  z-index: 10;
+  z-index: 5;
   background-color: white;
   width: 264px;
 }

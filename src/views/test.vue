@@ -1,12 +1,14 @@
 <template>
-  <HorizontalChooser :options='["Option1", "Option2", "Option3"]' @optionSelection="test"></HorizontalChooser>
+  <VideoEmbedModal :shown="true"></VideoEmbedModal>
+
 </template>
 
 <script>
 import Dropdown from "@/components/Utilities/Dropdown";
 import HorizontalChooser from "@/components/Utilities/HorizontalChooser";
+import VideoEmbedModal from "@/components/EditorModals/VideoEmbedModal";
 export default {
-  components:{HorizontalChooser, Dropdown},
+  components:{VideoEmbedModal, HorizontalChooser, Dropdown},
   name: "test",
   methods:{
     test(evt){

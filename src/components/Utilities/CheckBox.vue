@@ -1,6 +1,6 @@
 <template>
-  <div class="checkbox-component">
-    <label>{{text}}
+  <div class="wrapper">
+    <label class="checkbox">{{text}}
       <input type="checkbox" checked="checked">
       <span class="checkmark"></span>
     </label>
@@ -21,12 +21,19 @@ export default {
 </script>
 
 <style scoped>
-.checkbox-component{
+.wrapper{
   width:160px;
   overflow: hidden;
+
 }
 
-.checkbox-component label{
+.checkbox{
+  display: flex;
+  flex-direction: row;
+    justify-content: space-between;
+}
+
+.wrapper label{
   user-select: none;
   display: block;
   position: relative;
@@ -36,7 +43,7 @@ export default {
   font-size: 18px;
 }
 
-.checkbox-component label input {
+.wrapper label input {
   height: 0;
   width: 0;
   opacity: 0;
@@ -54,11 +61,11 @@ export default {
   border-radius: 3px;
 }
 
-.checkbox-component label:hover input ~ .checkmark {
+.wrapper label:hover input ~ .checkmark {
   background-color: lightgray;
 }
 
-.checkbox-component label input:checked ~ .checkmark {
+.wrapper label input:checked ~ .checkmark {
   background-color: green;
 }
 
@@ -68,11 +75,11 @@ export default {
   position: absolute;
 }
 
-.checkbox-component label input:checked ~ .checkmark:after {
+.wrapper label input:checked ~ .checkmark:after {
   display: block;
 }
 
-.checkbox-component label .checkmark:after {
+.wrapper label .checkmark:after {
   transform: rotate(45deg);
   left: 7px;
   top: 3px;
