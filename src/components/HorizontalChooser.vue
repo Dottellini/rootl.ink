@@ -14,8 +14,11 @@
   </div>-->
 
   <div class="horizontalChooser" :style="horizontalChooserStyle">
-    <div v-for="option in options" class="horizontalChooserOption" :class="{active: activeOption=== option, last: option === options[options.length-1], first: option === options[0]}" @click="setActiveOption(option); $emit('optionSelection',option)">
-      {{option}}
+    <h2>{{title}}</h2>
+    <div class="container">
+      <div v-for="option in options" class="horizontalChooserOption" :class="{active: activeOption=== option, last: option === options[options.length-1], first: option === options[0]}" @click="setActiveOption(option); $emit('optionSelection',option)">
+        {{option}}
+      </div>
     </div>
   </div>
 </template>
@@ -23,11 +26,11 @@
 <script>
 export default {
   name: "horizontalChooser",
-  props:['options'],
+  props:['options', "title"],
   data(){
     return {
       activeOption: undefined,
-      options:["Option1", "Option2", "Option3"]
+      //options:["Option1", "Option2", "Option3"]
     }
   },
   mounted() {
@@ -48,17 +51,25 @@ export default {
 
 <style scoped>
 
+.container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: stretch;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+}
+
 .horizontalChooser{
   font-family: 'Montserrat', sans-serif;
   color: var(--text-color);
-  margin: 100px;
-  border: 1px solid black;
-  border-radius: 20px;
+  margin-top: 40px;
+  margin-bottom: 80px;
   width: 333px;
   height: 30px;
   line-height: 30px;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-around;
   align-items: stretch;
 }

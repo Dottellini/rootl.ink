@@ -100,6 +100,7 @@
       <div id="color" :class="{hidden: activeTab !== 'Colors'}">
         <input type="checkbox" id="modeSelector" v-model="advancedMode">
         <label for="modeSelector">Advanced</label>
+        <hr>
         <div v-if="!advancedMode">
           <color-picker-basic></color-picker-basic>
         </div>
@@ -373,12 +374,18 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+#Preview {
+  @media screen and (max-width: 1100px) {
+    display:none;
+  };
+}
+
 .title{
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding-left:0px;
+  padding-left:0;
   justify-content: space-between;
   z-index: -10;
 }
@@ -473,7 +480,6 @@ p.handleInput{
 }
 
 
-
 .widgetContainer p{
   font-family: 'Montserrat', sans-serif;
   font-weight: 550;
@@ -562,8 +568,6 @@ p.handleInput{
 .horizontalContainer{
   display: flex;
   flex-direction: row;
-  height: 10000px;
-
 }
 
 .horizontalContainer.last{
@@ -638,12 +642,20 @@ input{
   border-radius: 0;
   padding: 0;
   margin: auto;
+
+  @media screen and (max-width: 1100px) {
+    justify-content: left;
+  }
 }
 
 #editArea{
-  width: 10000px;
-  height: 10000px;
+  overflow: auto;
+  min-height: 100vh;
   background-color: var(--background-color);
+
+  @media screen and (max-width: 1100px) {
+    margin: 0 auto;
+  }
 }
 
 .iconImg{
@@ -761,19 +773,6 @@ Input[type="color"] {
   color: var(--text-color);
   font-size: 16px;
   font-family: 'Montserrat', sans-serif;
-}
-
-.color-container {
-  display: flex;
-  flex-direction: column;
-  margin-top: 2em;
-  font-family: 'Montserrat', sans-serif;
-
-  .picker {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  }
 }
 
 /*
