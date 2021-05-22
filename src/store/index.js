@@ -77,11 +77,11 @@ export default new Vuex.Store({
       document.body.style.backgroundColor = state.background_hex;
     },
 
-    emptyEntry(state, type, widgetType) {
+    emptyEntry(state, payload) {
       const dt = Date.now();
       const num = Math.floor(Math.random() * 999999);
       const id = parseInt(`${dt}${num}`)
-      if(type==="social"){
+      if(payload.type==="social"){
         state.socialsList.push({title: "", url: "", icon: "", id: id})
         return;
       }
@@ -90,9 +90,9 @@ export default new Vuex.Store({
         title: "",
         url: "",
         icon: "",
-        type: type,
+        type: payload.type,
         widgetParameter: {
-          type: widgetType
+          type: payload.widgetType
         }
       })
     },

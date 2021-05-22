@@ -1,19 +1,18 @@
 <template>
   <div id="pageBuilder">
+    <div class="modal closeItem" :class="{hidden: modalHidden.rootlink && modalHidden.videoEmbed && modalHidden.social}" @click="modalClick($event, currentSettings)"></div>
     <canvas id="imageCanvas" style="display:none;"></canvas>
     <Sidebar @itemClick="tabChange"/>
     <div id="editArea">
       <div id="Rootlinks" :class="{hidden: activeTab!=='Rootlinks'}">
-        <RootlinksModal
-            :title="currentSettings.title"
-            :url="currentSettings.url" :id="currentSettings.id"
-            :shown="!modalHidden.rootlink"
-            @close="modalClick($event, currentSettings)"
-            @remove="removeEntry('rootlink')"
-        ></RootlinksModal>
         <h2 class="text">Rootlinks:</h2>
         <draggable :list="list" :disabled="!enabled" :animation="100" handle=".handle" class="list-group" ghost-class="ghost" drag-class="drag" chosen-class="chosen" fallbackClass="sortable-fallback" @start="dragging = true">
           <div class="list-group-item" v-for="element in list" :key="element.id">
+            <RootlinksModal
+                :title="element.title"
+                :url="element.url" :id="element.id"
+                :shown="!modalHidden.rootlink"
+            ></RootlinksModal>
             <div class="handle">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grip-vertical" viewBox="0 0 16 16">
                 <path d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
@@ -24,7 +23,7 @@
               <p class="linkTitle" >{{element.title}}</p>
               <p class="linkUrl">{{element.url}}</p>
             </div>
-            <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="16" fill="currentColor" class="bi bi-box-arrow-right modalArrow" viewBox="0 0 16 16" @click="toggleSettingsModal('rootlink',element)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="16" fill="currentColor" class="bi bi-box-arrow-right modalArrow" viewBox="0 0 16 16" @click="toggleSettingsModal(element.type,element)">
               <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
               <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
             </svg>
@@ -81,14 +80,6 @@
         </div>
       </div>
       <div id="Widgets" :class="{hidden: activeTab !== 'Widgets'}">
-        <VideoEmbedModal
-            :title="currentSettings.title"
-            :url="currentSettings.url" :id="currentSettings.id"
-            :shown="!modalHidden.videoEmbed"
-            @close="modalClick($event, currentSettings)"
-            @remove="removeEntry('widget')"
-        ></VideoEmbedModal>
-
         <div id="widgetsContainer">
           <div class="availableWidgets">
             <h2>Available Widgets</h2>
@@ -121,6 +112,15 @@
             <h2>Rootlinks</h2>
             <draggable :list="list" :disabled="!enabled" :animation="100" handle=".handle" class="list-group" ghost-class="ghost" drag-class="drag" chosen-class="chosen" fallbackClass="sortable-fallback" @start="dragging = true">
               <div class="list-group-item" v-for="element in list" :key="element.id">
+                <VideoEmbedModal
+                    :title="element.title"
+                    :url="element.url" :id="element.id"
+                    :shown="!modalHidden.videoEmbed"
+                    @close="modalClick($event, currentSettings)"
+                    @remove="removeEntry('widget')"
+                    @titleChange="element.title=$event"
+                    @urlChange="element.url=$event"
+                ></VideoEmbedModal>
                 <div class="handle">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grip-vertical" viewBox="0 0 16 16">
                     <path d="M7 2a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 5a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zM7 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm-3 3a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
@@ -131,7 +131,7 @@
                   <p class="linkTitle" >{{element.title}}</p>
                   <p class="linkUrl">{{element.url}}</p>
                 </div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="16" fill="currentColor" class="bi bi-box-arrow-right modalArrow" viewBox="0 0 16 16" @click="toggleSettingsModal(element.widgetParameter.title,element)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="16" fill="currentColor" class="bi bi-box-arrow-right modalArrow" viewBox="0 0 16 16" @click="toggleSettingsModal(element.type,element)">
                   <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
                   <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
                 </svg>
@@ -206,19 +206,19 @@ export default {
     }
   },
   methods:{
-    modalClick(evt, linkItem){
-      console.log(evt.target.classList.contains('closeItem'))
-      console.log(evt.target.classList)
+    log(evt){
       console.log(evt)
-
+    },
+    modalClick(evt, linkItem){
       if(evt.target.classList.contains('closeItem')){
         this.toggleSettingsModal(undefined, linkItem)
       }
 
     },
     toggleSettingsModal(linkType, linkItem){
+      console.log("A",this.modalHidden)
       this.currentSettings = linkItem
-      console.log(linkType)
+      console.log("B",linkType)
       if(linkType === undefined)
       {
         let instance = this
@@ -227,11 +227,15 @@ export default {
         });
         return
       }
-      console.log(linkType)
-      console.log(this.modalHidden)
+      if(linkType === 'widget'){
+        console.log("C0",linkItem)
+        console.log("C",linkItem.widgetParameter.type)
+        this.modalHidden[linkItem.widgetParameter.type] = !this.modalHidden[linkItem.widgetParameter.type]
+        console.log("D",this.modalHidden)
+        return
+      }
       this.modalHidden[linkType] = !this.modalHidden[linkType]
-      console.log(this.modalHidden)
-
+      console.log("E",this.modalHidden)
     },
     tabChange(item){this.activeTab = item.title},
     checkIfVideo: function (id, url) {
@@ -245,7 +249,6 @@ export default {
       this.$store.dispatch("savePage", this.$store.state)
     },
     changeImage(eventParams){
-      console.log("cur",this.currentSettings)
       new Promise(res => {
         let file = eventParams.evt.target.files[0];
         const reader = new FileReader();
@@ -302,7 +305,7 @@ export default {
       this.$store.commit("removeEntry", {id,type})
     },
     addField: function(type, widgetType) {
-      this.$store.commit("emptyEntry", type, widgetType)
+      this.$store.commit("emptyEntry", {type: type, widgetType: widgetType})
     }
   },
   computed:{

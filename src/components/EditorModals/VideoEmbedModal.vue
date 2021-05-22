@@ -1,28 +1,26 @@
 <template>
-  <div class="modal closeItem" :class="{hidden: !shown}" @click="$emit('close', $event)">
-    <div class="modalContent">
-      <div class="verticalContainer">
-      <h2>Content</h2>
-        <Dropdown  :Options='dropdownOptions' text='Platform' class="Settings"/>
-        <TextInput title="Title" placeholder="Title" class="Settings"/>
-        <TextInput title="Url" placeholder="Url" class="Settings"/>
-        <div class="footer">
-          <hr>
-          <CustomButton classProp="closeItem" @click="$emit('close', $event)"> Delete Widget</CustomButton>
-        </div>
+  <div class="modalContent" :class="{hidden: !shown}">
+    <div class="verticalContainer">
+    <h2>Content</h2>
+      <Dropdown  :Options='dropdownOptions' text='Platform' class="Settings" />
+      <TextInput title="Title" placeholder="Title" class="Settings" @input="$emit('titleChange', $event)"/>
+      <TextInput title="Url" placeholder="Url" class="Settings" @input="$emit('urlChange', $event)"/>
+      <div class="footer">
+        <hr>
+        <CustomButton classProp="closeItem" @click="$emit('close', $event)"> Delete Widget</CustomButton>
       </div>
-      <div class="vl"/>
-      <div class="verticalContainer">
-        <h2>Settings</h2>
-        <CheckBox text="Autoplay" class="Settings"/>
-        <CheckBox text="Loop Video" class="Settings"/>
-        <div class="footer">
-          <hr>
-          <CustomButton classProp="closeItem" @click="$emit('close', $event)"> Save</CustomButton>
-        </div>
-      </div>
-      <span class="close closeItem" @click="$emit('close', $event)">&times;</span>
     </div>
+    <div class="vl"/>
+    <div class="verticalContainer">
+      <h2>Settings</h2>
+      <CheckBox text="Autoplay" class="Settings"/>
+      <CheckBox text="Loop Video" class="Settings"/>
+      <div class="footer">
+        <hr>
+        <CustomButton classProp="closeItem" @click="$emit('close', $event)"> Save</CustomButton>
+      </div>
+    </div>
+    <span class="close closeItem" @click="$emit('close', $event)">&times;</span>
   </div>
 </template>
 
@@ -67,22 +65,14 @@ hr{
   height: 100000px;
 }
 
-.modal {
+
+.modalContent {
+
   display: flex;
   position: fixed;
   z-index: 10;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgb(0,0,0);
-  background-color: rgba(0,0,0,0.4);
-  margin: 0;
-  align-items: center;
-}
-
-.modalContent {
+  left: 500px;
+  top:50px;
   color: var(--text-color);
   background-color: var(--background-color);
   margin: 5% auto 5% auto;
@@ -90,7 +80,6 @@ hr{
   border-radius: 10px;
   width: 800px;
   height: 400px;
-  display: flex;
   flex-direction: row;
   justify-content: stretch;
 }

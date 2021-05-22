@@ -1,19 +1,19 @@
 <template>
   <a :target="linkOrEmbed(link).target" rel="noopener" :style="textColor" :href="linkOrEmbed(link).href" >
-      <div @click="toggleEmbed(link.embed)" :ref="'wrapper-1'" class="LinkBox-Wrapper" :class="{ embedded: link.embed, embedShown: embedShown, previewMode: previewMode, highlight: link.highlight}" :style="boxColor">
-        <div class="LinkBox">
-          <img :src=link.icon
-               class="LinkImage"
-               height="40px"
-               width="40px"
-               v-if="link.icon !== ''">
-          <div class="LinkBoxText" :style="textColor">
-            {{link.title}}
-          </div>
+    <div @click="toggleEmbed(link.widgetParameter.type==='videoEmbed')" :ref="'wrapper-1'" class="LinkBox-Wrapper" :class="{ embedded: link.widgetParameter.type==='videoEmbed', embedShown: embedShown, previewMode: previewMode, highlight: link.highlight}" :style="boxColor">
+      <div class="LinkBox">
+        <img :src=link.icon
+          class="LinkImage"
+          height="40px"
+          width="40px"
+          v-if="link.icon !== ''">
+        <div class="LinkBoxText" :style="textColor">
+          {{link.title}}
         </div>
-        <iframe :ref="'iframe-1'" v-if="link.embed" :src="getEmbedUrl(link.url)" width="0px" height="0px" title="YouTube video player" frameborder="0" allowfullscreen="true" :class="{embedShown: embedShown}" />
       </div>
-    </a>
+      <iframe :ref="'iframe-1'" v-if="link.type==='widget' && link.widgetParameter.type==='videoEmbed'" :src="getEmbedUrl(link.url)" width="0px" height="0px" title="YouTube video player" frameborder="0" allowfullscreen="true" :class="{embedShown: embedShown}" />
+    </div>
+  </a>
 </template>
 
 <script>
@@ -31,10 +31,11 @@
       let theme = localStorage.getItem('theme');
       this.isDark = theme !== "";
       this.$store.commit("changeThemeOnPreview", this.isDark)
+      console.log("XYZ",this.link)
     },
     methods: {
       linkOrEmbed: function(link){
-        if(!link.embed){
+        if(link.widgetParameter.type !=='videoEmbed'){
           return {
             "href": link.url,
             "target": "_blank"

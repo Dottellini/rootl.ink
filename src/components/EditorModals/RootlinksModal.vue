@@ -1,34 +1,32 @@
 <template>
-  <div class="modal closeItem" :class="{hidden: !shown}" @click="$emit('close', $event)">
-    <div class="modalContent" >
-      <div class="verticalContainer">
-        <div class="horizontalContainer">
-          <div class="titleUrlSettings">
-            <h2>Content</h2>
-            <div>
-              <label>Title</label>
-              <TextInput title="Title" :value="title" placeholder="My Awesome Link" v-model="title"/>
-            </div>
-            <div>
-              <TextInput title="Url" :value="url" placeholder="https://www.example.com" v-model="url"/>
-            </div>
-            <div>
-              <CheckBox text="Embed Video" class="CheckBox"/>
-            </div>
+  <div class="modalContent" :class="{hidden: !shown}">
+    <div class="verticalContainer">
+      <div class="horizontalContainer">
+        <div class="titleUrlSettings">
+          <h2>Content</h2>
+          <div>
+            <label>Title</label>
+            <TextInput title="Title" :value="title" placeholder="My Awesome Link" v-model="title"/>
           </div>
-          <div class="iconSettings">
-            <h2>Icon</h2>
-            <CustomButton type="button" @click="getFavicon(url, id)">Get Website Icon</CustomButton>
-            <CustomButton type="fileSelector" :bindId="id" @fileSelected="$emit('newIcon', $event)">Upload Own Icon</CustomButton>
+          <div>
+            <TextInput title="Url" :value="url" placeholder="https://www.example.com" v-model="url"/>
           </div>
-          <span class="close closeItem" @click=" $emit('close', $event)">&times;</span>
-
+          <div>
+            <CheckBox text="Embed Video" class="CheckBox"/>
+          </div>
         </div>
-        <div class="horizontalContainer last">
-          <CustomButton type="button" classProp="closeItem" @click="$emit('remove', $event); $emit('close', $event)">Delete Link</CustomButton>
-          <CustomButton type="button" classProp="closeItem" @click="$emit('close', $event)">Save</CustomButton>
-
+        <div class="iconSettings">
+          <h2>Icon</h2>
+          <CustomButton type="button" @click="getFavicon(url, id)">Get Website Icon</CustomButton>
+          <CustomButton type="fileSelector" :bindId="id" @fileSelected="$emit('newIcon', $event)">Upload Own Icon</CustomButton>
         </div>
+        <span class="close closeItem" @click=" $emit('close', $event)">&times;</span>
+
+      </div>
+      <div class="horizontalContainer last">
+        <CustomButton type="button" classProp="closeItem" @click="$emit('remove', $event); $emit('close', $event)">Delete Link</CustomButton>
+        <CustomButton type="button" classProp="closeItem" @click="$emit('close', $event)">Save</CustomButton>
+
       </div>
     </div>
   </div>
@@ -90,23 +88,13 @@ export default {
 
 <style scoped lang="scss">
 
+.modalContent {
 
-.modal {
   display: flex;
   position: fixed;
   z-index: 10;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgb(0,0,0);
-  background-color: rgba(0,0,0,0.4);
-  margin: 0;
-  align-items: center;
-}
-
-.modalContent {
+  left: 500px;
+  top:50px;
   color: var(--text-color);
   background-color: var(--background-color);
   margin: 5% auto 5% auto;
@@ -114,7 +102,6 @@ export default {
   border-radius: 10px;
   width: 800px;
   height: 400px;
-  display: flex;
   flex-direction: row;
   justify-content: stretch;
 }
