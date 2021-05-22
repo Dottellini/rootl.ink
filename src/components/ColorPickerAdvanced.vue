@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import HorizontalChooser from "./HorizontalChooser";
+import HorizontalChooser from "./Utilities/HorizontalChooser";
 import { VueGpickr, LinearGradient } from 'vue-gpickr';
 export default {
   name: "ColorPickerAdvanced",

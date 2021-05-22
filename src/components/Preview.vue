@@ -134,7 +134,7 @@ export default {
 
   .content {
     max-height: 585px;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
     -ms-overflow-style: none;  /* IE and Edge */
 

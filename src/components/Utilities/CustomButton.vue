@@ -1,6 +1,6 @@
 <template>
   <div class="customButton">
-    <button v-if="type!=='fileSelector'" @click="$emit('click')">
+    <button v-if="type!=='fileSelector'" :class="[classProp]" @click="$emit('click', $event)">
       <slot id="text">
         {{text}}
       </slot>
@@ -22,7 +22,7 @@ export default {
     }
   },
   name: "CustomButton",
-  props:["text", "type", "bindId", "width"],
+  props:["text", "type", "bindId", "width", "classProp"],
   methods:{
     openFileSelector(evt){
       if(evt.target.outerHTML.includes('class="fileSelector"')){

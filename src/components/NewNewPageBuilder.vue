@@ -4,6 +4,13 @@
     <Sidebar @itemClick="tabChange"/>
     <div id="editArea">
       <div id="Rootlinks" :class="{hidden: activeTab!=='Rootlinks'}">
+        <RootlinksModal
+            :title="currentSettings.title"
+            :url="currentSettings.url" :id="currentSettings.id"
+            :shown="!modalHidden.rootlink"
+            @close="modalClick($event, currentSettings)"
+            @remove="removeEntry('rootlink')"
+        ></RootlinksModal>
         <h2 class="text">Rootlinks:</h2>
         <draggable :list="list" :disabled="!enabled" :animation="100" handle=".handle" class="list-group" ghost-class="ghost" drag-class="drag" chosen-class="chosen" fallbackClass="sortable-fallback" @start="dragging = true">
           <div class="list-group-item" v-for="element in list" :key="element.id">
@@ -21,39 +28,6 @@
               <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
               <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
             </svg>
-
-            <div class="modal" :class="{hidden: modalHidden.rootlink}" @click="modalClick($event, element)">
-              <div class="modalContent">
-                <div class="verticalContainer">
-                  <div class="horizontalContainer">
-                    <div class="titleUrlSettings">
-                      <h2>Content</h2>
-                      <div>
-                        <label>Title</label>
-                        <TextInput title="Title" :value="currentSettings.title" placeholder="My Awesome Link" v-model="currentSettings.title"></TextInput>
-                      </div>
-                      <div>
-                        <TextInput title="Url" :value="currentSettings.url" placeholder="https://www.example.com" v-model="currentSettings.url"></TextInput>
-                      </div>
-                      <div>
-                        <CheckBox text="Embed Video" class="CheckBox"></CheckBox>
-                      </div>
-                    </div>
-                    <div class="iconSettings">
-                        <h2>Icon</h2>
-                        <CustomButton type="button" @click="getFavicon(element.url, element.id)">Get Website Icon</CustomButton>
-                        <CustomButton type="fileSelector" :bindId="element.id" @fileSelected="changeImage">Upload Own Icon</CustomButton>
-                    </div>
-                    <span class="close" @click="toggleSettingsModal('rootlink',element)">&times;</span>
-
-                  </div>
-                  <div class="horizontalContainer last">
-                    <CustomButton type="button" @click="removeEntry('rootlink') ;toggleSettingsModal('rootlink',element)">Delete Link</CustomButton>
-                    <CustomButton type="button" @click="toggleSettingsModal('rootlink',element)">Save</CustomButton>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
         </draggable>
         <button @click="addField('rootlink', undefined); toggleSettingsModal('rootlink', list[list.length-1])" class="Add-Button">Add Link</button>
@@ -174,18 +148,20 @@
 import Sidebar from "@/components/Sidebar";
 import draggable from "vuedraggable";
 import { VueGpickr, LinearGradient } from 'vue-gpickr';
-import CheckBox from "@/components/CheckBox";
-import TextInput from "@/components/TextInput";
-import CustomButton from "@/components/CustomButton";
-import Dropdown from "@/components/Dropdown";
-import HorizontalChooser from "./HorizontalChooser";
+import CheckBox from "@/components/Utilities/CheckBox";
+import TextInput from "@/components/Utilities/TextInput";
+import CustomButton from "@/components/Utilities/CustomButton";
+import Dropdown from "@/components/Utilities/Dropdown";
+import HorizontalChooser from "./Utilities/HorizontalChooser";
 import ColorPickerBasic from "./ColorPickerBasic";
 import ColorPickerAdvanced from "./ColorPickerAdvanced";
+import RootlinksModal from "@/components/EditorModals/RootlinksModal";
 
 
 export default {
   name: "PageBuilder",
   components: {
+    RootlinksModal,
     ColorPickerAdvanced,
     ColorPickerBasic,
     HorizontalChooser, Dropdown, CustomButton, TextInput, CheckBox, Sidebar, draggable, VueGpickr},
@@ -230,12 +206,14 @@ export default {
   },
   methods:{
     modalClick(evt, linkItem){
-      //modal-background clicked
-      console.log("A")
-      if(evt.target.outerHTML.includes('class="modal"')){
-        console.log("B")
+      console.log(evt.target.classList.contains('closeItem'))
+      console.log(evt.target.classList)
+      console.log(evt)
+
+      if(evt.target.classList.contains('closeItem')){
         this.toggleSettingsModal(undefined, linkItem)
       }
+
     },
     toggleSettingsModal(linkType, linkItem){
       this.currentSettings = linkItem
@@ -250,43 +228,6 @@ export default {
       this.modalHidden[linkType] = !this.modalHidden[linkType]
     },
     tabChange(item){this.activeTab = item.title},
-    getFavicon: function(url, id) {
-      fetch(`gethtml?url=${url}`,{
-        method:"POST"
-      }).then(htmlData=>htmlData.text()).then(htmlString=>{
-        let foundIconPosition = htmlString.search(RegExp('(<link rel="(icon|apple-touch-icon-precomposed|shortcut icon|shortcut-icon)")|apple-touch-icon'))
-        if(foundIconPosition===-1){
-          let imgData = {
-            id: id,
-            img: undefined
-          }
-          this.$store.commit("addImageToEntry", {imgData, type: 'rootlink'});
-          return;
-        }
-        htmlString = htmlString.slice(foundIconPosition, foundIconPosition+300)
-        htmlString = htmlString.split(RegExp('[<>\\s]'))
-
-        for(let i=0;i<htmlString.length;i++){
-          if(htmlString[i].includes('href=')){
-            htmlString = htmlString[i].replace('href="','').replace('"','')
-            if(htmlString[htmlString.length-1]==="/"){
-              htmlString = htmlString.slice(0,htmlString.length-1)
-            }
-            break;
-          }
-        }
-        if(htmlString[0]==='/'){
-          htmlString = `https://${url.split('/')[2]}${htmlString}`
-        }
-
-        let imgData = {
-          id: id,
-          img: htmlString
-        }
-        this.$store.commit("addImageToEntry", {imgData, type: 'rootlink'});
-        this.file[id] = htmlString
-      })
-    },
     checkIfVideo: function (id, url) {
       if(/http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?|http(?:s?):\/\/(www\.)?vimeo\.com\/(\d+)|http(?:s?):\/\/(?:www\.)twitch.tv\/(\S+)/g.test(url)){
         this.$store.commit("isYoutubeVideo", {id: id, result: true});
@@ -376,6 +317,13 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
+#Rootlinks{
+  overflow-y: auto;
+  max-height: calc(100vh - 53px)
+
+}
+
 #Preview {
   @media screen and (max-width: 1100px) {
     display:none;
@@ -630,12 +578,8 @@ input{
   display: none;
 }
 
-.no-scroll{
-  overflow-y: hidden !important;
-}
 
 #pageBuilder{
-  overflow: hidden;
   display: flex;
   flex-direction: row;
   align-items: stretch;
@@ -650,8 +594,9 @@ input{
 }
 
 #editArea{
-  overflow: auto;
   min-height: 100vh;
+  height: 100vh;
+  width: 100000px;
   background-color: var(--background-color);
 
   @media screen and (max-width: 1100px) {

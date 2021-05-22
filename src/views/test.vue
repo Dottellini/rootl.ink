@@ -3,8 +3,8 @@
 </template>
 
 <script>
-import Dropdown from "@/components/Dropdown";
-import HorizontalChooser from "@/components/HorizontalChooser";
+import Dropdown from "@/components/Utilities/Dropdown";
+import HorizontalChooser from "@/components/Utilities/HorizontalChooser";
 export default {
   components:{HorizontalChooser, Dropdown},
   name: "test",
