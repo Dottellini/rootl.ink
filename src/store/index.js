@@ -196,7 +196,7 @@ export default new Vuex.Store({
     async fetchUserData({commit}, payload) {
       let string;
       console.log(payload)
-      await fetch(`https://d26k63xuikc78y.cloudfront.net/${payload.username.toLowerCase()}.json`, {
+      await fetch(`https://d35cozwh7dkec2.cloudfront.net/${payload.toLowerCase()}.json`, {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST',
         'mode': "cors"

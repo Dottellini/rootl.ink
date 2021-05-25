@@ -4,8 +4,8 @@
     <div class="dropdown">
       <div class="dropdownButton" @mouseenter="toggleDropdown" @mouseleave="toggleDropdown">
         <div class="contentContainer">
-          <p>{{selectedOption.title}}</p>
-          <img :src="selectedOption.img">
+          <p v-if="selectedOption!==undefined">{{selectedOption.title}}</p>
+          <img  v-if="selectedOption!==undefined" :src="selectedOption.img">
         </div>
         <svg class="svgArrow" xmlns="http://www.w3.org/2000/svg" width="10" height="18" fill="none" viewBox="0 0 10 18" :class="{rotated: optionsHidden}">
           <path stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M1 1l8 8-8 8"></path>
@@ -33,14 +33,12 @@ export default {
   props: ['Options', 'text'],
   data(){
     return{
-      selectedOption: {title: 'YouTube', img:'https://upload.wikimedia.org/wikipedia/commons/4/42/YouTube_icon_%282013-2017%29.png'},
+      selectedOption: {title: "Select One", img: ""},
       optionsHidden: true
     }
   },
   computed:{
     options(){
-      console.log(this.text)
-      console.log((this.Options))
       return this.Options
     }
   },

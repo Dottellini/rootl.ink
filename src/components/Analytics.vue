@@ -1,52 +1,59 @@
 <template>
-  <div>
-    <UltimateChart v-if="LinkClicksData!==undefined" :yAxis="LinkClicksData.yAxis" :xAxis="LinkClicksData.xAxis" title="LinkClicks"/>
-    <br>
-    <UltimateChart v-if="BrowsersData!==undefined" :yAxis="BrowsersData.yAxis" :xAxis="BrowsersData.xAxis" title="Browsers"/>
-    <br>
-    <UltimateChart v-if="OSData!==undefined" :yAxis="OSData.yAxis" :xAxis="OSData.xAxis" title="Operating Systems"/>
+  <div class="wrapper">
+    <div class="bigChart">
+      <Chart v-if="LinkClicksData.length!==0" :xAxis="LinkClicksData[0].xAxis" :yAxis="LinkClicksData[0].yAxis" chartWidth="800px" chartHeight="300px"/>
+    </div>
+    <div class="chartGrid">
+      <div class="GridItem">
+        <Chart v-if="LinkClicksData.length!==0" :xAxis="LinkClicksData[0].xAxis" :yAxis="LinkClicksData[0].yAxis" chartWidth="400px" chartHeight="200px"/>
+      </div>
+    </div>
+    <Dropdown  :Options='dropdownOptions' text='Link' class="Settings" />
+
   </div>
 </template>
 
 <script>
-import UltimateChart from "./UltimateChart";
+import Chart from "./Chart";
+import Dropdown from "@/components/Utilities/Dropdown";
 
 export default {
     name: "Analytics",
-    components:{UltimateChart},
+    components:{Dropdown, Chart},
     data(){
       return {
         CchartOptions: undefined,
         Cseries: undefined,
         linkIDs: [],
-        LinkClicksData: undefined,
+        LinkClicksData: [],
         BrowsersData: undefined,
-        OSData: undefined
+        OSData: undefined,
+        dropdownOptions: [],
+        linkList: []
       }
     },
-    mounted: function() {
-      
-    },
     computed:{
-      chartOptions: function(){
+      chartOptions(){
         return this.CchartOptions
       },
-      series: function(){
+      series(){
         return this.Cseries
       }
     },
     created(){
-      fetch("https://d26k63xuikc78y.cloudfront.net/timm.json", {
+      fetch("https://d35cozwh7dkec2.cloudfront.net/timm.json", {
         'mode': "cors"
       })
       .then(data =>data.json())
       .then(data => {
-        let linkIds = []
-        console.log(data)
         data.urlList.forEach(element => {
-          linkIds.push(element.id)
+          this.linkIDs.push(element.id)
+          if(element.title===""){
+            element.title = "No Title Set"
+          }
+          this.linkList.push({title: element.title, img: element.img})
+          this.dropdownOptions.push(this.linkList[this.linkList.length-1])
         });
-        this.linkIDs = linkIds
         fetch(`/api/analytics/get/`, {
           method: 'POST',
           headers: {
@@ -56,10 +63,13 @@ export default {
         }).then(response => response.json())
             .then(data => {
               if(data.Item !== undefined){
-                this.LinkClicksData = this.convertLinkClicksData(data, this.linkIDs[0])
+                for(let i=0;i<this.linkIDs.length;i++){
+                  this.LinkClicksData.push(this.convertLinkClicksData(data, this.linkIDs[i]))
+                }
                 this.BrowsersData = this.convertBrowsersData(data)
                 this.OSData = this.convertOSData(data)
               }
+
             });
       })
     },
@@ -99,7 +109,8 @@ export default {
           if(k.match(timeframeRegex)){
             if(data.Item[k].M[id]){
               xAxis.push(k)
-              yAxis.push(data.Item[k].M[id].N)
+              yAxis.push( parseInt(data.Item[k].M[id].N))
+
             }
           }
         })

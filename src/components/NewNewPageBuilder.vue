@@ -1,5 +1,7 @@
 <template>
   <div id="pageBuilder">
+    <button @click="submit"></button>
+
     <div class="modal closeItem" :class="{hidden: modalHidden.rootlink && modalHidden.videoEmbed && modalHidden.social}" @click="modalClick($event, currentSettings)"></div>
     <canvas id="imageCanvas" style="display:none;"></canvas>
     <Sidebar @itemClick="tabChange"/>
@@ -206,6 +208,9 @@ export default {
     }
   },
   methods:{
+    submit: function () {
+      this.$store.dispatch("savePage", this.$store.state)
+    },
     log(evt){
       console.log(evt)
     },

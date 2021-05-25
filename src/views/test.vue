@@ -1,14 +1,13 @@
 <template>
-  <VideoEmbedModal :shown="true"></VideoEmbedModal>
-
+  <Chart/>
 </template>
 
 <script>
-import Dropdown from "@/components/Utilities/Dropdown";
-import HorizontalChooser from "@/components/Utilities/HorizontalChooser";
-import VideoEmbedModal from "@/components/EditorModals/VideoEmbedModal";
+
+import Chart from "@/components/Chart";
+
 export default {
-  components:{VideoEmbedModal, HorizontalChooser, Dropdown},
+  components:{Chart},
   name: "test",
   methods:{
     test(evt){
