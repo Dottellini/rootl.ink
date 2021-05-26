@@ -10,11 +10,14 @@ import VueApexCharts from 'vue-apexcharts'
 
 export default {
   name: "Chart",
-  props:['xAxis', 'yAxis', 'chartHeight', 'chartWidth'],
+  props:['xAxis', 'yAxis', 'chartHeight', 'chartWidth' , 'title'],
   components:{VueApexCharts},
   data: function() {
     return {
       options: {
+        title:{
+          text:  this.$props.title
+        },
         chart: {
           id: 'vuechart-example'
         },

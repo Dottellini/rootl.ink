@@ -1,29 +1,23 @@
 <template>
   <div class="wrapper">
     <div class="bigChart">
-      <Chart v-if="LinkClicksData.length!==0" :xAxis="LinkClicksData[0].xAxis" :yAxis="LinkClicksData[0].yAxis" chartWidth="800px" chartHeight="300px"/>
+      <D3Bar v-if="LinkClicksData.length!==0" :data="LinkClicksData[0]" chart-width="1400px" chart-height="400px"></D3Bar>
     </div>
-    <div class="chartGrid">
-      <div class="GridItem">
-        <Chart v-if="LinkClicksData.length!==0" :xAxis="LinkClicksData[0].xAxis" :yAxis="LinkClicksData[0].yAxis" chartWidth="400px" chartHeight="200px"/>
-      </div>
-    </div>
-    <Dropdown  :Options='dropdownOptions' text='Link' class="Settings" />
+    <Dropdown  :Options='dropdownOptions' text='Link' class="Settings"/>
 
   </div>
 </template>
 
 <script>
-import Chart from "./Chart";
+import Chart from "./Charting/Chart";
 import Dropdown from "@/components/Utilities/Dropdown";
+import D3Bar from "@/components/Charting/D3Bar";
 
 export default {
     name: "Analytics",
-    components:{Dropdown, Chart},
+    components:{D3Bar, Dropdown, Chart},
     data(){
       return {
-        CchartOptions: undefined,
-        Cseries: undefined,
         linkIDs: [],
         LinkClicksData: [],
         BrowsersData: undefined,
@@ -33,12 +27,6 @@ export default {
       }
     },
     computed:{
-      chartOptions(){
-        return this.CchartOptions
-      },
-      series(){
-        return this.Cseries
-      }
     },
     created(){
       fetch("https://d35cozwh7dkec2.cloudfront.net/timm.json", {
@@ -74,21 +62,24 @@ export default {
       })
     },
     methods:{
-      sortParallel: function(primaryList,secondaryList){
-        for (let i = 0; i < primaryList.length; i++) {
-          if (primaryList[i] > primaryList[i + 1]) {
-            const a = primaryList[i]
-            primaryList[i] = primaryList[i + 1]
-            primaryList[i + 1] = a
-
-            const b = secondaryList[i]
-            secondaryList[i] = secondaryList[i + 1]
-            secondaryList[i + 1] = b
+      bubbleSortObjectList(list, key=undefined){
+        let switched = false
+        for(let i=list.length-1;i>0;i--){
+          for(let j=0; j<i;j++){
+            if(list[j][key] > list[j+1][key]){
+              let temp = list[j][key]
+              list[j][key] = list[j+1][key]
+              list[j+1][key] = temp
+              switched = true
+            }
+          }
+          if(!switched){
+            return list;
           }
         }
-        return [primaryList, secondaryList]
+        return list;
       },
-      convertLinkClicksData: function(data, linkID){
+      convertLinkClicksData(data, linkID){
         let timeframeRegex
         let timeframe =  "Daily" //document.getElementById('timeframe').value
         switch(timeframe){
@@ -103,36 +94,43 @@ export default {
             break;
         }
         let id = linkID //document.getElementById("ID").value
-        let xAxis = []
-        let yAxis = []
+        console.log(id)
+        let series = []
         Object.keys(data.Item).forEach((k)=>{
+          console.log(k)
+          console.log(data.Item[k])
+          console.log("0")
           if(k.match(timeframeRegex)){
+            console.log("1")
             if(data.Item[k].M[id]){
-              xAxis.push(k)
-              yAxis.push( parseInt(data.Item[k].M[id].N))
-
+              console.log("2")
+              let dataPoint = {}
+              dataPoint.id=Date.parse(k)
+              dataPoint.value=parseInt(data.Item[k].M[id].N)
+              series.push(dataPoint)
+              console.log("hah", series)
             }
           }
         })
-        console.log(this.sortParallel(xAxis.map(x=>Date.parse(x)),yAxis));
-        [xAxis,yAxis] = this.sortParallel(xAxis.map(x=>Date.parse(x)),yAxis);
-        xAxis = xAxis.map(x=>{
-          x = new Date(x)
-          x = x.toISOString()
-          x = x.slice(0,10)
+
+        console.log("Series0",series)
+
+
+        this.bubbleSortObjectList(series, "id")
+        series = series.map(x=>{
+          x.id = new Date(x.id)
+          x.id = x.id.toISOString()
+          x.id = x.id.slice(0,10)
           if(timeframe === 'Yearly'){
-            return x.split('-')[0]
+            return x.id.split('-')[0]
           }
           if(timeframe === 'Monthly'){
-            return x.split('-')[0]+'-'+x.split('-')[1]
+            return x.id.split('-')[0]+'-'+x.id.split('-')[1]
           }
           return x
         });
-
-        return {
-          "yAxis": yAxis,
-          "xAxis": xAxis,
-        }
+        console.log("Series",series)
+        return series
       },
       convertBrowsersData: function (data){
         let xAxis = []
@@ -164,5 +162,20 @@ export default {
 </script>
 
 <style scoped>
+
+.chartGrid{
+  display: flex;
+  flex-direction: column;
+}
+
+.horizontalContainer{
+  display: flex;
+  flex-direction: row;
+}
+
+.bigChart, .GridItem{
+  border: 1px solid black;
+}
+
 
 </style>
