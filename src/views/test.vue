@@ -1,14 +1,12 @@
 <template>
   <D3Bar :data="[
-        { id: 'd1', value: 10},
-        { id: 'd2', value: 11},
-        { id: 'd3', value: 12},
-        { id: 'd4', value: 3},
-        { id: 'd5', value: 9},
-        { id: 'd6', value: 3},
-        { id: 'd7', value: 13},
-        { id: 'd8', value: 15},
-      ]" chartHeight="400px" chartWidth="700px"/>
+        { id: 'Value1', value: 10},
+        { id: 'Test2', value: 20},
+        { id: 'Label3', value: 30},
+        { id: 'Lol4', value: 40},
+        { id: 'd5', value: 50},
+
+      ]" chartHeight="520px" chartWidth="700px"/>
 </template>
 
 <script>
