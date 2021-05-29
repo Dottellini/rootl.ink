@@ -1,10 +1,26 @@
 <template>
   <div class="wrapper">
+    <fieldset class="allTimeBar">
+      <legend>Lifetime Statistics</legend>
+      <div class="fieldsetContent">
+        <div style="display: flex; flex-direction: row">
+          <svg style="display: block; margin: auto;" width="16" height="16">
+            <circle r="8"  cy="8" cx="8" fill="#256EFF"></circle>
+          </svg>
+          <p class="ieineKlasse" style="margin: 0;">Views: {{ viewsAllTime }}</p>
+        </div>
+        <div style="display: flex; flex-direction: row">
+          <svg style="display: block; margin: auto;" width="16" height="16">
+            <circle r="8"  cy="8" cx="8" fill="#C05746"></circle>
+          </svg>
+          <p class="ieineKlasse" style="margin: 0;">Clicks: {{ linkClicksAllTime }}</p>
+        </div>
+      </div>
+    </fieldset>
     <div class="bigChart">
-      <D3Bar v-if="LinkClicksData.length!==0" :data="LinkClicksData[0]" chart-width="1400px" chart-height="400px"></D3Bar>
+      <D3Bar v-if="LinkClicksData.length!==0" :data="LinkClicksData[0]" chartHeight="500px" chartWidth="1300px" title="Link Clicks"/>
     </div>
-    <Dropdown  :Options='dropdownOptions' text='Link' class="Settings"/>
-
+    <div></div>
   </div>
 </template>
 
@@ -23,7 +39,9 @@ export default {
         BrowsersData: undefined,
         OSData: undefined,
         dropdownOptions: [],
-        linkList: []
+        linkList: [],
+        linkClicksAllTime: 0,
+        viewsAllTime: 0
       }
     },
     computed:{
@@ -53,6 +71,7 @@ export default {
               if(data.Item !== undefined){
                 for(let i=0;i<this.linkIDs.length;i++){
                   this.LinkClicksData.push(this.convertLinkClicksData(data, this.linkIDs[i]))
+                  console.log("OLD",this.LinkClicksData)
                 }
                 this.BrowsersData = this.convertBrowsersData(data)
                 this.OSData = this.convertOSData(data)
@@ -105,8 +124,8 @@ export default {
             if(data.Item[k].M[id]){
               console.log("2")
               let dataPoint = {}
-              dataPoint.id=Date.parse(k)
-              dataPoint.value=parseInt(data.Item[k].M[id].N)
+              dataPoint.x=Date.parse(k)
+              dataPoint.y=parseInt(data.Item[k].M[id].N)
               series.push(dataPoint)
               console.log("hah", series)
             }
@@ -117,17 +136,17 @@ export default {
 
 
         this.bubbleSortObjectList(series, "id")
-        series = series.map(x=>{
-          x.id = new Date(x.id)
-          x.id = x.id.toISOString()
-          x.id = x.id.slice(0,10)
+        series = series.map(item=>{
+          item.x = new Date(item.x)
+          item.x = item.x.toISOString()
+          item.x = item.x.slice(0,10)
           if(timeframe === 'Yearly'){
-            return x.id.split('-')[0]
+            return item.x.split('-')[0]
           }
           if(timeframe === 'Monthly'){
-            return x.id.split('-')[0]+'-'+x.id.split('-')[1]
+            return item.x.split('-')[0]+'-'+x.id.split('-')[1]
           }
-          return x
+          return item
         });
         console.log("Series",series)
         return series
@@ -163,19 +182,46 @@ export default {
 
 <style scoped>
 
-.chartGrid{
-  display: flex;
-  flex-direction: column;
-}
-
-.horizontalContainer{
+div.fieldsetContent{
   display: flex;
   flex-direction: row;
+  justify-content: space-around;
+  width: 100% ;
+
 }
 
-.bigChart, .GridItem{
-  border: 1px solid black;
+
+p.ieineKlasse{
+  margin: 0;
+  padding: 0;
+  align-self: center;
+  line-height: 50px;
 }
 
+legend{
+  background-color: white;
+  border: 1px solid white;
+  font-size: 1.2em;
+}
+
+.bigChart{
+  margin-top: 100px;
+}
+
+fieldset.allTimeBar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-content: stretch;
+  color: var(--text-color);
+  width: 30vw;
+  height: 50px;
+  padding-bottom: 0.6em;
+  padding-top: 0;
+  font-family: Montserrat, sans-serif;
+  border-radius: 10px;
+  box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+  border: var(--editor-items-border);
+}
 
 </style>
