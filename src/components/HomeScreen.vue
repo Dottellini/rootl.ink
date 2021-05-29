@@ -10,7 +10,7 @@
         <p class="text">rootl.ink/</p>
         <input type="text" class="input-field"
                maxlength="30"
-               @input="updateText"
+               @change="updateText"
                v-model="username"
                @keydown.delete.once="clearInput"
                @click="clearInput"
@@ -21,7 +21,7 @@
         <div v-show="username.length > 0 && showButton" class="line"></div>
       </transition>
       <transition name="bounce">
-        <a href="register"><button v-show="username.length > 0 && showButton" class="register">{{$t('homepage.start_creating')}}</button></a>
+        <button @click="redirect('register')" v-show="username.length > 0 && showButton" class="register">{{$t('homepage.start_creating')}}</button>
       </transition>
     </div>
   </div>
@@ -42,20 +42,27 @@ export default {
   },
 
   methods: {
-    scrollBottom: function () {
+    redirect(path){
+      this.$router.push({path: path})
+    },
+
+    scrollBottom() {
       window.scroll(0, document.body.scrollHeight)
     },
 
-    scroll: function() {
+    scroll() {
       window.scroll(0, 620)
     },
 
-    clearInput: function () {
+    clearInput () {
         this.showButton = true;
     },
 
-    updateText: function () {
+    updateText () {
+      console.log(this.$store.state.username)
+      localStorage.setItem('preRegisterUsername', this.username);
       this.$store.commit("updateText", this.username)
+      console.log(this.$store.state.username)
     }
   },
 

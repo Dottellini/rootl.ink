@@ -26,6 +26,7 @@ export default {
   },
 
   mounted() {
+    this.username = localStorage.getItem('preRegisterUsername')
     if(this.$store.state.isLoggedIn) {
       this.$router.push({name: "Home"})
     }
