@@ -40,7 +40,6 @@ export default {
       isMobile: this.$store.state.isMobile
     }
   },
-
   methods: {
     redirect(path){
       this.$router.push({path: path})

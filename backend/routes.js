@@ -16,6 +16,32 @@ const UAParser = require('ua-parser-js')
 require('./passport');
 
 
+router.post('/testRequest', (req,res)=>{
+    console.log(req.url)
+    console.log(req.headers)
+    console.log(req.query)
+    console.log(req.body)
+
+    fetch('https://api.amazon.com/auth/o2/token',{
+        method: 'POST',
+        headers:{
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            grant_type: 'authorization_code',
+            code: req.body.code,
+            client_id: 'amzn1.application-oa2-client.c93b19e2f3fc4c6ba74a7714a7391aa6',
+            client_secret: '09614c52f6495f900c7a4494646a10a293edeb5e0f3707f905873ecac3c3a860'
+        })
+    }).then(data =>data.text())
+        .then(data=>{
+            res.send(data)
+        }).catch(err=>{
+        console.log("ERROR:",err)
+    })
+})
+
+
 router.post('/failed', (req, res) => {
     res.send('<h1>Log in Failed :(</h1>')
 });
