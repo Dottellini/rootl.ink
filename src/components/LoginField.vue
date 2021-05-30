@@ -69,11 +69,13 @@ export default {
             complication = data.message
           } else if(data.result === "OK") {
             username = data.username;
+            console.log(data)
             localStorage.setItem('username', data.username);
             return reader.read().then(processText);
           }
         }).then(() => {
           if(complication === "") {
+            console.log("Login2")
             this.$store.commit("login", username);
             this.$router.push({name: "Home"});
           } else {

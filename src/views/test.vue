@@ -35,7 +35,7 @@ export default {
         alert('oauth error ' + response.error);
       }
       console.log(response)
-      fetch('/testRequest',{
+      fetch('/amazonLogin',{
         method: 'POST',
         headers:{
           'Content-Type': 'application/json'

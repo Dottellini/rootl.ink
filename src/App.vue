@@ -265,6 +265,8 @@ created() {
 
   .hello-msg {
     font-size: 16px;
+    max-width: 100px;
+    overflow: hidden;
   }
 
   .desktop-navbar {

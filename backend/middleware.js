@@ -4,13 +4,14 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const fs = require('fs')
 const aws = require('aws-sdk')
+const fetch = require('node-fetch')
 const credentials = JSON.parse(fs.readFileSync('credentials.json'));
 aws.config.update({ "accessKeyId": credentials.aws.accessKeyId, "secretAccessKey": credentials.aws.secretAccessKey, "region": "eu-central-1" });
 const dynamodb = new aws.DynamoDB({apiVersion: '2012-08-10'});
 
 
 //authenticateToken
-router.use(['/testLogin', '/createPage', '/uploadProfilePicture', '/api/analytics/get/'], (req, res, next)=>{
+router.use(['/testLogin', '/createPage', '/uploadProfilePicture', '/api/analytics/get'], (req, res, next)=>{
   if(req.headers.cookie === undefined){
     res.status(401).json({'result': 'ERROR', 'message': 'Not logged in'})
     return;
@@ -20,42 +21,56 @@ router.use(['/testLogin', '/createPage', '/uploadProfilePicture', '/api/analytic
     res.status(401).json({'result': 'ERROR', 'message': 'Not logged in'})
     return;
   }
-  jwt.verify(cookies.accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user)=>{
-    if(err){
-      switch(err.message) {
-        case 'jwt expired':
-          const payload = jwt.verify(cookies.accessToken, process.env.ACCESS_TOKEN_SECRET, {ignoreExpiration: true});
-          let refresh
-          refreshAccessToken(payload.username, (result)=>{
-            refresh = result
-            if(refresh instanceof Error){
-              res.status(401).json({'result': 'ERROR', 'message': 'Invalid token'})
-              return;
-            }
-            res.cookie('accessToken', refresh, {
+  if(cookies.accessType === 'amazonLogin'){
+    fetch(`https://api.amazon.com/user/profile`, {
+      method: 'GET',
+      headers:{
+        'x-amz-access-token': cookies.accessToken,
+        'Content-Type': 'application/json'
+      }
+    }).then(result=>result.json()).then(result=>{
+      console.log(result)
+      res.locals.user = result.user_id.replace('amzn1.account.','')
+      next();
+    })
+  }else{
+    jwt.verify(cookies.accessToken, process.env.ACCESS_TOKEN_SECRET, (err, user)=>{
+      if(err){
+        switch(err.message) {
+          case 'jwt expired':
+            const payload = jwt.verify(cookies.accessToken, process.env.ACCESS_TOKEN_SECRET, {ignoreExpiration: true});
+            let refresh
+            refreshAccessToken(payload.username, (result)=>{
+              refresh = result
+              if(refresh instanceof Error){
+                res.status(401).json({'result': 'ERROR', 'message': 'Invalid token'})
+                return;
+              }
+              res.cookie('accessToken', refresh, {
+                httpOnly: true,
+              });
+              res.locals.user = user;
+              next();
+            });
+            return;
+          case 'jwt malformed':
+            res.cookie('accessToken', '', {
               httpOnly: true,
             });
-            res.locals.user = user;
-            next();
-          });
-          return;
-        case 'jwt malformed':
-          res.cookie('accessToken', '', {
-            httpOnly: true,
-          });
-          res.cookie('refreshToken', '', {
-            httpOnly: true,
-          });
-          res.status(401).json({'result': 'ERROR', 'message': 'Session expired'})
-          return;
-        default:
-          res.status(403).json({'result': 'ERROR', 'message': 'Cant validate token'})
-          return;
+            res.cookie('refreshToken', '', {
+              httpOnly: true,
+            });
+            res.status(401).json({'result': 'ERROR', 'message': 'Session expired'})
+            return;
+          default:
+            res.status(403).json({'result': 'ERROR', 'message': 'Cant validate token'})
+            return;
+        }
       }
-    }
-    res.locals.user = user;
-    next();
-  })
+      res.locals.user = user;
+      next();
+    })
+  }
 });
 
 //Logout

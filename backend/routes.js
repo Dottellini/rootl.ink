@@ -16,496 +16,549 @@ const UAParser = require('ua-parser-js')
 require('./passport');
 
 
-router.post('/testRequest', (req,res)=>{
-    console.log(req.url)
-    console.log(req.headers)
-    console.log(req.query)
-    console.log(req.body)
-
-    fetch('https://api.amazon.com/auth/o2/token',{
-        method: 'POST',
-        headers:{
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            grant_type: 'authorization_code',
-            code: req.body.code,
-            client_id: 'amzn1.application-oa2-client.c93b19e2f3fc4c6ba74a7714a7391aa6',
-            client_secret: '09614c52f6495f900c7a4494646a10a293edeb5e0f3707f905873ecac3c3a860'
+router.post('/amazonLogin', (req,res)=> {
+  fetch('https://api.amazon.com/auth/o2/token', {
+  method: 'POST',
+  headers: {
+  'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+  grant_type: 'authorization_code',
+  code: req.body.code,
+  client_id: 'amzn1.application-oa2-client.c93b19e2f3fc4c6ba74a7714a7391aa6',
+  client_secret: '09614c52f6495f900c7a4494646a10a293edeb5e0f3707f905873ecac3c3a860'
+  })
+  }).then(data => data.json())
+  .then(data => {
+    res.cookie('accessToken', data.access_token, {
+      httpOnly: true,
+    });
+    res.cookie('refreshToken', data.refresh_token, {
+      httpOnly: true,
+    });
+    res.cookie('accessType', 'amazonLogin', {
+      httpOnly: true,
+    });
+    if (data.access_token !== undefined) {
+      fetch(`https://api.amazon.com/user/profile`, {
+        method: 'GET',
+        headers: {
+          'x-amz-access-token': data.access_token,
+          'Content-Type': 'application/json'
+        }
+      }).then(result => result.json()).then(result => {
+        dynamodb.getItem({
+          Key: {"usernameLowerCase": {"S": result.user_id.replace('amzn1.account.','').toLowerCase()}},
+          TableName: "Users"
+        }, (err, data) => {
+          console.log(data)
+          if (Object.keys(data).length === 0) {
+            console.log("Hi")
+            dynamodb.putItem({
+              Item:{
+                "emailAddress":{S: result.email},
+                "username":{S: result.user_id.replace('amzn1.account.','')},
+                "usernameLowerCase":{S:result.user_id.replace('amzn1.account.','').toLowerCase()},
+                "userPageUrl":{S:result.user_id.replace('amzn1.account.','').toLowerCase()},
+                "accountType":{S:'amazon'}
+              },TableName:"Users"},(err, data)=>{
+              console.log(err, data)
+              dynamodb.putItem({
+                Item:{
+                  "url":{"S":result.user_id.replace('amzn1.account.','').toLowerCase()},
+                  "pageViews":{"N":"0"},
+                  "browsers":{"M":{}},
+                  "operatingSystems":{"M":{}}
+                },
+                TableName:"Analytics"
+              },()=>{
+                res.status(200).json({'result': 'OK', 'userID': result.user_id.replace('amzn1.account.','')})
+              })
+            })
+          }else{
+            res.status(999).json({'result': 'OK', 'message': 'Account exists', 'userID': result.user_id.replace('amzn1.account.','')})
+          }
         })
-    }).then(data =>data.text())
-        .then(data=>{
-            res.send(data)
-        }).catch(err=>{
-        console.log("ERROR:",err)
-    })
+      }).catch(err => {
+        console.log("ERROR:", err)
+        res.status(401).json({'result': 'ERROR', 'message': 'Invalid Code'})
+      })
+    } else {
+      res.status(401).json({'result': 'ERROR', 'message': 'Invalid Code'})
+    }
+  })
 })
 
-
 router.post('/failed', (req, res) => {
-    res.send('<h1>Log in Failed :(</h1>')
+  res.send('<h1>Log in Failed :(</h1>')
 });
 
 router.post('/resetPassword', (req,res)=>{
-    console.log(req.body)
-    dynamodb.getItem({Key:{"usernameLowerCase":{"S": req.body.username.toLowerCase()}},TableName: "Users"},(err, data)=>{
-        console.log("2",err,data)
-        if(data === {}){
-            console.log(":(")
-            res.status(418).json({})
-            return
-        }
-        if(typeof data.Item.passwordResetCode === 'undefined'){
-            console.log(":(")
-            res.status(418).json({})
-            return
-        }
-        if(data.Item.passwordResetCodeExpiry.N < new Date().getTime()/1000){
-            console.log(":(")
-            res.status(418).json({})
-            return
-        }
-        if(req.body.resetCode === data.Item.passwordResetCode.S){
-            console.log(":)")
-            hash(req.body.newPassword, 10, function(error, hash) {
-                console.log(error, hash)
-                dynamodb.updateItem({
-                    TableName: "Users",
-                    Key: { "usernameLowerCase": { S: req.body.username.toLowerCase() } },
-                    UpdateExpression: 'SET #a = :value , #b = :secondValue , #c = :thirdValue',
-                    ExpressionAttributeValues: {
-                        ":value":  { S:hash },
-                        ":secondValue":  { S:"" },
-                        ":thirdValue":  { S:"" }
-                    },
-                    ExpressionAttributeNames: {
-                        '#a': "passwordHash",
-                        '#b': "passwordResetCode",
-                        '#c': "passwordResetCodeExpiry"
-                    }
-                },(err,data)=>{console.log(err,data)})
-            })
+  console.log(req.body)
+  dynamodb.getItem({Key:{"usernameLowerCase":{"S": req.body.username.toLowerCase()}},TableName: "Users"},(err, data)=>{
+    console.log("2",err,data)
+    if(data === {}){
+      console.log(":(")
+      res.status(418).json({})
+      return
+    }
+    if(typeof data.Item.passwordResetCode === 'undefined'){
+      console.log(":(")
+      res.status(418).json({})
+      return
+    }
+    if(data.Item.passwordResetCodeExpiry.N < new Date().getTime()/1000){
+      console.log(":(")
+      res.status(418).json({})
+      return
+    }
+    if(req.body.resetCode === data.Item.passwordResetCode.S){
+      console.log(":)")
+      hash(req.body.newPassword, 10, function(error, hash) {
+        console.log(error, hash)
+        dynamodb.updateItem({
+          TableName: "Users",
+          Key: { "usernameLowerCase": { S: req.body.username.toLowerCase() } },
+          UpdateExpression: 'SET #a = :value , #b = :secondValue , #c = :thirdValue',
+          ExpressionAttributeValues: {
+            ":value":  { S:hash },
+            ":secondValue":  { S:"" },
+            ":thirdValue":  { S:"" }
+          },
+          ExpressionAttributeNames: {
+            '#a': "passwordHash",
+            '#b': "passwordResetCode",
+            '#c': "passwordResetCodeExpiry"
+          }
+        },(err,data)=>{console.log(err,data)})
+      })
 
 
-            res.status(200).json({})
-        } else {
-            console.log(":(")
-            res.status(418).json({})
-        }
-    })
+      res.status(200).json({})
+    } else {
+      console.log(":(")
+      res.status(418).json({})
+    }
+  })
 })
 
 router.post('/requestPasswordReset', (req,res)=>{
-    console.log(req.body)
-    const code = v4()
-    renderFile(__dirname+'/email-templates/email-template2.ejs', {code: code},(error, data)=> {
-        console.log(error, data)
-        let mailOptions = {
-            from: 'rootlink.test123@gmail.com',
-            to: req.body.email,
-            subject: 'Reset Password - Rootl.ink',
-            text: data,
-            html: data
-        };
-        let emailSender = createTransport({
-            service: 'gmail',
-            auth: {
-                user: 'rootlink.test123@gmail.com',
-                pass: 'W6Jg4ZCzUswdAiXKckUJfVT3FzyK4cHtvHQEUu'
-            }
-        });
-        emailSender.sendMail(mailOptions, function (error) {
-            if (error) {
-                console.log(error)
-                res.status(500).json({'result': 'ERROR', 'message': 'Cant send reset email'});
-                return;
-            }
-            res.status(200).json({'result': 'OK'});
-        });
-    })
+  console.log(req.body)
+  const code = v4()
+  renderFile(__dirname+'/email-templates/email-template2.ejs', {code: code},(error, data)=> {
+    console.log(error, data)
+    let mailOptions = {
+      from: 'rootlink.test123@gmail.com',
+      to: req.body.email,
+      subject: 'Reset Password - Rootl.ink',
+      text: data,
+      html: data
+    };
+    let emailSender = createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'rootlink.test123@gmail.com',
+        pass: 'W6Jg4ZCzUswdAiXKckUJfVT3FzyK4cHtvHQEUu'
+      }
+    });
+    emailSender.sendMail(mailOptions, function (error) {
+      if (error) {
+        console.log(error)
+        res.status(500).json({'result': 'ERROR', 'message': 'Cant send reset email'});
+        return;
+      }
+      res.status(200).json({'result': 'OK'});
+    });
+  })
 
-    dynamodb.updateItem({
-        TableName: "Users",
-        Key: { "usernameLowerCase": { S: req.body.username.toLowerCase() } },
-        UpdateExpression: 'SET #a = :value , #b = :secondValue',
-        ExpressionAttributeValues: {
-            ":value":  { S:code },
-            ":secondValue":  { N:(new Date().getTime()/1000+900).toString()},
-        },
-        ExpressionAttributeNames: {
-            '#a': "passwordResetCode",
-            '#b': "passwordResetCodeExpiry"
-        }
-    },(err,data)=>{
-        console.log("1",err,data)
-    })
+  dynamodb.updateItem({
+    TableName: "Users",
+    Key: { "usernameLowerCase": { S: req.body.username.toLowerCase() } },
+    UpdateExpression: 'SET #a = :value , #b = :secondValue',
+    ExpressionAttributeValues: {
+      ":value":  { S:code },
+      ":secondValue":  { N:(new Date().getTime()/1000+900).toString()},
+    },
+    ExpressionAttributeNames: {
+      '#a': "passwordResetCode",
+      '#b': "passwordResetCodeExpiry"
+    }
+  },(err,data)=>{
+    console.log("1",err,data)
+  })
 })
 
 router.post('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 router.post('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/failed' }),(req,res)=> {
-    res.redirect('/');
+  res.redirect('/');
 });
 
 router.post('/api/analytics/get/', (req,res)=>{
-    dynamodb.getItem({Key:{"url":{"S": res.locals.user.username.toLowerCase()}},TableName: "Analytics"},(err, data)=>{
-        res.status(200).json(data)
-    });
+  dynamodb.getItem({Key:{"url":{"S": res.locals.user.toLowerCase()}},TableName: "Analytics"},(err, data)=>{
+    res.status(200).json(data)
+  });
 });
 
 router.post('/gethtml*',(req,res)=>{
-    console.log('URL',req.url)
-    fetch(req.url.replace('/gethtml?url=','')).then(data =>data.text())
+  console.log('URL',req.url)
+  fetch(req.url.replace('/gethtml?url=','')).then(data =>data.text())
     .then(data=>{
-        res.send(data)
+      res.send(data)
     }).catch(err=>{
-        console.log("ERROR:",err)
-    })
+    console.log("ERROR:",err)
+  })
 })
 
 router.post('/api/analytics/*', (req,res)=>{
-    //Check if Page Analytics exist
-    dynamodb.getItem({Key:{"url":{"S": req.url.replace('/api/analytics/','')}},TableName: "Analytics"},(err, data)=>{
-        if(req.body.event === "Page Viewed") {
-            let userAgent = new UAParser(req.body.parameters.userAgent)
-            dynamodb.updateItem({
-                TableName: "Analytics",
-                Key: { "url": { S: req.url.replace('/api/analytics/','') } },
-                UpdateExpression:'ADD #PAGEVIEWS :inc, #BROWSERS.#BROWSER :inc, #OPERATINGSYSTEMS.#OPERATINGSYSTEM :inc',
-                ExpressionAttributeNames:{
-                    '#PAGEVIEWS': "pageViews",
-                    '#BROWSERS': "browsers",
-                    '#BROWSER': userAgent.getBrowser().name,
-                    '#OPERATINGSYSTEMS': "operatingSystems",
-                    '#OPERATINGSYSTEM': userAgent.getOS().name
-                },
-                ExpressionAttributeValues:{
-                    ':inc': {"N":"1"},
-    
-                },
-                ReturnValues:'UPDATED_NEW'
-            },()=>{})
+  //Check if Page Analytics exist
+  dynamodb.getItem({Key:{"url":{"S": req.url.replace('/api/analytics/','')}},TableName: "Analytics"},(err, data)=>{
+    if(req.body.event === "Page Viewed") {
+      let userAgent = new UAParser(req.body.parameters.userAgent)
+      dynamodb.updateItem({
+        TableName: "Analytics",
+        Key: { "url": { S: req.url.replace('/api/analytics/','') } },
+        UpdateExpression:'ADD #PAGEVIEWS :inc, #BROWSERS.#BROWSER :inc, #OPERATINGSYSTEMS.#OPERATINGSYSTEM :inc',
+        ExpressionAttributeNames:{
+          '#PAGEVIEWS': "pageViews",
+          '#BROWSERS': "browsers",
+          '#BROWSER': userAgent.getBrowser().name,
+          '#OPERATINGSYSTEMS': "operatingSystems",
+          '#OPERATINGSYSTEM': userAgent.getOS().name
+        },
+        ExpressionAttributeValues:{
+          ':inc': {"N":"1"},
+
+        },
+        ReturnValues:'UPDATED_NEW'
+      },()=>{})
+    }
+    if(req.body.event === "Link Clicked"){
+
+      //Create Year-Key if not existing
+      dynamodb.updateItem({
+        TableName: "Analytics",
+        Key: { "url": { S: req.url.replace('/api/analytics/','') } },
+        UpdateExpression: 'SET #a = :value',
+        ConditionExpression: 'attribute_not_exists(#a)',
+        ExpressionAttributeValues: {
+          ":value":  { M: {} },
+        },
+        ExpressionAttributeNames: {
+          '#a': new Date().getFullYear().toString()
         }
-        if(req.body.event === "Link Clicked"){
+      },()=>{
+        //Increment Year-Key by One
+        dynamodb.updateItem({
+          TableName: "Analytics",
+          Key: { "url": { S: req.url.replace('/api/analytics/','') } },
+          UpdateExpression:'ADD #TIME.#LINKID :increment',
+          ExpressionAttributeNames:{
+            '#TIME': new Date().getFullYear().toString(),
+            '#LINKID': req.body.parameters.linkId.toString()
+          },
+          ExpressionAttributeValues:{
+            ':increment': {"N":"1"},
 
-            //Create Year-Key if not existing
-            dynamodb.updateItem({
-                TableName: "Analytics",
-                Key: { "url": { S: req.url.replace('/api/analytics/','') } },
-                UpdateExpression: 'SET #a = :value',
-                ConditionExpression: 'attribute_not_exists(#a)',
-                ExpressionAttributeValues: {
-                    ":value":  { M: {} },
-                },
-                ExpressionAttributeNames: {
-                    '#a': new Date().getFullYear().toString()
-                }
-            },()=>{
-                //Increment Year-Key by One
-                dynamodb.updateItem({
-                    TableName: "Analytics",
-                    Key: { "url": { S: req.url.replace('/api/analytics/','') } },
-                    UpdateExpression:'ADD #TIME.#LINKID :increment',
-                    ExpressionAttributeNames:{
-                        '#TIME': new Date().getFullYear().toString(),
-                        '#LINKID': req.body.parameters.linkId.toString()
-                    },
-                    ExpressionAttributeValues:{
-                        ':increment': {"N":"1"},
-        
-                    },
-                    ReturnValues:'UPDATED_NEW'
-                },()=>{})
-            });
+          },
+          ReturnValues:'UPDATED_NEW'
+        },()=>{})
+      });
 
-            //Create Month-Key if not existing
-            dynamodb.updateItem({
-                TableName: "Analytics",
-                Key: { "url": { S: req.url.replace('/api/analytics/','') } },
-                UpdateExpression: 'SET #a = :value',
-                ConditionExpression: 'attribute_not_exists(#a)',
-                ExpressionAttributeValues: {
-                    ":value":  { M: {} },
-                },
-                ExpressionAttributeNames: {
-                    '#a': `${new Date().getFullYear().toString()}-${(new Date().getMonth()+1).toString()}`
-                }
-            },()=>{
-                //Increment Month-Key by One
-                dynamodb.updateItem({
-                    TableName: "Analytics",
-                    Key: { "url": { S: req.url.replace('/api/analytics/','') } },
-                    UpdateExpression:'ADD #VALUE.#FIELD :inc',
-                    ExpressionAttributeNames:{
-                        '#VALUE': `${new Date().getFullYear().toString()}-${(new Date().getMonth()+1).toString()}`,
-                        '#FIELD': req.body.parameters.linkId.toString(),
-                    },
-                    ExpressionAttributeValues:{
-                        ':inc': {"N":"1"},
-        
-                    },
-                    ReturnValues:'UPDATED_NEW'
-                },()=>{
-                })
-            });
-
-            //Create Day-Key if not existing
-            dynamodb.updateItem({
-                TableName: "Analytics",
-                Key: { "url": { S: req.url.replace('/api/analytics/','') } },
-                UpdateExpression: 'SET #a = :value',
-                ConditionExpression: 'attribute_not_exists(#a)',
-                ExpressionAttributeValues: {
-                    ":value":  { M: {} },
-                },
-                ExpressionAttributeNames: {
-                    '#a': `${new Date().getFullYear().toString()}-${(new Date().getMonth()+1).toString()}-${new Date().getDate().toString()}`
-                }
-            },()=>{
-                //Increment Day-Key by One
-                dynamodb.updateItem({
-                    TableName: "Analytics",
-                    Key: { "url": { S: req.url.replace('/api/analytics/','') } },
-                    UpdateExpression:'ADD #VALUE.#FIELD :inc',
-                    ExpressionAttributeNames:{
-                        '#VALUE': `${new Date().getFullYear().toString()}-${(new Date().getMonth()+1).toString()}-${new Date().getDate().toString()}`,
-                        '#FIELD': req.body.parameters.linkId.toString(),
-                    },
-                    ExpressionAttributeValues:{
-                        ':inc': {"N":"1"},
-        
-                    },
-                    ReturnValues:'UPDATED_NEW'
-                },()=>{
-                })
-            });
+      //Create Month-Key if not existing
+      dynamodb.updateItem({
+        TableName: "Analytics",
+        Key: { "url": { S: req.url.replace('/api/analytics/','') } },
+        UpdateExpression: 'SET #a = :value',
+        ConditionExpression: 'attribute_not_exists(#a)',
+        ExpressionAttributeValues: {
+          ":value":  { M: {} },
+        },
+        ExpressionAttributeNames: {
+          '#a': `${new Date().getFullYear().toString()}-${(new Date().getMonth()+1).toString()}`
         }
-        res.status(200).json(JSON.stringify(data));
-    });
+      },()=>{
+        //Increment Month-Key by One
+        dynamodb.updateItem({
+          TableName: "Analytics",
+          Key: { "url": { S: req.url.replace('/api/analytics/','') } },
+          UpdateExpression:'ADD #VALUE.#FIELD :inc',
+          ExpressionAttributeNames:{
+            '#VALUE': `${new Date().getFullYear().toString()}-${(new Date().getMonth()+1).toString()}`,
+            '#FIELD': req.body.parameters.linkId.toString(),
+          },
+          ExpressionAttributeValues:{
+            ':inc': {"N":"1"},
+
+          },
+          ReturnValues:'UPDATED_NEW'
+        },()=>{
+        })
+      });
+
+      //Create Day-Key if not existing
+      dynamodb.updateItem({
+        TableName: "Analytics",
+        Key: { "url": { S: req.url.replace('/api/analytics/','') } },
+        UpdateExpression: 'SET #a = :value',
+        ConditionExpression: 'attribute_not_exists(#a)',
+        ExpressionAttributeValues: {
+          ":value":  { M: {} },
+        },
+        ExpressionAttributeNames: {
+          '#a': `${new Date().getFullYear().toString()}-${(new Date().getMonth()+1).toString()}-${new Date().getDate().toString()}`
+        }
+      },()=>{
+        //Increment Day-Key by One
+        dynamodb.updateItem({
+          TableName: "Analytics",
+          Key: { "url": { S: req.url.replace('/api/analytics/','') } },
+          UpdateExpression:'ADD #VALUE.#FIELD :inc',
+          ExpressionAttributeNames:{
+            '#VALUE': `${new Date().getFullYear().toString()}-${(new Date().getMonth()+1).toString()}-${new Date().getDate().toString()}`,
+            '#FIELD': req.body.parameters.linkId.toString(),
+          },
+          ExpressionAttributeValues:{
+            ':inc': {"N":"1"},
+
+          },
+          ReturnValues:'UPDATED_NEW'
+        },()=>{
+        })
+      });
+    }
+    res.status(200).json(JSON.stringify(data));
+  });
 })
 
 router.get('/checkUserPage?id=*', (req, res)=>{
-    let params = {
-        Bucket: "rootlinkdata", 
-        Key: '${req.query.id}.json'
+  let params = {
+    Bucket: "rootlinkdata",
+    Key: '${req.query.id}.json'
+  }
+  new aws.S3({apiVersion: '2006-03-01'}).headObject(params, function (err) {
+    if (err && err.code === 'NotFound') {
+      res.status(404).json({'result': 'ERROR', 'message': 'Not Found'})
+      return;
     }
-    new aws.S3({apiVersion: '2006-03-01'}).headObject(params, function (err) {
-        if (err && err.code === 'NotFound') {
-            res.status(404).json({'result': 'ERROR', 'message': 'Not Found'})
-            return;
-        }
-        res.json({'result':'OK'})
-    })
+    res.json({'result':'OK'})
+  })
 });
 
 router.post('/login', (req,res)=>{
-    dynamodb.getItem({Key:{"usernameLowerCase":{S:req.body.username.toLowerCase()}},TableName: "Users"},(err, data)=>{
-        if(Object.keys(data).length === 0){
-            res.cookie('accessToken', '', {
-                httpOnly: true,
-            });
-            res.status(401).json({'result':'ERROR','message': 'Account not found'})
-            return;
-        }
-        compare(req.body.password, data.Item.passwordHash.S, function(err, passwordResult) {
-            if(!passwordResult) {
-                res.cookie('accessToken', '', {
-                    httpOnly: true,
-                });
-                res.status(401).json({'result':'ERROR','message': 'Wrong password'})
-                return;
-            }
-            const payload = {username:req.body.username};
-            const accessToken = sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
-            const refreshToken = sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
-            dynamodb.updateItem({
-                TableName:"Users",
-                Key: { "usernameLowerCase": { S: req.body.username.toLowerCase() } },
-                UpdateExpression: 'SET #a = :value',
-                ExpressionAttributeValues: {
-                    ":value":  { S: refreshToken },
-                },
-                ExpressionAttributeNames: {
-                    '#a': "refreshToken"
-                }
-            },()=>{});
-            res.cookie('accessToken', accessToken, {
-                httpOnly: true,
-            });
-            res.cookie('refreshToken', refreshToken, {
-                httpOnly: true,
-            });
-            if(data.Item.emailAddressConfirmed.BOOL){
-                res.status(200).json({'result':'OK', 'username':data.Item.username.S})
-                return;
-            }
-            res.status(200).json({'result':'WARNING', 'message': 'Email Address not confirmed yet','username':data.Item.username.S})
+  dynamodb.getItem({Key:{"usernameLowerCase":{S:req.body.username.toLowerCase()}},TableName: "Users"},(err, data)=>{
+    if(Object.keys(data).length === 0){
+      res.cookie('accessToken', '', {
+        httpOnly: true,
+      });
+      res.status(401).json({'result':'ERROR','message': 'Account not found'})
+      return;
+    }
+    compare(req.body.password, data.Item.passwordHash.S, function(err, passwordResult) {
+      if(!passwordResult) {
+        res.cookie('accessToken', '', {
+          httpOnly: true,
         });
-    })
+        res.status(401).json({'result':'ERROR','message': 'Wrong password'})
+        return;
+      }
+      const payload = {username:req.body.username};
+      const accessToken = sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15m' });
+      const refreshToken = sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
+      dynamodb.updateItem({
+        TableName:"Users",
+        Key: { "usernameLowerCase": { S: req.body.username.toLowerCase() } },
+        UpdateExpression: 'SET #a = :value',
+        ExpressionAttributeValues: {
+          ":value":  { S: refreshToken },
+        },
+        ExpressionAttributeNames: {
+          '#a': "refreshToken"
+        }
+      },()=>{});
+      res.cookie('accessToken', accessToken, {
+        httpOnly: true,
+      });
+      res.cookie('refreshToken', refreshToken, {
+        httpOnly: true,
+      });
+      if(data.Item.emailAddressConfirmed.BOOL){
+        res.status(200).json({'result':'OK', 'username':data.Item.username.S})
+        return;
+      }
+      res.status(200).json({'result':'WARNING', 'message': 'Email Address not confirmed yet','username':data.Item.username.S})
+    });
+  })
 });
 
 router.post('/testLogin', (req, res)=>{
-    res.json({'username': res.locals.user, 'result':'OK'});
+  console.log(res.locals.user)
+  res.json({'username': res.locals.user, 'result':'OK'});
 });
 
 router.post('/logout', (req,res)=>{
-    res.status(200).json({'result':'OK'});
+  res.status(200).json({'result':'OK'});
 });
 
 router.post('/confirmEmailAddress', (req, res)=>{
-    dynamodb.getItem({Key:{"usernameLowerCase":{"S":req.body.username.toLowerCase()}},TableName: "Users"},(err, data)=>{
-        if(Object.keys(data).length === 0){
-            res.status(401).json({'result':'ERROR', 'message': 'Account not found'});
-            return;
-        }
-        if(data.Item.confirmationCode.S!==req.body.code){
-            res.status(401).json({'result':'ERROR', 'message': 'Invalid confirmation code'});
-            return;
-        }
-        dynamodb.updateItem({
-            TableName: "Users",
-            Key: {
-                "usernameLowerCase": {S: req.body.username.toLowerCase()}
-            },
-            UpdateExpression: "set #emailAddressConfirmed  = :true",
-            ExpressionAttributeNames: {
-                "#emailAddressConfirmed": "emailAddressConfirmed"
-            },
-            ExpressionAttributeValues:{
-                ":true": {BOOL: true}
-            }
-        },()=>{
-                res.status(200).json({'result':'OK'});
-        });
+  dynamodb.getItem({Key:{"usernameLowerCase":{"S":req.body.username.toLowerCase()}},TableName: "Users"},(err, data)=>{
+    if(Object.keys(data).length === 0){
+      res.status(401).json({'result':'ERROR', 'message': 'Account not found'});
+      return;
+    }
+    if(data.Item.confirmationCode.S!==req.body.code){
+      res.status(401).json({'result':'ERROR', 'message': 'Invalid confirmation code'});
+      return;
+    }
+    dynamodb.updateItem({
+      TableName: "Users",
+      Key: {
+        "usernameLowerCase": {S: req.body.username.toLowerCase()}
+      },
+      UpdateExpression: "set #emailAddressConfirmed  = :true",
+      ExpressionAttributeNames: {
+        "#emailAddressConfirmed": "emailAddressConfirmed"
+      },
+      ExpressionAttributeValues:{
+        ":true": {BOOL: true}
+      }
+    },()=>{
+      res.status(200).json({'result':'OK'});
     });
+  });
 });
 
 router.post('/register', (req,res)=>{
-    const invalidUsernames = ["login","register","about","help","pricing","service"]
-    if(invalidUsernames.includes(req.body.username.toLowerCase())){
-        res.status(403).json({'result':'ERROR', 'message': 'Invalid Username'});
-        return;
+  const invalidUsernames = ["login","register","about","help","pricing","service","null", "undefined"]
+  if(invalidUsernames.includes(req.body.username.toLowerCase())){
+    res.status(403).json({'result':'ERROR', 'message': 'Invalid Username'});
+    return;
+  }
+  dynamodb.getItem({Key:{"usernameLowerCase":{"S": req.body.username.toLowerCase()}},TableName: "Users"},(err, data)=>{
+    if(Object.keys(data).length !== 0){
+      res.status(403).json({'result':'ERROR', 'message': 'Username already exists'});
+      return;
     }
-    dynamodb.getItem({Key:{"usernameLowerCase":{"S": req.body.username.toLowerCase()}},TableName: "Users"},(err, data)=>{
-        if(Object.keys(data).length !== 0){
-            res.status(403).json({'result':'ERROR', 'message': 'Username already exists'});
-            return;
-        }
-        dynamodb.query({TableName:"Users",IndexName:"emailAddress-index",Select:'ALL_PROJECTED_ATTRIBUTES',KeyConditionExpression:'emailAddress = :emailAddress',ExpressionAttributeValues:{":emailAddress": {"S": req.body.email.toLowerCase()}}}, (err, data)=>{
-            if(data.Items.length!==0){
-                res.status(403).json({'result':'ERROR', 'message': 'Email Address already in use'});
-                return;
-            }
-            const confirmationCode = v4();
-            hash(req.body.password, 10, function(error, hash) {
-                dynamodb.putItem({
-                    Item:{
-                        "emailAddress":{S: req.body.email},
-                        "username":{S: req.body.username},
-                        "usernameLowerCase":{S:req.body.username.toLowerCase()},
-                        "emailAddressConfirmed":{BOOL: false},
-                        "passwordHash":{S: hash},
-                        "refreshToken": {S: ""},
-                        "confirmationCode":{S:confirmationCode},
-                        "userPageUrl":{S:req.body.username.toLowerCase()}
-                    },TableName:"Users"},()=>{
-                        dynamodb.putItem({
-                            Item:{
-                                "url":{"S":req.body.username.toLowerCase()},
-                                "pageViews":{"N":"0"},
-                                "browsers":{"M":{}},
-                                "operatingSystems":{"M":{}}
-                            },
-                            TableName:"Analytics"
-                        },()=>{})
-                })
-                renderFile(__dirname+'/email-templates/email-template1.ejs', {code: confirmationCode, username:req.body.username},(error, data)=>{
-                    let mailOptions = {
-                        from: 'rootlink.test123@gmail.com',
-                        to: req.body.email,
-                        subject: 'Confirm Your Email Address - Rootl.ink',
-                        text: data,
-                        html: data
-                    };
-                    let emailSender = createTransport({
-                        service: 'gmail',
-                        auth: {
-                        user: 'rootlink.test123@gmail.com',
-                        pass: 'W6Jg4ZCzUswdAiXKckUJfVT3FzyK4cHtvHQEUu'
-                        }
-                    });                
-                    emailSender.sendMail(mailOptions, function(error){
-                        if (error) {
-                            console.log(error)
-                            res.status(500).json({'result':'ERROR', 'message': 'Cant send confirmation email'});
-                            return;
-                        }
-                        res.status(200).json({'result':'OK'});
-                    });
-                });        
-            })
+    dynamodb.query({TableName:"Users",IndexName:"emailAddress-index",Select:'ALL_PROJECTED_ATTRIBUTES',KeyConditionExpression:'emailAddress = :emailAddress',ExpressionAttributeValues:{":emailAddress": {"S": req.body.email.toLowerCase()}}}, (err, data)=>{
+      if(data.Items.length!==0){
+        res.status(403).json({'result':'ERROR', 'message': 'Email Address already in use'});
+        return;
+      }
+      const confirmationCode = v4();
+      hash(req.body.password, 10, function(error, hash) {
+        dynamodb.putItem({
+          Item:{
+            "emailAddress":{S: req.body.email},
+            "username":{S: req.body.username},
+            "usernameLowerCase":{S:req.body.username.toLowerCase()},
+            "emailAddressConfirmed":{BOOL: false},
+            "passwordHash":{S: hash},
+            "refreshToken": {S: ""},
+            "confirmationCode":{S:confirmationCode},
+            "userPageUrl":{S:req.body.username.toLowerCase()},
+            "accountType":{S:'default'}
+          },TableName:"Users"},()=>{
+          dynamodb.putItem({
+            Item:{
+              "url":{"S":req.body.username.toLowerCase()},
+              "pageViews":{"N":"0"},
+              "browsers":{"M":{}},
+              "operatingSystems":{"M":{}}
+            },
+            TableName:"Analytics"
+          },()=>{})
         })
-    });
+        renderFile(__dirname+'/email-templates/email-template1.ejs', {code: confirmationCode, username:req.body.username},(error, data)=>{
+          let mailOptions = {
+            from: 'rootlink.test123@gmail.com',
+            to: req.body.email,
+            subject: 'Confirm Your Email Address - Rootl.ink',
+            text: data,
+            html: data
+          };
+          let emailSender = createTransport({
+            service: 'gmail',
+            auth: {
+              user: 'rootlink.test123@gmail.com',
+              pass: 'W6Jg4ZCzUswdAiXKckUJfVT3FzyK4cHtvHQEUu'
+            }
+          });
+          emailSender.sendMail(mailOptions, function(error){
+            if (error) {
+              console.log(error)
+              res.status(500).json({'result':'ERROR', 'message': 'Cant send confirmation email'});
+              return;
+            }
+            res.status(200).json({'result':'OK'});
+          });
+        });
+      })
+    })
+  });
 });
 
 router.post('/createPage', (req, res)=>{
-    let filename;
-    dynamodb.getItem({Key:{"username":{"S": res.locals.user.username}},TableName: "Users"},()=>{
-        filename = res.locals.user.username.toLowerCase()+'.json';
-        let readable = Readable.from([JSON.stringify(req.body)])
-        readable.on('error', ()=> {
-            res.status(500).json({'result':'ERROR', 'message': 'Cant read data'});
-        });
-        let uploadParams = {Bucket: 'rootlinkdata', Key: filename, Body: readable, ACL: 'public-read'};
-        let s3 = new aws.S3({
-            apiVersion: '2006-03-01',
-            params: {Bucket: 'rootlinkdata'}
-        });
-        s3.upload (uploadParams, function (err, data) {
-            if(err){
-                res.status(500).json({'result':'ERROR', 'message': 'Cant upload data'});
+  let filename;
+  console.log("userr",res.locals.user)
+  dynamodb.getItem({Key:{"username":{"S": res.locals.user}},TableName: "Users"},()=>{
+    filename = res.locals.user.toLowerCase()+'.json';
+    console.log("filename",filename)
+    console.log("test",res.locals.user.toLowerCase())
 
-                return;
-            }if(data){
-                res.status(200).json({'result':'OK'});
-            }
-        });
+    let readable = Readable.from([JSON.stringify(req.body)])
+    readable.on('error', ()=> {
+      res.status(500).json({'result':'ERROR', 'message': 'Cant read data'});
     });
+    let uploadParams = {Bucket: 'rootlinkdata', Key: filename, Body: readable, ACL: 'public-read'};
+    let s3 = new aws.S3({
+      apiVersion: '2006-03-01',
+      params: {Bucket: 'rootlinkdata'}
+    });
+    s3.upload (uploadParams, function (err, data) {
+      if(err){
+        res.status(500).json({'result':'ERROR', 'message': 'Cant upload data'});
+
+        return;
+      }if(data){
+        res.status(200).json({'result':'OK'});
+      }
+    });
+  });
 });
 
 router.post('/uploadProfilePicture', (req,res)=>{
-    let filename;
-    dynamodb.getItem({Key:{"usernameLowerCase":{"S": res.locals.user.username.toLowerCase()}},TableName: "Users"},()=>{
-        filename = res.locals.user.username.toLowerCase()+'.profilepicture.txt';
-        let readable = Readable.from([JSON.stringify(req.body)])
-        readable.on('error', ()=>{
-            res.status(500).json({'result':'ERROR', 'message': 'Cant read data'});
-        });
-        let uploadParams = {Bucket: 'rootlinkdata', Key: filename, Body: readable, ACL: 'public-read'};
-        let s3 = new aws.S3({
-            ACL:'public-read',
-            apiVersion: '2006-03-01',
-            params: {Bucket: 'rootlinkdata'}
-        });
-        s3.upload (uploadParams, function (err, data) {
-            if(err){
-                res.status(500).json({'result':'ERROR', 'message': 'Cant upload data'});
-                return;
-            }if(data){
-                res.status(200).json({'result':'OK'});
-            }
-        });
+  let filename;
+  dynamodb.getItem({Key:{"usernameLowerCase":{"S": res.locals.user.username.toLowerCase()}},TableName: "Users"},()=>{
+    filename = res.locals.user.username.toLowerCase()+'.profilepicture.txt';
+    let readable = Readable.from([JSON.stringify(req.body)])
+    readable.on('error', ()=>{
+      res.status(500).json({'result':'ERROR', 'message': 'Cant read data'});
     });
+    let uploadParams = {Bucket: 'rootlinkdata', Key: filename, Body: readable, ACL: 'public-read'};
+    let s3 = new aws.S3({
+      ACL:'public-read',
+      apiVersion: '2006-03-01',
+      params: {Bucket: 'rootlinkdata'}
+    });
+    s3.upload (uploadParams, function (err, data) {
+      if(err){
+        res.status(500).json({'result':'ERROR', 'message': 'Cant upload data'});
+        return;
+      }if(data){
+        res.status(200).json({'result':'OK'});
+      }
+    });
+  });
 });
 
 router.post('/analytics', (req)=>{
-    dynamodb.updateItem({
-        TableName: "Analytics",
-        Key: { "url": { S: req.headers.referer.split('/')[3] } },
-        ExpressionAttributeValues: { ":inc": {N: "1"} },
-        UpdateExpression: "ADD pageViews :inc"
-      }, ()=>{
-      })
+  dynamodb.updateItem({
+    TableName: "Analytics",
+    Key: { "url": { S: req.headers.referer.split('/')[3] } },
+    ExpressionAttributeValues: { ":inc": {N: "1"} },
+    UpdateExpression: "ADD pageViews :inc"
+  }, ()=>{
+  })
 })
 
 exports.router = router;

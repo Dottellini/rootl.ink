@@ -25,6 +25,8 @@ export default new Vuex.Store({
     },
 
     login(state, payload) {
+      console.log("XXXXXXXXXXXXXXXXXXXXXXXXX")
+      console.log(state, payload)
       state.isLoggedIn = true;
       state.account_username = payload;
       state.account_profile_picture = '';
@@ -181,12 +183,15 @@ export default new Vuex.Store({
             "Content-Type": "application/json"
         }
       }).then(response => response.json()).then(data => {
+        console.log(data)
         if(data.result === "ERROR") {
           localStorage.setItem('username', null)
           return
         }
-        if(data.result === "OK") {
+        if(data.result === "OK" && localStorage.getItem('username')!= 'null' ) {
           let username = localStorage.getItem('username');
+          console.log("Login1")
+          console.log(username)
           commit("login", username)
         }
       })
@@ -195,12 +200,13 @@ export default new Vuex.Store({
 
     async fetchUserData({commit}, payload) {
       let string;
-      console.log(payload)
+      console.log("payload",payload)
       await fetch(`https://d35cozwh7dkec2.cloudfront.net/${payload.toLowerCase()}.json`, {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': 'GET, POST',
         'mode': "cors"
       }).then(data => {
+        console.log("data",data)
         if(data.status === 403) {
           if(payload.origin.path === "/editor") {
             return;
@@ -218,7 +224,8 @@ export default new Vuex.Store({
           string = new TextDecoder().decode(value)
           return reader.read().then(processText);
         })
-      }).catch(() => {
+      }).catch((err) => {
+        console.log("err",err)
         router.push({name: "PageNotFound"})
       })
     },
