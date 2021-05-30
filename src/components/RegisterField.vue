@@ -1,6 +1,5 @@
 <template>
   <div class="container">
-    <img src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gry_312x64.png" @click="amazonLogin">
     <div id="amazon-root"></div>
 
     <h1>{{$t('register')}}</h1>
@@ -12,6 +11,11 @@
       <button type="button" @click="submit">{{$t('register')}}</button>
     </form>
     <p class="error">{{error}}</p>
+
+    <h2>Or Login with was anderes</h2>
+    <img src="https://images-na.ssl-images-amazon.com/images/G/01/lwa/btnLWA_gry_312x64.png" @click="amazonLogin">
+
+
   </div>
 </template>
 

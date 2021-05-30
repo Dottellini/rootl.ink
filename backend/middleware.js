@@ -76,8 +76,21 @@ router.use(['/testLogin', '/createPage', '/uploadProfilePicture', '/api/analytic
 //Logout
 router.use('/logout', (req,res,next)=>{
   let cookies = parseCookies(req.headers.cookie);
+  console.log(cookies)
+  if(cookies.accessType === 'amazonLogin'){
+    res.cookie('accessToken', '', {
+      httpOnly: true,
+    });
+    res.cookie('refreshToken', '', {
+      httpOnly: true,
+    });
+    res.cookie('accessType', '', {
+      httpOnly: true,
+    });
+    next()
+    return;
+  }
   const payload = jwt.verify(cookies.accessToken, process.env.ACCESS_TOKEN_SECRET, {ignoreExpiration: true});
-
   dynamodb.updateItem({
     TableName:"Users",
     Key: { "usernameLowerCase": { S: payload.username.toLowerCase() } },
