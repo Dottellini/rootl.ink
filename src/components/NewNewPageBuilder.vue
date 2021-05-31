@@ -1,7 +1,6 @@
 <template>
   <div id="pageBuilder">
     <button @click="submit"></button>
-
     <div class="modal closeItem" :class="{hidden: modalHidden.rootlink && modalHidden.videoEmbed && modalHidden.social}" @click="modalClick($event, currentSettings)"></div>
     <canvas id="imageCanvas" style="display:none;"></canvas>
     <Sidebar @itemClick="tabChange"/>
@@ -147,6 +146,26 @@
           </div>
         </div>
       </div>
+      <div id="Highlights" :class="{hidden: activeTab !== 'Highlights'}">
+        <div id="highlightsContainer">
+          <div class="highlightSettings">
+            <h2>Highlights</h2>
+            Pick a Rootlink <CustomButton @click="pickRootlink">Pick</CustomButton>
+          </div>
+          <div>
+            <h2>Rootlinks</h2>
+            <draggable :list="list" :disabled="!enabled" :animation="100" handle=".handle" class="list-group" ghost-class="ghost" drag-class="drag" chosen-class="chosen" fallbackClass="sortable-fallback" @start="dragging = true">
+              <div class="list-group-item" v-for="element in list" :key="element.id" @click="rootlinkSelected(element)">
+                <img class="iconImg" :src="file[element.id]" alt="" :class="{hidden: file[element.id]===undefined}">
+                <div class="list-group-item-description">
+                  <p class="linkTitle" >{{element.title}}</p>
+                  <p class="linkUrl">{{element.url}}</p>
+                </div>
+              </div>
+            </draggable>
+          </div>
+        </div>
+      </div>
     </div>
     <slot id="Preview"></slot>
   </div>
@@ -184,32 +203,10 @@ export default {
       activeTab: 'Rootlinks',
       file: {},
       currentSettings: {},
-
-      //OLD
-      activeTypeSelectorItem: {
-        Background:0,
-        Links:0
-      },
-      highlighted: "Rootlinks",
-      editModeActive: false,
       enabled: true,
       dragging: true,
-      show_bg_grad: false,
-      show_link_grad: false,
-      gradient_bg: new LinearGradient({
-        angle: 0,
-        stops: [
-          ['#3C70A4', 0],
-          ['#FF9ED2', 1]
-        ]
-      }),
-      gradient_box: new LinearGradient({
-        angle: 120,
-        stops: [
-          ['#0359B5', 0],
-          ['#FF32CC', 1]
-        ]
-      }),
+      selectionActive: false,
+      selectedRootlink: null
     }
   },
   methods:{
@@ -241,7 +238,10 @@ export default {
       }
       this.modalHidden[linkType] = !this.modalHidden[linkType]
     },
-    tabChange(item){this.activeTab = item.title},
+    tabChange(item){
+      console.log(item.title)
+      this.activeTab = item.title
+    },
     submitPage() {
       this.$store.dispatch("savePage", this.$store.state)
     },
@@ -282,6 +282,19 @@ export default {
     },
     addField(type, widgetType) {
       this.$store.commit("emptyEntry", {type: type, widgetType: widgetType})
+    },
+    pickRootlink(){
+      this.selectionActive = true;
+    },
+    rootlinkSelected(element){
+      if(this.selectionActive){
+        for(let i in this.list){
+          if(this.list[i] !== element)
+            console.log(this.list[i])
+          this.list[i].highlighting.active = false;
+        }
+        element.highlighting.active = !element.highlighting.active
+      }
     }
   },
   computed:{
@@ -302,6 +315,26 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
+
+div#highlightsContainer{
+  display:flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+
+
+div.highlightSettings{
+  margin-top:15px;
+  width: 700px;
+  height: 90vh;
+  color: var(--text-color);
+  border-radius: 10px;
+  box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+  border: var(--editor-items-border);
+
+}
 
 #Rootlinks{
   overflow-y: auto;
@@ -562,6 +595,7 @@ input{
 .hidden{
   display: none;
 }
+
 
 
 #pageBuilder{

@@ -1,6 +1,6 @@
 <template>
   <a :target="linkOrEmbed(link).target" rel="noopener" :style="textColor" :href="linkOrEmbed(link).href" >
-    <div @click="toggleEmbed(link.widgetParameter.type==='videoEmbed')" :ref="'wrapper-1'" class="LinkBox-Wrapper" :class="{ embedded: link.widgetParameter.type==='videoEmbed', embedShown: embedShown, previewMode: previewMode, highlight: link.highlight}" :style="boxColor">
+    <div @click="toggleEmbed(link.widgetParameter.type==='videoEmbed')" :ref="'wrapper-1'" class="LinkBox-Wrapper" :class="{ embedded: link.widgetParameter.type==='videoEmbed', embedShown: embedShown, previewMode: previewMode, highlight: link.highlighting.active}" :style="boxColor">
       <div class="LinkBox">
         <img :src=link.icon
           class="LinkImage"
