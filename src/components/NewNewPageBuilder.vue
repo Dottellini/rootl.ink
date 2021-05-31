@@ -125,8 +125,8 @@
                     :shown="!modalHidden.videoEmbed"
                     @close="modalClick($event, currentSettings)"
                     @remove="removeEntry('widget')"
-                    @titleChange="element.title=$event"
-                    @urlChange="element.url=$event"
+                    @titleInput="element.title=$event"
+                    @urlInput="element.url=$event"
                 ></VideoEmbedModal>
                 <div class="handle">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grip-vertical" viewBox="0 0 16 16">
@@ -213,7 +213,7 @@ export default {
     }
   },
   methods:{
-    submit: function () {
+    submit() {
       this.$store.dispatch("savePage", this.$store.state)
     },
     log(evt){
@@ -242,14 +242,7 @@ export default {
       this.modalHidden[linkType] = !this.modalHidden[linkType]
     },
     tabChange(item){this.activeTab = item.title},
-    checkIfVideo: function (id, url) {
-      if(/http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?|http(?:s?):\/\/(www\.)?vimeo\.com\/(\d+)|http(?:s?):\/\/(?:www\.)twitch.tv\/(\S+)/g.test(url)){
-        this.$store.commit("isYoutubeVideo", {id: id, result: true});
-        return
-      }
-      this.$store.commit("isYoutubeVideo", {id: id, result: false});
-    },
-    submitPage: function () {
+    submitPage() {
       this.$store.dispatch("savePage", this.$store.state)
     },
     changeImage(eventParams){
@@ -282,13 +275,12 @@ export default {
     },
     updateColor(type, value){
       this.$store.commit(type, value)
-
     },
-    removeEntry: function (type) {
+    removeEntry(type) {
       let id = this.currentSettings.id
       this.$store.commit("removeEntry", {id,type})
     },
-    addField: function(type, widgetType) {
+    addField(type, widgetType) {
       this.$store.commit("emptyEntry", {type: type, widgetType: widgetType})
     }
   },

@@ -3,11 +3,12 @@
     <div class="verticalContainer">
     <h2>Content</h2>
       <Dropdown  :Options='dropdownOptions' text='Platform' class="Settings" />
-      <TextInput title="Title" placeholder="Title" class="Settings" @input="$emit('titleChange', $event)"/>
-      <TextInput title="Url" placeholder="Url" class="Settings" @input="$emit('urlChange', $event)"/>
+      <TextInput title="Title" placeholder="Title" class="Settings" @input="$emit('titleInput', $event)"/>
+      <TextInput title="Url" placeholder="Url" class="Settings" @input="checkIfVideo($event)"/>
+      <p class="errorMessage" v-if="error.exists">{{error.message}}</p>
       <div class="footer">
         <hr>
-        <CustomButton classProp="closeItem" @click="$emit('close', $event)"> Delete Widget</CustomButton>
+        <CustomButton classProp="closeItem" @click="$emit('remove', $event); $emit('close', $event)"> Delete Widget</CustomButton>
       </div>
     </div>
     <div class="vl"/>
@@ -40,7 +41,22 @@ export default {
     return{
       dropdownOptions: [{title: "YouTube", img:"https://upload.wikimedia.org/wikipedia/commons/4/42/YouTube_icon_%282013-2017%29.png"},
         {title: "Twitch", img:"https://cdn.icon-icons.com/icons2/2108/PNG/512/facebook_icon_130940.png"},
-        {title: "Vimeo", img:"https://icoff.ee/fa/wp-content/uploads/2019/06/instagram-logo.png"}]
+        {title: "Vimeo", img:"https://icoff.ee/fa/wp-content/uploads/2019/06/instagram-logo.png"}],
+      error: {exists: false, message:""}
+    }
+  },
+  methods:{
+    checkIfVideo: function (url) {
+      if(/http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?|http(?:s?):\/\/(www\.)?vimeo\.com\/(\d+)|http(?:s?):\/\/(?:www\.)twitch.tv\/(\S+)/g.test(url)){
+        this.$emit('urlInput', url)
+        this.error = {exists: false, message:""}
+        return;
+      }
+      if(!/(youtube.com)|(twitch.tv)|(vimeo.com)/g.test(url)){
+        this.error = {exists: true, message:"Unsupported Platform"}
+        return;
+      }
+      this.error = {exists: true, message:"Enter a valid Link"}
     }
   },
   props:["shown", "title", "url"]
@@ -48,6 +64,12 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
+p.errorMessage{
+  color: red;
+  font-family: Montserrat, sans-serif;
+  margin: 51px 0 0 0;
+}
 
 
 hr{
