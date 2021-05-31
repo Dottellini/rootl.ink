@@ -13,7 +13,12 @@
             <RootlinksModal
                 :title="element.title"
                 :url="element.url" :id="element.id"
-                :shown="!modalHidden.rootlink"
+                :shown="!modalHidden.rootlink && currentSettings.id === element.id"
+                @close="toggleSettingsModal(undefined, element)"
+                @remove="removeEntry('rootlink')"
+                @urlInput="function (evt){element.url = evt}"
+                @titleInput="function (evt){element.title = evt}"
+                @newIcon="changeImage"
             ></RootlinksModal>
             <div class="handle">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-grip-vertical" viewBox="0 0 16 16">
@@ -221,9 +226,7 @@ export default {
 
     },
     toggleSettingsModal(linkType, linkItem){
-      console.log("A",this.modalHidden)
       this.currentSettings = linkItem
-      console.log("B",linkType)
       if(linkType === undefined)
       {
         let instance = this
@@ -233,14 +236,10 @@ export default {
         return
       }
       if(linkType === 'widget'){
-        console.log("C0",linkItem)
-        console.log("C",linkItem.widgetParameter.type)
         this.modalHidden[linkItem.widgetParameter.type] = !this.modalHidden[linkItem.widgetParameter.type]
-        console.log("D",this.modalHidden)
         return
       }
       this.modalHidden[linkType] = !this.modalHidden[linkType]
-      console.log("E",this.modalHidden)
     },
     tabChange(item){this.activeTab = item.title},
     checkIfVideo: function (id, url) {
@@ -285,26 +284,6 @@ export default {
       this.$store.commit(type, value)
 
     },
-    /*
-    updateBGColor: function(value) {
-      this.$store.commit("updateBackgroundColor", value)
-    },
-    updateBGGrad: function () {
-      this.$store.commit('updateBackgroundColor', this.gradient_bg.toString())
-    },
-    updateTXTColor: function (value) {
-      this.$store.commit("updateTextColor", value)
-    },
-    updateBOXColor: function (value) {
-      this.$store.commit("updateBoxColor", value)
-    },
-    updateBOXGrad: function () {
-      this.$store.commit('updateBoxColor', this.gradient_box.toString())
-    },
-    updateRLColor: function (value) {
-      this.$store.commit("updateRootLinkColor", value)
-    },
-    */
     removeEntry: function (type) {
       let id = this.currentSettings.id
       this.$store.commit("removeEntry", {id,type})

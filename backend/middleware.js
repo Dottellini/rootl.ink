@@ -29,7 +29,6 @@ router.use(['/testLogin', '/createPage', '/uploadProfilePicture', '/api/analytic
         'Content-Type': 'application/json'
       }
     }).then(result=>result.json()).then(result=>{
-      console.log(result)
       res.locals.user = result.user_id.replace('amzn1.account.','')
       next();
     })
@@ -49,7 +48,7 @@ router.use(['/testLogin', '/createPage', '/uploadProfilePicture', '/api/analytic
               res.cookie('accessToken', refresh, {
                 httpOnly: true,
               });
-              res.locals.user = user;
+              res.locals.user = user.username;
               next();
             });
             return;
@@ -67,7 +66,7 @@ router.use(['/testLogin', '/createPage', '/uploadProfilePicture', '/api/analytic
             return;
         }
       }
-      res.locals.user = user;
+      res.locals.user = user.username;
       next();
     })
   }
@@ -76,7 +75,6 @@ router.use(['/testLogin', '/createPage', '/uploadProfilePicture', '/api/analytic
 //Logout
 router.use('/logout', (req,res,next)=>{
   let cookies = parseCookies(req.headers.cookie);
-  console.log(cookies)
   if(cookies.accessType === 'amazonLogin'){
     res.cookie('accessToken', '', {
       httpOnly: true,

@@ -51,9 +51,7 @@ router.post('/amazonLogin', (req,res)=> {
           Key: {"usernameLowerCase": {"S": result.user_id.replace('amzn1.account.','').toLowerCase()}},
           TableName: "Users"
         }, (err, data) => {
-          console.log(data)
           if (Object.keys(data).length === 0) {
-            console.log("Hi")
             dynamodb.putItem({
               Item:{
                 "emailAddress":{S: result.email},
@@ -62,7 +60,6 @@ router.post('/amazonLogin', (req,res)=> {
                 "userPageUrl":{S:result.user_id.replace('amzn1.account.','').toLowerCase()},
                 "accountType":{S:'amazon'}
               },TableName:"Users"},(err, data)=>{
-              console.log(err, data)
               dynamodb.putItem({
                 Item:{
                   "url":{"S":result.user_id.replace('amzn1.account.','').toLowerCase()},
@@ -80,7 +77,6 @@ router.post('/amazonLogin', (req,res)=> {
           }
         })
       }).catch(err => {
-        console.log("ERROR:", err)
         res.status(401).json({'result': 'ERROR', 'message': 'Invalid Code'})
       })
     } else {
@@ -94,28 +90,21 @@ router.post('/failed', (req, res) => {
 });
 
 router.post('/resetPassword', (req,res)=>{
-  console.log(req.body)
   dynamodb.getItem({Key:{"usernameLowerCase":{"S": req.body.username.toLowerCase()}},TableName: "Users"},(err, data)=>{
-    console.log("2",err,data)
     if(data === {}){
-      console.log(":(")
       res.status(418).json({})
       return
     }
     if(typeof data.Item.passwordResetCode === 'undefined'){
-      console.log(":(")
       res.status(418).json({})
       return
     }
     if(data.Item.passwordResetCodeExpiry.N < new Date().getTime()/1000){
-      console.log(":(")
       res.status(418).json({})
       return
     }
     if(req.body.resetCode === data.Item.passwordResetCode.S){
-      console.log(":)")
       hash(req.body.newPassword, 10, function(error, hash) {
-        console.log(error, hash)
         dynamodb.updateItem({
           TableName: "Users",
           Key: { "usernameLowerCase": { S: req.body.username.toLowerCase() } },
@@ -130,23 +119,20 @@ router.post('/resetPassword', (req,res)=>{
             '#b': "passwordResetCode",
             '#c': "passwordResetCodeExpiry"
           }
-        },(err,data)=>{console.log(err,data)})
+        },(err,data)=>{})
       })
 
 
       res.status(200).json({})
     } else {
-      console.log(":(")
       res.status(418).json({})
     }
   })
 })
 
 router.post('/requestPasswordReset', (req,res)=>{
-  console.log(req.body)
   const code = v4()
   renderFile(__dirname+'/email-templates/email-template2.ejs', {code: code},(error, data)=> {
-    console.log(error, data)
     let mailOptions = {
       from: 'rootlink.test123@gmail.com',
       to: req.body.email,
@@ -163,7 +149,6 @@ router.post('/requestPasswordReset', (req,res)=>{
     });
     emailSender.sendMail(mailOptions, function (error) {
       if (error) {
-        console.log(error)
         res.status(500).json({'result': 'ERROR', 'message': 'Cant send reset email'});
         return;
       }
@@ -184,7 +169,6 @@ router.post('/requestPasswordReset', (req,res)=>{
       '#b': "passwordResetCodeExpiry"
     }
   },(err,data)=>{
-    console.log("1",err,data)
   })
 })
 
@@ -195,18 +179,17 @@ router.post('/auth/google/callback', passport.authenticate('google', { failureRe
 });
 
 router.post('/api/analytics/get/', (req,res)=>{
+  console.log("res.locals.user",res.locals.user)
   dynamodb.getItem({Key:{"url":{"S": res.locals.user.toLowerCase()}},TableName: "Analytics"},(err, data)=>{
     res.status(200).json(data)
   });
 });
 
 router.post('/gethtml*',(req,res)=>{
-  console.log('URL',req.url)
   fetch(req.url.replace('/gethtml?url=','')).then(data =>data.text())
     .then(data=>{
       res.send(data)
     }).catch(err=>{
-    console.log("ERROR:",err)
   })
 })
 
@@ -392,7 +375,6 @@ router.post('/login', (req,res)=>{
 });
 
 router.post('/testLogin', (req, res)=>{
-  console.log(res.locals.user)
   res.json({'username': res.locals.user, 'result':'OK'});
 });
 
@@ -485,7 +467,6 @@ router.post('/register', (req,res)=>{
           });
           emailSender.sendMail(mailOptions, function(error){
             if (error) {
-              console.log(error)
               res.status(500).json({'result':'ERROR', 'message': 'Cant send confirmation email'});
               return;
             }
@@ -499,11 +480,8 @@ router.post('/register', (req,res)=>{
 
 router.post('/createPage', (req, res)=>{
   let filename;
-  console.log("userr",res.locals.user)
   dynamodb.getItem({Key:{"username":{"S": res.locals.user}},TableName: "Users"},()=>{
     filename = res.locals.user.toLowerCase()+'.json';
-    console.log("filename",filename)
-    console.log("test",res.locals.user.toLowerCase())
 
     let readable = Readable.from([JSON.stringify(req.body)])
     readable.on('error', ()=> {

@@ -71,7 +71,6 @@ export default {
               if(data.Item !== undefined){
                 for(let i=0;i<this.linkIDs.length;i++){
                   this.LinkClicksData.push(this.convertLinkClicksData(data, this.linkIDs[i]))
-                  console.log("OLD",this.LinkClicksData)
                 }
                 this.BrowsersData = this.convertBrowsersData(data)
                 this.OSData = this.convertOSData(data)
@@ -113,27 +112,17 @@ export default {
             break;
         }
         let id = linkID //document.getElementById("ID").value
-        console.log(id)
         let series = []
         Object.keys(data.Item).forEach((k)=>{
-          console.log(k)
-          console.log(data.Item[k])
-          console.log("0")
           if(k.match(timeframeRegex)){
-            console.log("1")
             if(data.Item[k].M[id]){
-              console.log("2")
               let dataPoint = {}
               dataPoint.x=Date.parse(k)
               dataPoint.y=parseInt(data.Item[k].M[id].N)
               series.push(dataPoint)
-              console.log("hah", series)
             }
           }
         })
-
-        console.log("Series0",series)
-
 
         this.bubbleSortObjectList(series, "id")
         series = series.map(item=>{

@@ -6,10 +6,10 @@
           <h2>Content</h2>
           <div>
             <label>Title</label>
-            <TextInput title="Title" :value="title" placeholder="My Awesome Link" v-model="title"/>
+            <TextInput title="Title" :value="title" placeholder="My Awesome Link" @input="$emit('titleInput', $event)"/>
           </div>
           <div>
-            <TextInput title="Url" :value="url" placeholder="https://www.example.com" v-model="url"/>
+            <TextInput title="Url" :value="url" placeholder="https://www.example.com" v-model="url" @input="$emit('urlInput', $event)"/>
           </div>
           <div>
             <CheckBox text="Embed Video" class="CheckBox"/>

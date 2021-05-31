@@ -53,7 +53,6 @@ export default {
         if ( response.error ) {
           alert('oauth error ' + response.error);
         }
-        console.log(response)
         fetch('/amazonLogin',{
           method: 'POST',
           headers:{
@@ -63,9 +62,7 @@ export default {
             code: response.code
           }),
         }).then(res=>res.json()).then(res=>{
-          console.log(res)
           if(res.result === 'OK'){
-            console.log("Login3")
             localStorage.setItem('username', res.userID);
             store.commit("login", res.userID);
             router.push('/')
@@ -117,7 +114,6 @@ export default {
             })
           })
           .catch((error) => {
-            console.log(error)
             this.error = "There was an error"
           });
       }

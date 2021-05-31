@@ -34,15 +34,7 @@
         this.Xsize = parseInt(this.Xsize)
         this.Ysize = parseInt(this.Ysize)
 
-        console.log(this.Ysize)
-        console.log(this.Xsize)
-
-        console.log(this.Xsize>31)
-        console.log(this.Ysize>31)
-        console.log(this.Xsize*this.Ysize>219)
-
         if(this.Xsize>31 || this.Ysize>31 || this.Xsize*this.Ysize>219){
-          console.log("ERROR")
           document.getElementById("warning").textContent = "ZU GROSS!!!"
           document.getElementById("warning").style.color = "red"
 

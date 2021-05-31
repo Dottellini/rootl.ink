@@ -58,10 +58,8 @@ export default {
     },
 
     updateText () {
-      console.log(this.$store.state.username)
       localStorage.setItem('preRegisterUsername', this.username);
       this.$store.commit("updateText", this.username)
-      console.log(this.$store.state.username)
     }
   },
 

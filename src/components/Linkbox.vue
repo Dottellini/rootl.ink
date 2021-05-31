@@ -31,7 +31,6 @@
       let theme = localStorage.getItem('theme');
       this.isDark = theme !== "";
       this.$store.commit("changeThemeOnPreview", this.isDark)
-      console.log("XYZ",this.link)
     },
     methods: {
       linkOrEmbed: function(link){

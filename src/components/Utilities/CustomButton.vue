@@ -27,7 +27,6 @@ export default {
     openFileSelector(evt){
       if(evt.target.outerHTML.includes('class="fileSelector"')){
         this.counter++;
-        console.log(this.counter)
         document.getElementById('fileSelectorLabel').click();
       }
     }
