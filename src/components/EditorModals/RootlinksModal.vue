@@ -11,9 +11,6 @@
           <div>
             <TextInput title="Url" :value="url" placeholder="https://www.example.com" v-model="url" @input="$emit('urlInput', $event)"/>
           </div>
-          <div>
-            <CheckBox text="Embed Video" class="CheckBox"/>
-          </div>
         </div>
         <div class="iconSettings">
           <h2>Icon</h2>
