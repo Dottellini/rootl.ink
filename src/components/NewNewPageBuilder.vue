@@ -289,11 +289,12 @@ export default {
     rootlinkSelected(element){
       if(this.selectionActive){
         for(let i in this.list){
-          if(this.list[i] !== element)
-            console.log(this.list[i])
-          this.list[i].highlighting.active = false;
+          if(this.list[i] !== element){
+            this.list[i].highlighting.active = false;
+          }else{
+            this.list[i].highlighting.active = !this.list[i].highlighting.active;
+          }
         }
-        element.highlighting.active = !element.highlighting.active
       }
     }
   },
