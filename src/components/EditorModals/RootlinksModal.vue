@@ -23,7 +23,6 @@
       <div class="horizontalContainer last">
         <CustomButton type="button" classProp="closeItem" @click="$emit('remove', $event); $emit('close', $event)">Delete Link</CustomButton>
         <CustomButton type="button" classProp="closeItem" @click="$emit('close', $event)">Save</CustomButton>
-
       </div>
     </div>
   </div>

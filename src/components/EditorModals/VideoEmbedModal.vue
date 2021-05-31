@@ -12,15 +12,18 @@
     </div>
     <div class="vl"/>
     <div class="verticalContainer">
+
       <h2>Settings</h2>
       <CheckBox text="Autoplay" class="Settings"/>
       <CheckBox text="Loop Video" class="Settings"/>
+
       <div class="footer">
         <hr>
         <CustomButton classProp="closeItem" @click="$emit('close', $event)"> Save</CustomButton>
       </div>
     </div>
     <span class="close closeItem" @click="$emit('close', $event)">&times;</span>
+
   </div>
 </template>
 
@@ -90,8 +93,6 @@ hr{
   font-size: 28px;
   font-weight: bold;
   max-height:25px;
-  position: absolute;
-  right: 560px;
 }
 
 .close:hover,
